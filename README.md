@@ -14,4 +14,5 @@ WPI ISP creating a virtual machine for live coding visuals
 
 ## Repo Structure
 
+- [diary](diary.md) is a "research"/progress diary for ideas and updates on the project that should be expressed in somewhat formal writing rather than TODO comments on code
 - [papers](papers) contains the formal papers and resources referenced by this project
