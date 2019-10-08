@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<textarea id="grammar" style="width: 800px; height: 400px">
+// Simple Arithmetics Grammar
+// ==========================
+//
+// Accepts expressions like "2 * (3 + 4)" and computes their value.
+
+Expression
+  = head:Term tail:(_ ("+" / "-") _ Term)* {
+      return tail.reduce(function(result, element) {
+        if (element[1] === "+") { return result + element[3]; }
+        if (element[1] === "-") { return result - element[3]; }
+      }, head);
+    }
+
+Term
+  = head:Factor tail:(_ ("*" / "/") _ Factor)* {
+      return tail.reduce(function(result, element) {
+        if (element[1] === "*") { return result * element[3]; }
+        if (element[1] === "/") { return result / element[3]; }
+      }, head);
+    }
+
+Factor
+  = "(" _ expr:Expression _ ")" { return expr; }
+  / Integer
+
+Integer "integer"
+  = _ [0-9]+ { return parseInt(text(), 10); }
+
+_ "whitespace"
+  = [ \t\n\r]*
+
+</textarea>
+<textarea id="input">
+2 * (3 + 4)
+</textarea>
+
+<button onclick="makeParser()">Parse!</button>
+
+<textarea id="output">
+
+</textarea>
+
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script src="peg-0.10.0.js"></script>
+
+<script>
+    function makeParser(){
+        let grammer = $("#grammar").val();
+        var parser = peg.generate(grammer);
+
+        let input = $("#input").val().trim();
+        let res = parser.parse(input);
+        $("#output").val(res);
+    }
+</script>
+
+
+</body>
+</html>
