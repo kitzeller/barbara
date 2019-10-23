@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--Circle-->
+<svg height="100" width="100">
+    <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
+</svg>
+
+<!--Path-->
+<svg height="210" width="400">
+    <path d="M150 0 L75 200 L225 200 Z" />
+</svg>
+
+<!--Polyline-->
+<svg height="200" width="500">
+    <polyline points="20,20 40,25 60,40 80,120 120,140 200,180"
+              style="fill:none;stroke:black;stroke-width:3" />
+</svg>
+
+<!--Polygon-->
+<svg height="210" width="500">
+    <polygon points="100,10 40,198 190,78 10,78 160,198"
+             style="fill:lime;stroke:purple;stroke-width:5;fill-rule:evenodd;" />
+</svg>
+
+<!--Some examples-->
+<svg height="150" width="400">
+    <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    <ellipse cx="200" cy="70" rx="85" ry="55" fill="url(#grad1)" />
+</svg>
+
+<svg height="110" width="110">
+    <defs>
+        <filter id="f1" x="0" y="0">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
+        </filter>
+    </defs>
+    <rect width="90" height="90" stroke="green" stroke-width="3" fill="yellow" filter="url(#f1)" />
+</svg>
+
+<svg height="180" width="500">
+    <polyline points="0,40 40,40 40,80 80,80 80,120 120,120 120,160" style="fill:white;stroke:red;stroke-width:4" />
+</svg>
+
+</body>
+</html>

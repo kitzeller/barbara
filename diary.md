@@ -2,27 +2,51 @@
 WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
 
+## 10/22/19
+
+- B term begins!
+- Set up weekly meetings Tuesday @ 3.00pm (except for first meeting on Thursday @ 3.00pm)
+- Created basic html file with grammar, expression, and output textareas using Peg.js
+- Looked deeper into [Sarah Groff Hennigh-Palermo - Raving Through the 90s with SVG and Clojurescr](https://www.youtube.com/watch?v=F4pozY_RF5c)
+    - The screenshot below is from the video. Example of how her tool uses clojurescript to represents the svg shape. 
+    - [la habra repo](https://github.com/sarahgp/la-habra)
+
+![la habra](img/la-habra.png)
+
+
+- Looked at [svg.js](https://github.com/svgdotjs/svg.js)
+    - Might be worthwhile using this to help develop the "target language"
+    - Similar to how gibberwocky is used in the NIME workshop
+    
 
 ## 10/8/19
 
 - Looked through NIME workshop source code
 - Looked through Peg.js documentation
 - Current understanding:
-    - I need to create a Target language/instruction set that essentially abstracts Canvas2D functions
+    - I need to create a Target language/instruction set that essentially abstracts SVG functions
     - I need to create a VM that can run this language
     - I need to create an example pegjs grammar of this language
         - the output of the peg.js parse should be in the target language and then run by my vm
+    - Most likely going to use Priority Queues for implementation
 
 
 
 "A virtual machine (VM) is a software program or operating system that not only exhibits the behavior of a separate computer, but is also capable of performing tasks such as running applications and programs like a separate computer." - [techopedia](https://www.techopedia.com/definition/4805/virtual-machine-vm)
 
-### Questions
+#### Questions & Answers
 
 1. In lect.js, the "VM" is really the Pattern Sequencer, comprised of the cq, PQ, and Q objects/functions? And the instruction set (synonymous to Target language?) is defined in the cases/conditions of the if statements/big switch statement in Q.prototype.step?  (snippet of Q.prototype.step referenced below)
 
+"Hmmmm… it’s Graham’s  code mostly, but from looking at it I’m assuming circular queue, priority queue, and simple queue (maybe you already figured that out). Gibberish handles all the audio stuff, yes, but also the scheduling… basically Graham is creating a function that runs in the audio thread to ensure we can get sample-accurate timing. I would assume you would use another system for timing, most likely based on  requestAnimationFrame.
+
+ Priority Queue is the best data structure FYI." - charlie
+
+
 2. What is Gibberish's official role in the system's architecture? A helper library for audio output?
 
+"Here’s the timer I use for canvas drawing in gibberwocky if its useful: https://github.com/gibber-cc/gibberwocky/blob/devel/js/animationScheduler.js
+most of it is not gibber specific, just a priority queue plus requestAnimationFrame" - charlie
 
 ```
 case "@dup":
