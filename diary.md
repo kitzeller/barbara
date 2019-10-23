@@ -17,7 +17,33 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Looked at [svg.js](https://github.com/svgdotjs/svg.js)
     - Might be worthwhile using this to help develop the "target language"
     - Similar to how gibberwocky is used in the NIME workshop
+- Or maybe we should use d3.js? (some super neat art below for reference)
+    - https://learningd3.com/blog/generative-art/
+    - https://bl.ocks.org/philipcdavis/b5224a272556fcb2d0c776b7a247ede4
+    - https://bl.ocks.org/philipcdavis/2b626bdef4133921615a5e4fbb921e70
+    - https://bl.ocks.org/mbostock/6224050
     
+    
+VM Process
+1. Parse the input to the target language (which is stack-based. e.g. operands then operator)
+2. Create a new priority queue (which is a scheduler/player/agent and has it's own queue). Specifically it can contain multiple command queues (type Q), and executes them in an interleaved way.
+3. Create a new queue (which is the heap of the PQ). 
+4. On each tick, the queue has a todo (queue) and stack. The todo maintains the list of commands in the target language. Pop off the todo, and 
+if it's not a string/operator then add the value to the stack, and then eventually execute the command with the stack data.
+5. Replace the todo queue if it's a loop
+    
+#### Questions
+
+- Are we compiling the input to the target language (using peg.js) then interpreting it with the vm. We're parsing it, but a parser is technically part of a compiler.
+
+#### Todo
+
+- Investigate more about good language design (for the target language)
+    - Doesn't have to be stack-based
+    - Look at SVGs and figure out how to abstract them to best represent them
+- Figure out which SVG manipulation tool to use (or develop one)
+
+
 
 ## 10/8/19
 

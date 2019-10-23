@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+<div id="drawing"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
+<script>
+    /* create an svg drawing */
+    var draw = SVG().addTo('#drawing').size(500, 500);
+
+    /* draw rectangle */
+    var rect = draw.rect(50, 50).move(100, 100).fill('#f09');
+</script>
+
+</body>
+</html>
