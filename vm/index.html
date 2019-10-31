@@ -2,65 +2,109 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>SVG VM</title>
+    <link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
+
+    <style>
+        h1{
+            font-family: 'Nothing You Could Do', cursive;
+        }
+
+        h2 {
+            font-family: 'Nothing You Could Do', cursive;
+        }
+
+        .row {
+            display: flex;
+        }
+
+        .column {
+            flex: 50%;
+        }
+    </style>
+
 </head>
 <body>
 
+<h1>
+    Live Code a Language for SVG Manipulation
+</h1>
 
-<textarea id="grammar" style="width: 800px; height: 400px">
-// Simple Arithmetics Grammar
-// ==========================
-//
-// Accepts expressions like "2 * (3 + 4)" and computes their value.
+<div class="row">
+    <div class="column">
+        <h2>Grammar</h2>
+        <textarea id="grammar" style="width: 500px; height: 300px">
+start "start" = term +
+term "term" = body:(list / word) _ { return body; }
+list "list" = "(" _ body:term* ")" { return body; }
 
-Expression
-  = head:Term tail:(_ ("+" / "-") _ Term)* {
-      return tail.reduce(function(result, element) {
-        if (element[1] === "+") { return result + element[3]; }
-        if (element[1] === "-") { return result - element[3]; }
-      }, head);
-    }
+word "word" = circle / rect / color / rotate / $[^() \t\n\r]+
 
-Term
-  = head:Factor tail:(_ ("*" / "/") _ Factor)* {
-      return tail.reduce(function(result, element) {
-        if (element[1] === "*") { return result * element[3]; }
-        if (element[1] === "/") { return result / element[3]; }
-      }, head);
-    }
+circle = "circle" { return "@circle"; }
+rect = "rect" { return "@rect"; }
+color = "color" { return "@color"; }
+rotate = "rotate" { return "@rotate"; }
 
-Factor
-  = "(" _ expr:Expression _ ")" { return expr; }
-  / Integer
+_ "whitespace" = [ \t\n\r]*
 
-Integer "integer"
-  = _ [0-9]+ { return parseInt(text(), 10); }
+        </textarea>
 
-_ "whitespace"
-  = [ \t\n\r]*
+        <h2>Input</h2>
+        <textarea id="input" style="width: 500px; height: 100px">
+((100 100 100 100 rect) red color)
 
-</textarea>
-<textarea id="input">
-2 * (3 + 4)
-</textarea>
+((0 0 100 100 rect) blue color)
 
-<button onclick="makeParser()">Parse!</button>
+((100 0 100 100 rect) green color)
 
-<textarea id="output">
+((0 100 100 100 rect) yellow color)
+        </textarea>
 
-</textarea>
+        <button onclick="makeParser()">Parse!</button>
+
+        <h2>Output</h2>
+        <textarea id="output">
+
+        </textarea>
+
+        <button onclick="start()">Start</button>
+    </div>
+    <div class="column">
+        <h2>SVG Result</h2>
+        <div id="drawing"></div>
+    </div>
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="peg-0.10.0.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
+<script src="raphael.js"></script>
+<script src="vm.js"></script>
 
 <script>
-    function makeParser(){
+    function makeParser() {
         let grammer = $("#grammar").val();
         var parser = peg.generate(grammer);
 
         let input = $("#input").val().trim();
         let res = parser.parse(input);
-        $("#output").val(res);
+        console.log(res);
+        $("#output").val(JSON.stringify(res));
+    }
+
+    function start() {
+        // start it
+        let grammer = $("#grammar").val();
+        var parser = peg.generate(grammer);
+
+        let input = $("#input").val().trim();
+        let res = parser.parse(input);
+
+        let val = $("#output").val();
+        val = eval(val);
+
+        window.seq.define("default", val);
     }
 </script>
 

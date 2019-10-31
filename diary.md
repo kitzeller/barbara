@@ -1,8 +1,28 @@
 # graphics-virtual-machine
 WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
+# 10/29/19
 
-## 10/22/19
+- Met with Gillian
+    - Talked about quilts - very cool!
+    - Need to look into grid-based quilt systems, get familiarized with the vocab, set some constraints...
+- Found a paper on [algorithmic quilting](http://graphicsinterface.org/wp-content/uploads/gi2019-13.pdf)
+- [quilting math](https://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1322&context=tsaconf)
+
+
+# 10/25/19
+
+### Meeting Discussion
+- knitting patterns
+    - Meeting w/ Gillian on Tuesday
+- Mexican Embroidery
+- Mandalas 
+- bright orange default color
+- Look at raphael vs. svg.js
+- [Live coding dance](https://github.com/sicchio/terpsicode)
+
+
+## 10/22/19 
 
 - B term begins!
 - Set up weekly meetings Tuesday @ 3.00pm (except for first meeting on Thursday @ 3.00pm)
