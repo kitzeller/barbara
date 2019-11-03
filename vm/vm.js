@@ -8,7 +8,7 @@ window.seq = {
 };
 
 // SVG Drawing
-var paper = Raphael("drawing", 500, 500);
+var draw = SVG().addTo('#drawing').size(800, 800);
 
 // this is where the externally triggered events are buffered to synchronize them to beats
 var cq = {
@@ -38,7 +38,7 @@ window.seq.define = function (name, score) {
     console.log("Creating " + typeof name + " " + Array.isArray(score));
 
     // Clear the SVG
-    paper.clear();
+    draw.clear();
 
     // sync this:
     cq.cmds.push(function () {
@@ -146,10 +146,9 @@ Q.prototype.push = function (v) {
 // we can push to the todo queue
 // and push to and pop from the stack
 Q.prototype.step = function () {
-    console.log("tick me");
     if (this.debug) {
-        console.log("\tstack:", JSON.stringify(this.stack));
-        console.log("\tqueue:", JSON.stringify(this.todo));
+        //console.log("\tstack:", JSON.stringify(this.stack));
+        //console.log("\tqueue:", JSON.stringify(this.todo));
     }
     if (this.todo.length) {
         var item = this.todo.pop();
@@ -171,7 +170,9 @@ Q.prototype.step = function () {
                     let rc = this.stack.pop();
                     let yc = this.stack.pop();
                     let xc = this.stack.pop();
-                    var c = paper.circle(xc, yc, rc);
+
+                    var circle = draw.circle(rc).move(xc, yc);
+
                     this.vars.push(c);
 
                     break;
@@ -180,33 +181,81 @@ Q.prototype.step = function () {
                     let wr = this.stack.pop();
                     let yr = this.stack.pop();
                     let xr = this.stack.pop();
-                    let r = paper.rect(xr, yr, wr, hr);
+
+                    var r = draw.rect(wr, hr).move(xr, yr);
                     this.vars.push(r);
 
                     break;
                 case "@path":
                     let path = this.stack.pop();
-                    var p = paper.path(path);
 
                     break;
                 case "@color":
                     let color = this.stack.pop();
                     let elem = this.vars.pop();
-                    elem.attr("fill", color);
+                    elem.fill(color);
+                    this.vars.push(elem);
 
                     break;
 
                 case "@rotate":
                     let degree = this.stack.pop();
                     let elem_rotate = this.vars.pop();
+
                     elem_rotate.rotate(degree);
 
+                    this.vars.push(elem_rotate);
                     break;
 
                 case "@repeat":
                     //...
 
                     break;
+
+                case "@move":
+                    //...
+                    let vt = this.vars.pop();
+                    let my = this.stack.pop();
+                    let mx = this.stack.pop();
+
+                    vt.move(mx, my);
+                    this.vars.push(vt);
+
+                    break;
+
+                case "@copy":
+                    let sc = this.stack.pop();
+                    // console.log("Woooo ", sc)
+                    let clone = this.context[sc].clone();
+                    draw.add(clone);
+                    this.vars.push(clone);
+                    break;
+
+                case "@define":
+                    let ds = this.stack.pop();
+                    let vs = this.vars.pop();
+                    // console.log("Define ", ds, vs);
+                    this.context[ds] = vs;
+                    break;
+
+                case "@get":
+                    let cn = this.stack.pop();
+                    // console.log(cn);
+                    let tp = this.context[cn];
+                    // console.log(tp);
+                    this.vars.push(tp);
+                    break;
+
+                case "@group":
+                    var st = draw.group();
+                    let s = this.stack.pop();
+                    while (s) {
+                        st.add(this.context[s]);
+                        s = this.stack.pop();
+                    }
+                    this.vars.push(st);
+                    break;
+
                 default:
                     // look up a dynamic rule?
                     var cmd = window.seq.commands[op];

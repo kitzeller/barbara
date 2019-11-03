@@ -1,6 +1,16 @@
 # graphics-virtual-machine
 WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
+# 11/3/19
+
+- Started working with transformations, rotations, etc
+- Added 'group', 'copy', 'def', and 'get' methods
+
+TODO
+ - Percentages instead of pixels
+
+![November 3rd UI](img/Nov3.png)
+
 # 10/29/19
 
 - Met with Gillian

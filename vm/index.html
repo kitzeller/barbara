@@ -38,12 +38,17 @@ start "start" = term +
 term "term" = body:(list / word) _ { return body; }
 list "list" = "(" _ body:term* ")" { return body; }
 
-word "word" = circle / rect / color / rotate / $[^() \t\n\r]+
+word "word" = circle / rect / color / rotate / define / get / group / move / copy / $[^() \t\n\r]+
 
 circle = "circle" { return "@circle"; }
 rect = "rect" { return "@rect"; }
 color = "color" { return "@color"; }
 rotate = "rotate" { return "@rotate"; }
+define = "define" { return "@define"; }
+get = "get" { return "@get"; }
+group = "group" { return "@group"; }
+move = "move" { return "@move"; }
+copy = "copy" { return "@copy"; }
 
 _ "whitespace" = [ \t\n\r]*
 
@@ -51,13 +56,20 @@ _ "whitespace" = [ \t\n\r]*
 
         <h2>Input</h2>
         <textarea id="input" style="width: 500px; height: 100px">
-((100 100 100 100 rect) red color)
+(((100 100 100 100 rect) first-def define) first-def get blue color)
+(((0 100 100 100 rect) sec-def define) sec-def get red color)
+(((100 0 100 100 rect) thir-def define) thir-def get yellow color)
+(((0 0 100 100 rect) four-def define) four-def get green color)
 
-((0 0 100 100 rect) blue color)
+(first-def sec-def thir-def four-def group five-def define)
+(five-def copy fivedef-cpy define fivedef-cpy get 200 200 move 180 rotate)
+(five-def copy fivedef-cpy1 define fivedef-cpy1 get 0 200 move 270 rotate)
+(five-def copy fivedef-cpy2 define fivedef-cpy2 get 200 0 move 90 rotate)
 
-((100 0 100 100 rect) green color)
-
-((0 100 100 100 rect) yellow color)
+(five-def fivedef-cpy fivedef-cpy1 fivedef-cpy2 group bigone define)
+(bigone copy big-cpy define big-cpy get 400 400 move)
+(bigone copy big-cpy1 define big-cpy1 get 0 400 move)
+(bigone copy big-cpy2 define big-cpy2 get 400 0 move)
         </textarea>
 
         <button onclick="makeParser()">Parse!</button>
@@ -79,10 +91,30 @@ _ "whitespace" = [ \t\n\r]*
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="peg-0.10.0.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
-<script src="raphael.js"></script>
 <script src="vm.js"></script>
 
 <script>
+    /**
+     ((100 100 100 100 rect) red color first define)
+
+     ((0 0 100 100 rect) blue color second define)
+
+     ((100 0 100 100 rect) green color third define)
+
+     ((0 100 100 100 rect) yellow color fourth define)
+
+     (first second third fourth group wow define)
+     (wow get 90 rotate)
+     (wow copy wowsec define wowsec get 200 200 move)
+
+     (((100 100 100 100 rect) first-def define) first-def get 0 rotate blue color)
+     (((0 100 100 100 rect) sec-def define) sec-def get 0 rotate red color)
+     (((100 0 100 100 rect) thir-def define) thir-def get 0 rotate yellow color)
+     (((0 0 100 100 rect) four-def define) four-def get 0 rotate green color)
+
+     (first-def sec-def thir-def four-def group five-def define)
+     (five-def copy fivedef-cpy define fivedef-cpy get 200 200 move)
+     */
     function makeParser() {
         let grammer = $("#grammar").val();
         var parser = peg.generate(grammer);

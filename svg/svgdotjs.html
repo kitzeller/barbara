@@ -12,10 +12,52 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
 <script>
     /* create an svg drawing */
-    var draw = SVG().addTo('#drawing').size(500, 500);
+    var draw = SVG().addTo('#drawing').size(800, 800);
 
     /* draw rectangle */
-    var rect = draw.rect(50, 50).move(100, 100).fill('#f09');
+    var recta = draw.rect(100, 100).move(100, 100).fill('red');
+    var rectb = draw.rect(100, 100).move(0, 0).fill('green');
+    var rectc = draw.rect(100, 100).move(100, 0).fill('blue');
+    var rectd = draw.rect(100, 100).move(0, 100).fill('yellow');
+
+    var group = draw.group();
+    group.add(recta); //-> returns group
+    group.add(rectb); //-> returns group
+    group.add(rectc); //-> returns group
+    group.add(rectd); //-> returns group
+    group.rotate(180);
+
+
+    //
+    var clone = group.clone();
+    clone.translate(200, 200);
+    clone.rotate(180);
+    draw.add(clone);
+
+    var clone1 = group.clone();
+    clone1.translate(200, 0);
+    clone1.rotate(180);
+    draw.add(clone1);
+
+    var clone2 = group.clone();
+    clone2.translate(0, 200);
+    clone2.rotate(180);
+    draw.add(clone2);
+
+
+    var biggroup = draw.group();
+    biggroup.add(group);
+    biggroup.add(clone);
+    biggroup.add(clone1);
+    biggroup.add(clone2);
+
+    var bigclone = biggroup.clone();
+    bigclone.translate(400, 400);
+    bigclone.rotate(180);
+    draw.add(bigclone);
+
+
+    //rect.flip('x', {x: 20, y: 30})
 </script>
 
 </body>
