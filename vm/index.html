@@ -4,45 +4,34 @@
     <meta charset="UTF-8">
     <title>SVG VM</title>
     <link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
-
-    <style>
-        h1{
-            font-family: 'Nothing You Could Do', cursive;
-        }
-
-        h2 {
-            font-family: 'Nothing You Could Do', cursive;
-        }
-
-        .row {
-            display: flex;
-        }
-
-        .column {
-            flex: 50%;
-        }
-    </style>
-
+    <link href="style.css" rel="stylesheet">
 </head>
 <body>
+<!--Navbar-->
+<ul>
+    <li><a class="active" href="index.html">Editor</a></li>
+    <li><a href="target_lang.html">Target Language</a></li>
+</ul>
 
-<h1>
-    Live Code a Language for SVG Manipulation
-</h1>
+<div class="container">
+    <h1>
+        Live Code a Language for SVG Manipulation
+    </h1>
 
-<div class="row">
-    <div class="column">
-        <h2>Grammar</h2>
-        <textarea id="grammar" style="width: 500px; height: 300px">
+    <div class="row">
+        <div class="column">
+            <h2>Grammar</h2>
+            <textarea id="grammar" style="width: 500px; height: 300px">
 start "start" = term +
 term "term" = body:(list / word) _ { return body; }
 list "list" = "(" _ body:term* ")" { return body; }
 
-word "word" = circle / rect / color / rotate / define / get / group / move / copy / $[^() \t\n\r]+
+word "word" = circle / rect / color / rotate / define / get / group / move / copy / outline / $[^() \t\n\r]+
 
 circle = "circle" { return "@circle"; }
 rect = "rect" { return "@rect"; }
 color = "color" { return "@color"; }
+outline = "outline" { return "@outline"; }
 rotate = "rotate" { return "@rotate"; }
 define = "define" { return "@define"; }
 get = "get" { return "@get"; }
@@ -54,8 +43,8 @@ _ "whitespace" = [ \t\n\r]*
 
         </textarea>
 
-        <h2>Input</h2>
-        <textarea id="input" style="width: 500px; height: 100px">
+            <h2>Input</h2>
+            <textarea id="input" style="width: 500px; height: 100px">
 (((100 100 100 100 rect) first-def define) first-def get blue color)
 (((0 100 100 100 rect) sec-def define) sec-def get red color)
 (((100 0 100 100 rect) thir-def define) thir-def get yellow color)
@@ -72,18 +61,19 @@ _ "whitespace" = [ \t\n\r]*
 (bigone copy big-cpy2 define big-cpy2 get 400 0 move)
         </textarea>
 
-        <button onclick="makeParser()">Parse!</button>
+            <button onclick="makeParser()">Parse!</button>
 
-        <h2>Output</h2>
-        <textarea id="output">
+            <h2>Output</h2>
+            <textarea id="output">
 
         </textarea>
 
-        <button onclick="start()">Start</button>
-    </div>
-    <div class="column">
-        <h2>SVG Result</h2>
-        <div id="drawing"></div>
+            <button onclick="start()">Start</button>
+        </div>
+        <div class="column">
+            <h2>SVG Result</h2>
+            <div id="drawing"></div>
+        </div>
     </div>
 </div>
 

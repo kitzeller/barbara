@@ -198,6 +198,14 @@ Q.prototype.step = function () {
 
                     break;
 
+                case "@outline":
+                    let out_width = this.stack.pop();
+                    let out_color = this.stack.pop();
+                    let out_elem = this.vars.pop();
+                    out_elem.stroke({ width: out_width, color: out_color });
+                    this.vars.push(out_elem);
+
+                    break;
                 case "@rotate":
                     let degree = this.stack.pop();
                     let elem_rotate = this.vars.pop();
