@@ -149,8 +149,9 @@ Q.prototype.push = function (v) {
 // and push to and pop from the stack
 Q.prototype.step = function () {
     if (this.debug) {
-        //console.log("\tstack:", JSON.stringify(this.stack));
-        //console.log("\tqueue:", JSON.stringify(this.todo));
+        console.log("\tstack:", JSON.stringify(this.stack));
+        console.log("\tqueue:", JSON.stringify(this.todo));
+        console.log("\tvars:", this.vars);
     }
     if (this.todo.length) {
         var item = this.todo.pop();
@@ -188,10 +189,19 @@ Q.prototype.step = function () {
                     this.vars.push(r);
 
                     break;
+
+                case "@polygon":
+                    let polygon = this.stack.pop();
+                    var p = draw.polygon(polygon);
+                    this.vars.push(p);
+
+                    break;
+
                 case "@path":
                     let path = this.stack.pop();
 
                     break;
+
                 case "@color":
                     // cant color groups
                     let color = this.stack.pop();
@@ -286,6 +296,18 @@ Q.prototype.step = function () {
                     let clone = this.context[sc].clone();
                     draw.add(clone);
                     this.vars.push(clone);
+                    break;
+
+                case "@duplicate":
+                    let to_clone = this.vars.pop();
+
+                    // if (to_clone.type === 'g'){
+                    //
+                    // }
+
+                    clone_v = to_clone.clone();
+                    draw.add(clone_v);
+                    this.vars.push(clone_v);
                     break;
 
                 case "@define":
