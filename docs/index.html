@@ -26,18 +26,27 @@ start "start" = term +
 term "term" = body:(list / word) _ { return body; }
 list "list" = "(" _ body:term* ")" { return body; }
 
-word "word" = circle / rect / color / rotate / define / get / group / move / copy / outline / $[^() \t\n\r]+
+word "word" = circle / rect / color / rotate / define / get / group / move / copy / outline / flip / size / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
 circle = "circle" { return "@circle"; }
 rect = "rect" { return "@rect"; }
+
 color = "color" { return "@color"; }
+flip = "flip" { return "@flip"; }
 outline = "outline" { return "@outline"; }
 rotate = "rotate" { return "@rotate"; }
+move = "move" { return "@move"; }
+size = "size" { return "@size"; }
+
+group = "group" { return "@group"; }
+copy = "copy" { return "@copy"; }
+
 define = "define" { return "@define"; }
 get = "get" { return "@get"; }
-group = "group" { return "@group"; }
-move = "move" { return "@move"; }
-copy = "copy" { return "@copy"; }
+
+animate_rotate = "animate-rotate" { return "@animate-rotate"; }
+animate_move = "animate-move" { return "@animate-move"; }
+animate_color = "animate-color" { return "@animate-color"; }
 
 _ "whitespace" = [ \t\n\r]*
 
@@ -45,20 +54,27 @@ _ "whitespace" = [ \t\n\r]*
 
             <h2>Input</h2>
             <textarea id="input" style="width: 500px; height: 100px">
-(((100 100 100 100 rect) first-def define) first-def get blue color)
-(((0 100 100 100 rect) sec-def define) sec-def get red color)
-(((100 0 100 100 rect) thir-def define) thir-def get yellow color)
-(((0 0 100 100 rect) four-def define) four-def get green color)
+(((0 0 50 50 rect) first-def define) first-def get blue color)
+(((0 50 50 50 rect) sec-def define) sec-def get red color)
+(((50 0 50 50 rect) thir-def define) thir-def get yellow color)
+(((50 50 50 50 rect) four-def define) four-def get green color)
 
 (first-def sec-def thir-def four-def group five-def define)
-(five-def copy fivedef-cpy define fivedef-cpy get 200 200 move 180 rotate)
-(five-def copy fivedef-cpy1 define fivedef-cpy1 get 0 200 move 270 rotate)
-(five-def copy fivedef-cpy2 define fivedef-cpy2 get 200 0 move 90 rotate)
+
+(five-def get 50 50 size)
+
+(five-def copy fivedef-cpy define fivedef-cpy get 50 50 move 180 rotate)
+(five-def copy fivedef-cpy1 define fivedef-cpy1 get 0 50 move 270 rotate)
+(five-def copy fivedef-cpy2 define fivedef-cpy2 get 50 0 move 90 rotate)
 
 (five-def fivedef-cpy fivedef-cpy1 fivedef-cpy2 group bigone define)
-(bigone copy big-cpy define big-cpy get 400 400 move)
-(bigone copy big-cpy1 define big-cpy1 get 0 400 move)
-(bigone copy big-cpy2 define big-cpy2 get 400 0 move)
+(bigone get 50 50 size)
+
+(bigone copy big-cpy define big-cpy get 50 50 move)
+(bigone copy big-cpy1 define big-cpy1 get 0 50 move)
+(bigone copy big-cpy2 define big-cpy2 get 50 0 move)
+
+(big-cpy get 180 animate-rotate)
         </textarea>
 
             <button onclick="makeParser()">Parse!</button>

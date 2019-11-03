@@ -8,7 +8,9 @@ window.seq = {
 };
 
 // SVG Drawing
-var draw = SVG().addTo('#drawing').size(800, 800);
+var WIDTH = 800;
+var HEIGHT = 800;
+var draw = SVG().addTo('#drawing').size(WIDTH, HEIGHT);
 
 // this is where the externally triggered events are buffered to synchronize them to beats
 var cq = {
@@ -168,8 +170,8 @@ Q.prototype.step = function () {
                 case "@circle":  // [x, y, r, @circle]
                     //let cc = this.stack.pop();
                     let rc = this.stack.pop();
-                    let yc = this.stack.pop();
-                    let xc = this.stack.pop();
+                    let yc = this.stack.pop()/100 * HEIGHT;
+                    let xc = this.stack.pop()/100 * WIDTH;
 
                     var circle = draw.circle(rc).move(xc, yc);
 
@@ -177,10 +179,10 @@ Q.prototype.step = function () {
 
                     break;
                 case "@rect":  // [x, y, width, height, @rect]
-                    let hr = this.stack.pop();
-                    let wr = this.stack.pop();
-                    let yr = this.stack.pop();
-                    let xr = this.stack.pop();
+                    let hr = this.stack.pop()/100 * HEIGHT;
+                    let wr = this.stack.pop()/100 * WIDTH;
+                    let yr = this.stack.pop()/100 * HEIGHT;
+                    let xr = this.stack.pop()/100 * WIDTH;
 
                     var r = draw.rect(wr, hr).move(xr, yr);
                     this.vars.push(r);
@@ -191,6 +193,7 @@ Q.prototype.step = function () {
 
                     break;
                 case "@color":
+                    // cant color groups
                     let color = this.stack.pop();
                     let elem = this.vars.pop();
                     elem.fill(color);
@@ -220,15 +223,61 @@ Q.prototype.step = function () {
 
                     break;
 
+                case "@animate-rotate":
+                    let elem_ani = this.vars.pop();
+                    let ani_degree = this.stack.pop();
+                    elem_ani.animate(3000).rotate(ani_degree);
+                    this.vars.push(elem_ani);
+                    break;
+
+                case "@animate-move":
+                    let elem_ani_move = this.vars.pop();
+                    let ani_y = this.stack.pop()/100 * HEIGHT;
+                    let ani_x = this.stack.pop()/100 * WIDTH;
+                    elem_ani_move.animate(3000).move(ani_x, ani_y);
+                    this.vars.push(elem_ani_move);
+                    break;
+
+                case "@animate-color":
+                    // Input must be hex values
+                    let elem_ani_color = this.vars.pop();
+                    let ani_color = this.stack.pop();
+                    console.log(ani_color);
+                    elem_ani_color.animate(3000).fill(ani_color);
+                    this.vars.push(elem_ani_color);
+                    break;
+
                 case "@move":
-                    //...
                     let vt = this.vars.pop();
-                    let my = this.stack.pop();
-                    let mx = this.stack.pop();
+                    let my = this.stack.pop()/100 * HEIGHT;
+                    let mx = this.stack.pop()/100 * WIDTH;
 
                     vt.move(mx, my);
                     this.vars.push(vt);
 
+                    break;
+
+                case "@size":
+                    let elem_size = this.vars.pop();
+                    let sh = this.stack.pop()/100 * HEIGHT;
+                    let sw = this.stack.pop()/100 * WIDTH;
+
+                    elem_size.size(sw, sh);
+                    this.vars.push(elem_size);
+
+                    break;
+
+                case "@flip":
+                    let elem_flip = this.vars.pop();
+                    let axis = this.stack.pop();
+                    let offset;
+                    if (axis === 'x'){
+                        offset = this.stack.pop()/100 * HEIGHT;
+                    } else {
+                        offset = this.stack.pop()/100 * WIDTH;
+                    }
+                    elem_flip.flip(axis, offset);
+                    this.vars.push(elem_flip);
                     break;
 
                 case "@copy":
