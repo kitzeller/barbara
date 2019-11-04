@@ -12,11 +12,21 @@
 
 ### @text (string)
 
+
+## Fills
+
+### @pattern (...)
+
+### @gradient (...)
+
+
 ## Transformations
 
 ### @color (color)
 
 ### @outline (color, line-width)
+
+### @radius (pixels)
 
 ### @flip (offset, axis)
 
@@ -157,4 +167,21 @@ duplicate 30 30 move)
   c 59.3-46.7,93.5-71.9,111.5-106.1
   C 263.4,64.2,247.2,22.9,213.1,6.7
   z** path 100 100 size #ff0000 3000 false animate-color)
+```
+
+
+
+### Prelim Pattern
+
+```
+(pattern mything define)
+(0 0 100 100 rect $mything color)
+```
+
+### Prelim Gradient
+
+```
+(gradient mygrad define)
+(0 0 100 circle $mygrad color)
+(all 360 4000 true animate-rotate)
 ```

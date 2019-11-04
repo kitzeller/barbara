@@ -5,13 +5,20 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
 - Swapped from Raphael back to SVG.js
 - Started working with transformations, rotations, etc
-- Added 'group', 'copy', 'def', and 'get' commands
+- Added 'group', 'copy', 'def', and 'get', 'radius' commands
 - Also adding sizing and basic animations
 - Added the 'all' command for selecting everything in the svg and making it a group
 - Added the 'duplication' command for inline element duplication
 - Using percentages instead of pixels now for sizing
 - Found cool svg pattern project
     - http://btmills.github.io/geopattern/geopattern.html
+- I think I should provide pre-made patterns, like translucent white dots or something, to represent actual materials of that type? e.g. lace
+- Temporarily using '$' to distinguish colors from patterns/gradients e.g. `(0 0 100 circle $mygrad color)`
+- Hardcoded a pattern/gradient for their respective commands
+
+### Todo    
+- Add image support?
+- Add pattern and gradient creation support
 
 ![November 3rd UI](img/Nov3.png)
 

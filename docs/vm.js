@@ -211,11 +211,36 @@ Q.prototype.step = function () {
 
                     break;
 
+                case "@pattern":
+                    var pattern = draw.pattern(20, 20, function(add) {
+                        add.rect(20,20).fill('#f06');
+                        add.rect(10,10);
+                        add.rect(10,10).move(10,10);
+                    });
+
+                    this.vars.push(pattern);
+                    break;
+
+                case "@gradient":
+                    var grad = draw.gradient('linear', function(add) {
+                        add.stop(0, '#f06', 1);
+                        add.stop(1, '#0f9', 1);
+                    });
+
+                    this.vars.push(grad);
+                    break;
+
                 case "@color":
+                    let elem = this.vars.pop();
                     // cant color groups
                     let color = this.stack.pop();
-                    let elem = this.vars.pop();
-                    elem.fill(color);
+
+                    if (color.includes('$')){
+                        let result = color.split('$')[1];
+                        elem.fill(this.context[result]);
+                    } else {
+                        elem.fill(color);
+                    }
                     this.vars.push(elem);
 
                     break;
@@ -228,6 +253,15 @@ Q.prototype.step = function () {
                     this.vars.push(out_elem);
 
                     break;
+
+                case "@radius":
+                    let r_val = parseInt(this.stack.pop());
+                    let rad_elem = this.vars.pop();
+                    rad_elem.radius(r_val);
+                    this.vars.push(rad_elem);
+
+                    break;
+
                 case "@rotate":
                     let degree = this.stack.pop();
                     let elem_rotate = this.vars.pop();
