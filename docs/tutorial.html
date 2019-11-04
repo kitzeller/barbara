@@ -141,11 +141,12 @@ z** path 100 100 size #ff0000 3000 false animate-color)
 (0 0 100 100 rect $mything color)
 ```
 
-### Prelim Gradient
+### Gradient
 
 ```
-(gradient mygrad define)
+(radial *0 #f06 1, 1 #0f9 1** gradient mygrad define)
 (0 0 100 circle $mygrad color)
+(all 50 50 size repeat)
 (all 360 4000 true animate-rotate)
 ```
 

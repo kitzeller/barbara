@@ -222,9 +222,17 @@ Q.prototype.step = function () {
                     break;
 
                 case "@gradient":
-                    var grad = draw.gradient('linear', function(add) {
-                        add.stop(0, '#f06', 1);
-                        add.stop(1, '#0f9', 1);
+                    let gradient = this.stack.pop();
+                    let grad_type = this.stack.pop();
+
+                    gradient = gradient.split(",");
+
+                    var grad = draw.gradient(grad_type, function(add) {
+                        for (let g of gradient){
+                            g = g.trim();
+                            g = g.split(" ");
+                            add.stop(parseInt(g[0]), g[1], parseInt(g[2]));
+                        }
                     });
 
                     this.vars.push(grad);
@@ -410,7 +418,6 @@ Q.prototype.step = function () {
 
                 case "@copy":
                     let sc = this.stack.pop();
-                    // console.log("Woooo ", sc)
                     let clone = this.context[sc].clone();
                     draw.add(clone);
                     this.vars.push(clone);
@@ -429,11 +436,6 @@ Q.prototype.step = function () {
 
                 case "@duplicate":
                     let to_clone = this.vars.pop();
-
-                    // if (to_clone.type === 'g'){
-                    //
-                    // }
-
                     clone_v = to_clone.clone();
                     draw.add(clone_v);
                     this.vars.push(clone_v);
@@ -442,15 +444,12 @@ Q.prototype.step = function () {
                 case "@define":
                     let ds = this.stack.pop();
                     let vs = this.vars.pop();
-                    // console.log("Define ", ds, vs);
                     this.context[ds] = vs;
                     break;
 
                 case "@get":
                     let cn = this.stack.pop();
-                    // console.log(cn);
                     let tp = this.context[cn];
-                    // console.log(tp);
                     this.vars.push(tp);
                     break;
 
