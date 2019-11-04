@@ -15,10 +15,10 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - I think I should provide pre-made patterns, like translucent white dots or something, to represent actual materials of that type? e.g. lace
 - Temporarily using '$' to distinguish colors from patterns/gradients e.g. `(0 0 100 circle $mygrad color)`
 - Hardcoded a pattern/gradient for their respective commands
+- Added basic image support e.g. `(*https://image.shutterstock.com/image-photo/color-butterfly-isolated-on-white-260nw-570560110.jpg** image)`
 
 ### Todo    
-- Add image support?
-- Add pattern and gradient creation support
+- Add detailed pattern and gradient creation support
 
 ![November 3rd UI](img/Nov3.png)
 

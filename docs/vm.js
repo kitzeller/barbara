@@ -230,6 +230,12 @@ Q.prototype.step = function () {
                     this.vars.push(grad);
                     break;
 
+                case "@image":
+                    let url = this.stack.pop();
+                    var img = draw.image(url);
+                    this.vars.push(img);
+                    break;
+
                 case "@color":
                     let elem = this.vars.pop();
                     // cant color groups
