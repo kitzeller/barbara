@@ -170,13 +170,13 @@ Q.prototype.step = function () {
 
                 case "@circle":  // [x, y, r, @circle]
                     //let cc = this.stack.pop();
-                    let rc = this.stack.pop();
+                    let rc = this.stack.pop()/100 * WIDTH;
                     let yc = this.stack.pop()/100 * HEIGHT;
                     let xc = this.stack.pop()/100 * WIDTH;
 
-                    var circle = draw.circle(rc).move(xc, yc);
+                    var circ = draw.circle(rc).move(xc, yc);
 
-                    this.vars.push(c);
+                    this.vars.push(circ);
 
                     break;
                 case "@rect":  // [x, y, width, height, @rect]
@@ -199,6 +199,8 @@ Q.prototype.step = function () {
 
                 case "@path":
                     let path = this.stack.pop();
+                    let pa = draw.path(path);
+                    this.vars.push(pa);
 
                     break;
 
@@ -229,31 +231,94 @@ Q.prototype.step = function () {
                     break;
 
                 case "@repeat":
-                    //...
+                    let elem_repeat = this.vars.pop();
+                    let group = draw.group();
+                    group.add(elem_repeat)
+                    group.add(elem_repeat.clone().flip('x', 0.5 * HEIGHT));
+                    group.add(elem_repeat.clone().flip('y', 0.5 * WIDTH));
+                    group.add(elem_repeat.clone().flip(0.5 * HEIGHT));
+
+                    // TODO: Add number of repeats
+                    // let times = this.stack.pop();
+                    // let count  = 0;
+                    // while (count < times){
+                    //
+                    //     count++;
+                    // }
+
+                    this.vars.push(group);
 
                     break;
 
+                case "@order":
+                    let elem_order = this.vars.pop();
+                    let order = this.stack.pop();
+
+                    if (order === 'forward'){
+                        elem_order.forward();
+                    } else if (order === 'backward') {
+                        elem_order.backward();
+                    } else if (order === 'back'){
+                        elem_order.back();
+                    } else if (order === 'front'){
+                        elem_order.front();
+                    }
+
+                    this.vars.push(elem_order);
+                    break;
+
                 case "@animate-rotate":
-                    let elem_ani = this.vars.pop();
-                    let ani_degree = this.stack.pop();
-                    elem_ani.animate(3000).rotate(ani_degree);
+                    let elem_ani = this.vars.pop(); // element
+
+                    let ani_loop_r = this.stack.pop(); // loop boolean
+                    let ani_time_r = this.stack.pop(); // animation time
+                    ani_time_r = parseInt(ani_time_r);
+                    //console.log(parseInt((ani_time_r)))
+
+                    let ani_degree = this.stack.pop(); // rotation degree
+
+                    if (ani_loop_r === "true"){
+                        elem_ani.animate(ani_time_r).rotate(ani_degree).loop()
+                    } else {
+                        elem_ani.animate(ani_time_r).rotate(ani_degree);
+                    }
+
                     this.vars.push(elem_ani);
                     break;
 
                 case "@animate-move":
-                    let elem_ani_move = this.vars.pop();
+                    let elem_ani_move = this.vars.pop(); // element
+
+                    let ani_loop_m = this.stack.pop(); // loop boolean
+                    let ani_time_m = this.stack.pop(); // animation time
+
                     let ani_y = this.stack.pop()/100 * HEIGHT;
                     let ani_x = this.stack.pop()/100 * WIDTH;
-                    elem_ani_move.animate(3000).move(ani_x, ani_y);
+
+                    if (ani_loop_m === "true") {
+                        elem_ani_move.animate(ani_time_m).move(ani_x, ani_y).loop();
+                    } else {
+                        elem_ani_move.animate(ani_time_m).move(ani_x, ani_y);
+                    }
+
                     this.vars.push(elem_ani_move);
                     break;
 
                 case "@animate-color":
                     // Input must be hex values
-                    let elem_ani_color = this.vars.pop();
-                    let ani_color = this.stack.pop();
-                    console.log(ani_color);
-                    elem_ani_color.animate(3000).fill(ani_color);
+                    let elem_ani_color = this.vars.pop(); // element
+
+                    let ani_loop_c = this.stack.pop(); // loop boolean
+                    let ani_time_c = parseInt(this.stack.pop()); // animation time
+
+                    let ani_color = this.stack.pop(); // color
+
+                    if (ani_loop_c ===  "true"){
+                        elem_ani_color.animate(ani_time_c).fill(ani_color).loop()
+                    } else {
+                        elem_ani_color.animate(ani_time_c).fill(ani_color);
+                    }
+
                     this.vars.push(elem_ani_color);
                     break;
 
@@ -288,6 +353,12 @@ Q.prototype.step = function () {
                     }
                     elem_flip.flip(axis, offset);
                     this.vars.push(elem_flip);
+                    break;
+
+                case "@diag":
+                    let elem_flip_diag = this.vars.pop();
+                    let diag_offset = this.stack.pop();
+                    elem_flip_diag.flip(diag_offset);
                     break;
 
                 case "@copy":

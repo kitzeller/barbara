@@ -37,14 +37,18 @@ TextUntilTerminator
 HaveTerminatorAhead
  = . (!"**" .)* "**"
 
-word "word" = circle / rect / polygon / color / rotate / define / get / group / move / copy / all / duplicate / outline / flip / size / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+word "word" = circle / rect / polygon / path / color / rotate / repeat / order / define / get / group / move / copy / all / duplicate / outline / flip / diag / size / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
 circle = "circle" { return "@circle"; }
 rect = "rect" { return "@rect"; }
 polygon = "polygon" { return "@polygon"; }
+path = "path" { return "@path"; }
 
 color = "color" { return "@color"; }
 flip = "flip" { return "@flip"; }
+order = "order" { return "@order"; }
+repeat = "repeat" { return "@repeat"; }
+diag = "diag" { return "@diag"; }
 outline = "outline" { return "@outline"; }
 rotate = "rotate" { return "@rotate"; }
 move = "move" { return "@move"; }
@@ -88,7 +92,8 @@ _ "whitespace" = [ \t\n\r]*
 (bigone copy big-cpy1 define big-cpy1 get 0 50 move)
 (bigone copy big-cpy2 define big-cpy2 get 50 0 move)
 
-(big-cpy get 180 animate-rotate)
+(all 50 50 size repeat)
+(all duplicate 45 rotate)
         </textarea>
 
             <button onclick="makeParser()">Parse!</button>
