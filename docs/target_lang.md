@@ -10,6 +10,8 @@
 
 ### @polygon (string)
 
+### @text (string)
+
 ## Transformations
 
 ### @color (color)

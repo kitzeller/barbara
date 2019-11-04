@@ -204,6 +204,13 @@ Q.prototype.step = function () {
 
                     break;
 
+                case "@text":
+                    let text = this.stack.pop();
+                    let text_elem = draw.text(text);
+                    this.vars.push(text_elem);
+
+                    break;
+
                 case "@color":
                     // cant color groups
                     let color = this.stack.pop();

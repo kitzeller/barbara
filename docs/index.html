@@ -29,7 +29,7 @@ term "term" = body:(Text / list / word) _ { return body; }
 list "list" = "(" _ body:term* ")" { return body; }
 
 Text
- = "*" text:TextUntilTerminator "**" { return text.join(""); }
+ = "*" values:TextUntilTerminator "**" { return values.join(""); }
 
 TextUntilTerminator
  = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
@@ -37,12 +37,13 @@ TextUntilTerminator
 HaveTerminatorAhead
  = . (!"**" .)* "**"
 
-word "word" = circle / rect / polygon / path / color / rotate / repeat / order / define / get / group / move / copy / all / duplicate / outline / flip / diag / size / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+word "word" = circle / rect / polygon / path / text / color / rotate / repeat / order / define / get / group / move / copy / all / duplicate / outline / flip / diag / size / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
 circle = "circle" { return "@circle"; }
 rect = "rect" { return "@rect"; }
 polygon = "polygon" { return "@polygon"; }
 path = "path" { return "@path"; }
+text = "text" { return "@text"; }
 
 color = "color" { return "@color"; }
 flip = "flip" { return "@flip"; }
@@ -72,10 +73,10 @@ _ "whitespace" = [ \t\n\r]*
 
             <h2>Input</h2>
             <textarea id="input" style="width: 500px; height: 100px">
-(((0 0 50 50 rect) first-def define) first-def get blue color)
-(((0 50 50 50 rect) sec-def define) sec-def get red color)
-(((50 0 50 50 rect) thir-def define) thir-def get yellow color)
-(((50 50 50 50 rect) four-def define) four-def get green color)
+(((0 0 50 50 rect) first-def define) first-def get blue color yellow 10 outline)
+(((0 50 50 50 rect) sec-def define) sec-def get red color blue 10 outline)
+(((50 0 50 50 rect) thir-def define) thir-def get yellow color green 10 outline)
+(((50 50 50 50 rect) four-def define) four-def get green color red 10 outline)
 
 (first-def sec-def thir-def four-def group five-def define)
 
