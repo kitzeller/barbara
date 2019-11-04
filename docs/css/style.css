@@ -1,0 +1,20 @@
+.container-m10 {
+    margin: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    font-size: 10px;
+}
+
+h1, h2 {
+    font-family: 'Nothing You Could Do', cursive;
+}
+
+.row {
+    display: flex;
+}
+
+.column {
+    flex: 50%;
+}

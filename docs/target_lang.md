@@ -1,5 +1,7 @@
 # Target Language
 
+The target language was created using the SVG.js library. The language was designed as a stack-based language.
+
 ## Shapes
 
 ### @circle (x, y, radius)
@@ -185,3 +187,9 @@ duplicate 30 30 move)
 (0 0 100 circle $mygrad color)
 (all 360 4000 true animate-rotate)
 ```
+
+
+
+---
+
+Kit Zellerbach & Prof. Charlie Roberts

@@ -19,6 +19,7 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
 ### Todo    
 - Add detailed pattern and gradient creation support
+- Improve UI
 
 ![November 3rd UI](img/Nov3.png)
 

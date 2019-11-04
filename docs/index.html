@@ -6,36 +6,35 @@
     <link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 
-    <link href="style.css" rel="stylesheet">
+    <link href="css/normalize.css" rel="stylesheet">
+    <link href="css/skeleton.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
 <!--Navbar-->
-<ul>
-    <li><a class="active" href="index.html">Editor</a></li>
-    <li><a href="target_lang.html">Target Language</a></li>
-</ul>
-
 <div class="container">
     <h1>
-        Live Code a Language for SVG Manipulation
+        Live Code a Graphics Language
     </h1>
 
+    <button class="button-primary" onclick="window.location.href='index.html'">Editor</button>
+    <button onclick="window.location.href='target_lang.html'">Target Lang</button>
+    <button onclick="window.location.href='tutorial.html'">Tutorial</button>
+    <button onclick="window.location.href='quilting.html'">Quilting</button>
+</div>
+
+<div class="container-m10">
     <div class="row">
         <div class="column">
             <h2>Grammar</h2>
-            <textarea id="grammar" style="width: 500px; height: 300px">
+            <textarea id="grammar" style="width: 700px; height: 300px">
 start "start" = term +
 term "term" = body:(Text / list / word) _ { return body; }
 list "list" = "(" _ body:term* ")" { return body; }
 
-Text
- = "*" values:TextUntilTerminator "**" { return values.join(""); }
-
-TextUntilTerminator
- = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
-
-HaveTerminatorAhead
- = . (!"**" .)* "**"
+Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
+TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
+HaveTerminatorAhead = . (!"**" .)* "**"
 
 word "word" = circle / rect / polygon / path / text / pattern / gradient / image / color / rotate / radius / repeat / order / define / get / group / move / copy / all / duplicate / outline / flip / diag / size / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
@@ -77,7 +76,7 @@ _ "whitespace" = [ \t\n\r]*
         </textarea>
 
             <h2>Input</h2>
-            <textarea id="input" style="width: 500px; height: 100px">
+            <textarea id="input" style="width: 700px; height: 170px">
 (((0 0 50 50 rect) first-def define) first-def get blue color yellow 10 outline)
 (((0 50 50 50 rect) sec-def define) sec-def get red color blue 10 outline)
 (((50 0 50 50 rect) thir-def define) thir-def get yellow color green 10 outline)
@@ -103,13 +102,11 @@ _ "whitespace" = [ \t\n\r]*
         </textarea>
 
             <button onclick="makeParser()">Parse!</button>
+            <button onclick="start()">Start</button>
 
             <h2>Output</h2>
-            <textarea id="output">
+            <textarea id="output" style="width: 700px; height: 100px"></textarea>
 
-        </textarea>
-
-            <button onclick="start()">Start</button>
         </div>
         <div class="column">
             <h2>SVG Result</h2>
@@ -158,13 +155,17 @@ _ "whitespace" = [ \t\n\r]*
 
     function start() {
         // start it
-        let grammer = $("#grammar").val();
-        var parser = peg.generate(grammer);
-
+        let grammar = $("#grammar").val();
+        var parser = peg.generate(grammar);
         let input = $("#input").val().trim();
         let res = parser.parse(input);
-
         let val = $("#output").val();
+
+        if (!val) {
+            alert("Please parse first!");
+            return;
+        }
+
         val = eval(val);
 
         window.seq.define("default", val);

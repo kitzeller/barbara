@@ -7,7 +7,7 @@
     <link href="css/normalize.css" rel="stylesheet">
     <link href="css/skeleton.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <title>Target Language</title>
+    <title>Tutorial</title>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -19,21 +19,14 @@
     </h1>
 
     <button onclick="window.location.href='index.html'">Editor</button>
-    <button class="button-primary" onclick="window.location.href='target_lang.html'">Target Lang</button>
-    <button onclick="window.location.href='tutorial.html'">Tutorial</button>
+    <button onclick="window.location.href='target_lang.html'">Target Lang</button>
+    <button class="button-primary" onclick="window.location.href='tutorial.html'">Tutorial</button>
     <button onclick="window.location.href='quilting.html'">Quilting</button>
 </div>
 
 <div class="container">
-    <div id="content"></div>
+    <h1>Tutorial</h1>
 </div>
 
-<script>
-    var request = new XMLHttpRequest();
-    request.open("GET", 'target_lang.md', false);
-    request.send(null);
-    var returnValue = request.responseText;
-    document.getElementById('content').innerHTML = marked(returnValue);
-</script>
 </body>
 </html>
