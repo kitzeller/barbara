@@ -1,11 +1,11 @@
 body{
     margin: 0;
     font-family: 'Raleway', sans-serif;
-    font-size: 14px;
 }
 
 .container{
     margin: 10px;
+    font-size: 14px;
 }
 
 ul {

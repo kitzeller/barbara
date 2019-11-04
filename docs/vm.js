@@ -298,6 +298,17 @@ Q.prototype.step = function () {
                     this.vars.push(clone);
                     break;
 
+                case "@all":
+                    let new_draw = draw.group();
+                    draw.each(function(i, children) {
+                        if (this !== new_draw){
+                            this.putIn(new_draw)
+                        }
+                    });
+
+                    this.vars.push(new_draw);
+                    break;
+
                 case "@duplicate":
                     let to_clone = this.vars.pop();
 

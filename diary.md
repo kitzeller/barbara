@@ -5,8 +5,10 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
 - Swapped from Raphael back to SVG.js
 - Started working with transformations, rotations, etc
-- Added 'group', 'copy', 'def', and 'get' methods
+- Added 'group', 'copy', 'def', and 'get' commands
 - Also adding sizing and basic animations
+- Added the 'all' command for selecting everything in the svg and making it a group
+- Added the 'duplication' command for inline element duplication
 - Using percentages instead of pixels now for sizing
 - Found cool svg pattern project
     - http://btmills.github.io/geopattern/geopattern.html

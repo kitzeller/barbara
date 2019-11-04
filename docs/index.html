@@ -37,7 +37,7 @@ TextUntilTerminator
 HaveTerminatorAhead
  = . (!"**" .)* "**"
 
-word "word" = circle / rect / polygon / color / rotate / define / get / group / move / copy / duplicate / outline / flip / size / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+word "word" = circle / rect / polygon / color / rotate / define / get / group / move / copy / all / duplicate / outline / flip / size / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
 circle = "circle" { return "@circle"; }
 rect = "rect" { return "@rect"; }
@@ -50,6 +50,7 @@ rotate = "rotate" { return "@rotate"; }
 move = "move" { return "@move"; }
 size = "size" { return "@size"; }
 
+all = "all" { return "@all"; }
 group = "group" { return "@group"; }
 copy = "copy" { return "@copy"; }
 duplicate = "duplicate" { return "@duplicate"; }
