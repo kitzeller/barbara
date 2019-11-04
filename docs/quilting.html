@@ -24,9 +24,22 @@
     <button class="button-primary" onclick="window.location.href='quilting.html'">Quilting</button>
 </div>
 
-<div class="container">
-    <h1>Quilting</h1>
+<div class="container" id="content">
 </div>
 
+<script type="bogus" id="sourcetext">
+The vm was developed to help quilters.
+
+"Quilting is the process of sewing two or more layers of fabric together to make a thicker padded material, usually to create a quilt or quilted garment" - [wikipedia](https://en.wikipedia.org/wiki/Quilting)
+
+---
+
+Kit Zellerbach & Prof. Charlie Roberts
+</script>
+
+<script>
+var body = document.getElementById('sourcetext').innerText;
+document.getElementById('content').innerHTML = marked(body);
+</script>
 </body>
 </html>

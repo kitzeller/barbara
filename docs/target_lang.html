@@ -28,12 +28,83 @@
     <div id="content"></div>
 </div>
 
+<script type="bogus" id="sourcetext">
+The target language was created using the SVG.js library. The language was designed as a stack-based language.
+
+## Shapes
+
+##### @circle (x, y, radius)
+
+##### @rect (x, y, width, height)
+
+##### @path (string)
+
+##### @polygon (string)
+
+##### @text (string)
+
+
+## Fills
+
+##### @pattern (...)
+
+##### @gradient (...)
+
+##### @image (url)
+
+
+## Transformations
+
+##### @color (color)
+
+##### @outline (color, line-width)
+
+##### @radius (pixels)
+
+##### @flip (offset, axis)
+
+##### @diag (offet)
+
+##### @rotate (degree)
+
+##### @repeat
+
+##### @size (x, y)
+
+##### @move (x, y)
+
+
+## Animations
+
+##### @animate-color (color, time, loop?)
+
+##### @animate-rotate (degree, time, loop?)
+
+##### @animate-move (x, y, time, loop?)
+
+
+## Getters, Setters, Grouping
+
+##### @all
+
+##### @copy
+
+##### @duplicate
+
+##### @define (name)
+
+##### @get (name)
+
+##### @group (elements...)
+
+---
+
+Kit Zellerbach & Prof. Charlie Roberts
+</script>
+
 <script>
-    var request = new XMLHttpRequest();
-    request.open("GET", 'target_lang.md', false);
-    request.send(null);
-    var returnValue = request.responseText;
-    document.getElementById('content').innerHTML = marked(returnValue);
+    var body = document.getElementById('sourcetext').innerText;
+    document.getElementById('content').innerHTML = marked(body);
 </script>
 </body>
 </html>

@@ -11,6 +11,10 @@ h1, h2 {
     font-family: 'Nothing You Could Do', cursive;
 }
 
+body {
+    margin-top: 1%;
+}
+
 .row {
     display: flex;
 }

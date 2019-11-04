@@ -12,22 +12,25 @@
 </head>
 <body>
 <!--Navbar-->
-<div class="container">
-    <h1>
-        Live Code a Graphics Language
-    </h1>
-
-    <button class="button-primary" onclick="window.location.href='index.html'">Editor</button>
-    <button onclick="window.location.href='target_lang.html'">Target Lang</button>
-    <button onclick="window.location.href='tutorial.html'">Tutorial</button>
-    <button onclick="window.location.href='quilting.html'">Quilting</button>
+<div class="row" style="margin: 10px">
+    <div class="column">
+        <h1>
+            Live Code a Graphics Language
+        </h1>
+    </div>
+    <div class="column" style="margin-top: 10px">
+        <button class="button-primary" onclick="window.location.href='index.html'">Editor</button>
+        <button onclick="window.location.href='target_lang.html'">Target Lang</button>
+        <button onclick="window.location.href='tutorial.html'">Tutorial</button>
+        <button onclick="window.location.href='quilting.html'">Quilting</button>
+    </div>
 </div>
 
 <div class="container-m10">
     <div class="row">
         <div class="column">
             <h2>Grammar</h2>
-            <textarea id="grammar" style="width: 700px; height: 300px">
+            <textarea id="grammar" style="width: 700px; height: 35%">
 start "start" = term +
 term "term" = body:(Text / list / word) _ { return body; }
 list "list" = "(" _ body:term* ")" { return body; }
@@ -76,7 +79,7 @@ _ "whitespace" = [ \t\n\r]*
         </textarea>
 
             <h2>Input</h2>
-            <textarea id="input" style="width: 700px; height: 170px">
+            <textarea id="input" style="width: 700px; height: 20%">
 (((0 0 50 50 rect) first-def define) first-def get blue color yellow 10 outline)
 (((0 50 50 50 rect) sec-def define) sec-def get red color blue 10 outline)
 (((50 0 50 50 rect) thir-def define) thir-def get yellow color green 10 outline)
