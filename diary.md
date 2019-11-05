@@ -15,6 +15,7 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Re-evaluate target language design choices snd refactor accordingly
 - Judge Charlie's pizza language
 - Add default values for when the expected number of arguments isn't given? (like the n-number of params for the group command)
+- Fix error with incorrect input values that crashes vm
 
 ![November 4th UI](img/Nov4.png)
 
