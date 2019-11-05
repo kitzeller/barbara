@@ -4,6 +4,27 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 # 11/5/19
 
 - Added CodeMirror support!
+- Added svg command for importing svg strings
+- Added export command for printing svg to console
+- Added random command
+    - Maybe should split into random-color and random-number?
+- Temp fixed error bug (added a try/catch; will implement something better later)
+
+Todo
+- https://threejs.org/ (initial page)
+    - let people edit/open
+    - add databases
+- Random number command
+    - Breed patterns
+    - "An experiment on Pattern Breeding with Barbara"
+- Add dark mode
+- Polar coordinate
+    - Look at p5.js
+- Kaleidoscope
+- SVG gui with pre-loaded SVGs and names for use within the editor
+- DAT.gui slider type thing in the input 
+- Change beginning and have repeated elements change too
+- map svg onto 3d babylon for quilt
 
 # 11/4/19
 

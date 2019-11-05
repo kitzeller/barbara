@@ -148,369 +148,408 @@ Q.prototype.push = function (v) {
 // we can push to the todo queue
 // and push to and pop from the stack
 Q.prototype.step = function () {
-    if (this.debug) {
-        console.log("\tstack:", JSON.stringify(this.stack));
-        console.log("\tqueue:", JSON.stringify(this.todo));
-        console.log("\tvars:", this.vars);
-    }
-    if (this.todo.length) {
-        var item = this.todo.pop();
-        if (item == null || item == undefined) {
-            // ignore
-        } else if (Array.isArray(item)) {
-            for (i = item.length - 1; i >= 0; i--) {
-                this.todo.push(item[i]);
-            }
+    try {
+        if (this.debug) {
+            console.log("\tstack:", JSON.stringify(this.stack));
+            console.log("\tqueue:", JSON.stringify(this.todo));
+            console.log("\tvars:", this.vars);
+        }
+        if (this.todo.length) {
+            var item = this.todo.pop();
+            if (item == null || item == undefined) {
+                // ignore
+            } else if (Array.isArray(item)) {
+                for (i = item.length - 1; i >= 0; i--) {
+                    this.todo.push(item[i]);
+                }
 
-        } else if (typeof item == "string" && item.charAt(0) === "@") {
-            var op = item;
+            } else if (typeof item == "string" && item.charAt(0) === "@") {
+                var op = item;
 
-            // Target language
-            switch (op) {
+                // Target language
+                switch (op) {
 
-                case "@circle":  // [x, y, r, @circle]
-                    //let cc = this.stack.pop();
-                    let rc = this.stack.pop()/100 * WIDTH;
-                    let yc = this.stack.pop()/100 * HEIGHT;
-                    let xc = this.stack.pop()/100 * WIDTH;
+                    case "@svg":
+                        // creates svg as group
+                        let svg_string = this.stack.pop();
+                        let svg_group = draw.group();
+                        svg_group.svg(svg_string);
+                        this.vars.push(svg_group);
+                        break;
 
-                    var circ = draw.circle(rc).move(xc, yc);
+                    case "@export":
+                        console.log(draw.svg());
+                        break;
 
-                    this.vars.push(circ);
+                    case "@random-number":
+                        let min, max;
 
-                    break;
-                case "@rect":  // [x, y, width, height, @rect]
-                    let hr = this.stack.pop()/100 * HEIGHT;
-                    let wr = this.stack.pop()/100 * WIDTH;
-                    let yr = this.stack.pop()/100 * HEIGHT;
-                    let xr = this.stack.pop()/100 * WIDTH;
+                        min = 0;
+                        max = 100;
 
-                    var r = draw.rect(wr, hr).move(xr, yr);
-                    this.vars.push(r);
+                        // if (this.stack.length < 1){
+                        //     min = 0;
+                        //     max = 100;
+                        // } else {
+                        //     max = parseFloat(this.stack.pop());
+                        //     min = parseFloat(this.stack.pop());
+                        // }
+                        let rn = Math.floor(Math.random() * (max - min)) + min;
+                        this.stack.push(rn);
+                        break;
 
-                    break;
+                    case "@random-color":
+                        this.stack.push('#' + Math.floor(Math.random() * 16777215).toString(16));
+                        break;
 
-                case "@polygon":
-                    let polygon = this.stack.pop();
-                    var p = draw.polygon(polygon);
-                    this.vars.push(p);
 
-                    break;
+                    case "@circle":  // [x, y, r, @circle]
+                        //let cc = this.stack.pop();
+                        let rc = this.stack.pop() / 100 * WIDTH;
+                        let yc = this.stack.pop() / 100 * HEIGHT;
+                        let xc = this.stack.pop() / 100 * WIDTH;
 
-                case "@path":
-                    let path = this.stack.pop();
-                    let pa = draw.path(path);
-                    this.vars.push(pa);
+                        var circ = draw.circle(rc).move(xc, yc);
 
-                    break;
+                        this.vars.push(circ);
 
-                case "@text":
-                    let text = this.stack.pop();
-                    let text_elem = draw.text(text);
-                    this.vars.push(text_elem);
+                        break;
+                    case "@rect":  // [x, y, width, height, @rect]
+                        let hr = this.stack.pop() / 100 * HEIGHT;
+                        let wr = this.stack.pop() / 100 * WIDTH;
+                        let yr = this.stack.pop() / 100 * HEIGHT;
+                        let xr = this.stack.pop() / 100 * WIDTH;
 
-                    break;
+                        var r = draw.rect(wr, hr).move(xr, yr);
+                        this.vars.push(r);
 
-                case "@pattern":
-                    var pattern = draw.pattern(20, 20, function(add) {
-                        add.rect(20,20).fill('#f06');
-                        add.rect(10,10);
-                        add.rect(10,10).move(10,10);
-                    });
+                        break;
 
-                    this.vars.push(pattern);
-                    break;
+                    case "@polygon":
+                        let polygon = this.stack.pop();
+                        var p = draw.polygon(polygon);
+                        this.vars.push(p);
 
-                case "@gradient":
-                    let gradient = this.stack.pop();
-                    let grad_type = this.stack.pop();
+                        break;
 
-                    gradient = gradient.split(",");
+                    case "@path":
+                        let path = this.stack.pop();
+                        let pa = draw.path(path);
+                        this.vars.push(pa);
 
-                    var grad = draw.gradient(grad_type, function(add) {
-                        for (let g of gradient){
-                            g = g.trim();
-                            g = g.split(" ");
-                            add.stop(parseInt(g[0]), g[1], parseInt(g[2]));
+                        break;
+
+                    case "@text":
+                        let text = this.stack.pop();
+                        let text_elem = draw.text(text);
+                        this.vars.push(text_elem);
+
+                        break;
+
+                    case "@pattern":
+                        var pattern = draw.pattern(20, 20, function (add) {
+                            add.rect(20, 20).fill('#f06');
+                            add.rect(10, 10);
+                            add.rect(10, 10).move(10, 10);
+                        });
+
+                        this.vars.push(pattern);
+                        break;
+
+                    case "@gradient":
+                        let gradient = this.stack.pop();
+                        let grad_type = this.stack.pop();
+
+                        gradient = gradient.split(",");
+
+                        var grad = draw.gradient(grad_type, function (add) {
+                            for (let g of gradient) {
+                                g = g.trim();
+                                g = g.split(" ");
+                                add.stop(parseInt(g[0]), g[1], parseInt(g[2]));
+                            }
+                        });
+
+                        this.vars.push(grad);
+                        break;
+
+                    case "@image":
+                        let url = this.stack.pop();
+                        var img = draw.image(url);
+                        this.vars.push(img);
+                        break;
+
+                    case "@color":
+                        let elem = this.vars.pop();
+                        // cant color groups
+                        let color = this.stack.pop();
+
+                        if (color.includes('$')) {
+                            let result = color.split('$')[1];
+                            elem.fill(this.context[result]);
+                        } else {
+                            elem.fill(color);
                         }
-                    });
+                        this.vars.push(elem);
 
-                    this.vars.push(grad);
-                    break;
+                        break;
 
-                case "@image":
-                    let url = this.stack.pop();
-                    var img = draw.image(url);
-                    this.vars.push(img);
-                    break;
+                    case "@outline":
+                        let out_width = this.stack.pop();
+                        let out_color = this.stack.pop();
+                        let out_elem = this.vars.pop();
+                        out_elem.stroke({width: out_width, color: out_color});
+                        this.vars.push(out_elem);
 
-                case "@color":
-                    let elem = this.vars.pop();
-                    // cant color groups
-                    let color = this.stack.pop();
+                        break;
 
-                    if (color.includes('$')){
-                        let result = color.split('$')[1];
-                        elem.fill(this.context[result]);
-                    } else {
-                        elem.fill(color);
-                    }
-                    this.vars.push(elem);
+                    case "@opacity":
+                        let o_val = parseFloat(this.stack.pop());
+                        let o_elem = this.vars.pop();
+                        o_elem.opacity(o_val);
+                        this.vars.push(o_elem);
 
-                    break;
+                        break;
 
-                case "@outline":
-                    let out_width = this.stack.pop();
-                    let out_color = this.stack.pop();
-                    let out_elem = this.vars.pop();
-                    out_elem.stroke({ width: out_width, color: out_color });
-                    this.vars.push(out_elem);
+                    case "@radius":
+                        let r_val = parseFloat(this.stack.pop());
+                        let rad_elem = this.vars.pop();
+                        rad_elem.radius(r_val);
+                        this.vars.push(rad_elem);
 
-                    break;
+                        break;
 
-                case "@opacity":
-                    let o_val = parseFloat(this.stack.pop());
-                    let o_elem = this.vars.pop();
-                    o_elem.opacity(o_val);
-                    this.vars.push(o_elem);
+                    case "@rotate":
+                        let degree = this.stack.pop();
+                        let elem_rotate = this.vars.pop();
 
-                    break;
+                        elem_rotate.rotate(degree);
 
-                case "@radius":
-                    let r_val = parseFloat(this.stack.pop());
-                    let rad_elem = this.vars.pop();
-                    rad_elem.radius(r_val);
-                    this.vars.push(rad_elem);
+                        this.vars.push(elem_rotate);
+                        break;
 
-                    break;
+                    case "@repeat":
+                        let elem_repeat = this.vars.pop();
+                        let group = draw.group();
+                        group.add(elem_repeat)
+                        group.add(elem_repeat.clone().flip('x', 0.5 * HEIGHT));
+                        group.add(elem_repeat.clone().flip('y', 0.5 * WIDTH));
+                        group.add(elem_repeat.clone().flip(0.5 * HEIGHT));
 
-                case "@rotate":
-                    let degree = this.stack.pop();
-                    let elem_rotate = this.vars.pop();
+                        // TODO: Add number of repeats
+                        // let times = this.stack.pop();
+                        // let count  = 0;
+                        // while (count < times){
+                        //
+                        //     count++;
+                        // }
 
-                    elem_rotate.rotate(degree);
+                        this.vars.push(group);
 
-                    this.vars.push(elem_rotate);
-                    break;
+                        break;
 
-                case "@repeat":
-                    let elem_repeat = this.vars.pop();
-                    let group = draw.group();
-                    group.add(elem_repeat)
-                    group.add(elem_repeat.clone().flip('x', 0.5 * HEIGHT));
-                    group.add(elem_repeat.clone().flip('y', 0.5 * WIDTH));
-                    group.add(elem_repeat.clone().flip(0.5 * HEIGHT));
+                    case "@order":
+                        let elem_order = this.vars.pop();
+                        let order = this.stack.pop();
 
-                    // TODO: Add number of repeats
-                    // let times = this.stack.pop();
-                    // let count  = 0;
-                    // while (count < times){
-                    //
-                    //     count++;
-                    // }
-
-                    this.vars.push(group);
-
-                    break;
-
-                case "@order":
-                    let elem_order = this.vars.pop();
-                    let order = this.stack.pop();
-
-                    if (order === 'forward'){
-                        elem_order.forward();
-                    } else if (order === 'backward') {
-                        elem_order.backward();
-                    } else if (order === 'back'){
-                        elem_order.back();
-                    } else if (order === 'front'){
-                        elem_order.front();
-                    }
-
-                    this.vars.push(elem_order);
-                    break;
-
-                case "@animate-rotate":
-                    let elem_ani = this.vars.pop(); // element
-
-                    let ani_loop_r = this.stack.pop(); // loop boolean
-                    let ani_time_r = this.stack.pop(); // animation time
-                    ani_time_r = parseInt(ani_time_r);
-                    //console.log(parseInt((ani_time_r)))
-
-                    let ani_degree = this.stack.pop(); // rotation degree
-
-                    if (ani_loop_r === "true"){
-                        elem_ani.animate(ani_time_r).rotate(ani_degree).loop()
-                    } else {
-                        elem_ani.animate(ani_time_r).rotate(ani_degree);
-                    }
-
-                    this.vars.push(elem_ani);
-                    break;
-
-                case "@animate-move":
-                    let elem_ani_move = this.vars.pop(); // element
-
-                    let ani_loop_m = this.stack.pop(); // loop boolean
-                    let ani_time_m = this.stack.pop(); // animation time
-
-                    let ani_y = this.stack.pop()/100 * HEIGHT;
-                    let ani_x = this.stack.pop()/100 * WIDTH;
-
-                    if (ani_loop_m === "true") {
-                        elem_ani_move.animate(ani_time_m).move(ani_x, ani_y).loop();
-                    } else {
-                        elem_ani_move.animate(ani_time_m).move(ani_x, ani_y);
-                    }
-
-                    this.vars.push(elem_ani_move);
-                    break;
-
-                case "@animate-color":
-                    // Input must be hex values
-                    let elem_ani_color = this.vars.pop(); // element
-
-                    let ani_loop_c = this.stack.pop(); // loop boolean
-                    let ani_time_c = parseInt(this.stack.pop()); // animation time
-
-                    let ani_color = this.stack.pop(); // color
-
-                    if (ani_loop_c ===  "true"){
-                        elem_ani_color.animate(ani_time_c).fill(ani_color).loop()
-                    } else {
-                        elem_ani_color.animate(ani_time_c).fill(ani_color);
-                    }
-
-                    this.vars.push(elem_ani_color);
-                    break;
-
-                case "@move":
-                    let vt = this.vars.pop();
-                    let my = this.stack.pop()/100 * HEIGHT;
-                    let mx = this.stack.pop()/100 * WIDTH;
-
-                    vt.move(mx, my);
-                    this.vars.push(vt);
-
-                    break;
-
-                case "@center":
-                    let elem_center = this.vars.pop();
-                    let c_x = this.stack.pop()/100 * HEIGHT;
-                    let c_y = this.stack.pop()/100 * WIDTH;
-
-                    elem_center.center(c_x, c_y);
-                    this.vars.push(elem_center);
-
-                    break;
-
-                case "@size":
-                    let elem_size = this.vars.pop();
-                    let sh = this.stack.pop()/100 * HEIGHT;
-                    let sw = this.stack.pop()/100 * WIDTH;
-
-                    elem_size.size(sw, sh);
-                    this.vars.push(elem_size);
-
-                    break;
-
-                case "@scale":
-                    let elem_scale = this.vars.pop();
-                    let sch = this.stack.pop()/100 * HEIGHT;
-                    let scw = this.stack.pop()/100 * WIDTH;
-
-                    elem_scale.size(scw, sch);
-                    this.vars.push(elem_scale);
-
-                    break;
-
-                case "@flip":
-                    let elem_flip = this.vars.pop();
-                    let axis = this.stack.pop();
-                    let offset;
-                    if (axis === 'x'){
-                        offset = this.stack.pop()/100 * HEIGHT;
-                    } else {
-                        offset = this.stack.pop()/100 * WIDTH;
-                    }
-                    elem_flip.flip(axis, offset);
-                    this.vars.push(elem_flip);
-                    break;
-
-                case "@diag":
-                    let elem_flip_diag = this.vars.pop();
-                    let diag_offset = this.stack.pop();
-                    elem_flip_diag.flip(diag_offset);
-                    break;
-
-                case "@copy":
-                    let sc = this.stack.pop();
-                    let clone = this.context[sc].clone();
-                    draw.add(clone);
-                    this.vars.push(clone);
-                    break;
-
-                case "@all":
-                    let new_draw = draw.group();
-                    draw.each(function(i, children) {
-                        if (this !== new_draw){
-                            this.putIn(new_draw)
+                        if (order === 'forward') {
+                            elem_order.forward();
+                        } else if (order === 'backward') {
+                            elem_order.backward();
+                        } else if (order === 'back') {
+                            elem_order.back();
+                        } else if (order === 'front') {
+                            elem_order.front();
                         }
-                    });
 
-                    this.vars.push(new_draw);
-                    break;
+                        this.vars.push(elem_order);
+                        break;
 
-                case "@duplicate":
-                    let to_clone = this.vars.pop();
-                    clone_v = to_clone.clone();
-                    draw.add(clone_v);
-                    this.vars.push(clone_v);
-                    break;
+                    case "@animate-rotate":
+                        let elem_ani = this.vars.pop(); // element
 
-                case "@define":
-                    let ds = this.stack.pop();
-                    let vs = this.vars.pop();
-                    this.context[ds] = vs;
-                    break;
+                        let ani_loop_r = this.stack.pop(); // loop boolean
+                        let ani_time_r = this.stack.pop(); // animation time
+                        ani_time_r = parseInt(ani_time_r);
+                        //console.log(parseInt((ani_time_r)))
 
-                case "@get":
-                    let cn = this.stack.pop();
-                    let tp = this.context[cn];
-                    this.vars.push(tp);
-                    break;
+                        let ani_degree = this.stack.pop(); // rotation degree
 
-                case "@group":
-                    var st = draw.group();
-                    let s = this.stack.pop();
-                    while (s) {
-                        st.add(this.context[s]);
-                        s = this.stack.pop();
-                    }
-                    this.vars.push(st);
-                    break;
-
-                default:
-                    // look up a dynamic rule?
-                    var cmd = window.seq.commands[op];
-                    //console.log("cmd", op, cmd);
-                    if (cmd && typeof (cmd) == "function") {
-                        try {
-                            cmd(this);
-                        } catch (ex) {
-                            console.error(ex.message);
+                        if (ani_loop_r === "true") {
+                            elem_ani.animate(ani_time_r).rotate(ani_degree).loop()
+                        } else {
+                            elem_ani.animate(ani_time_r).rotate(ani_degree);
                         }
-                    } else {
-                        console.error("unknown instruction operator:", op);
-                    }
-                    break;
+
+                        this.vars.push(elem_ani);
+                        break;
+
+                    case "@animate-move":
+                        let elem_ani_move = this.vars.pop(); // element
+
+                        let ani_loop_m = this.stack.pop(); // loop boolean
+                        let ani_time_m = this.stack.pop(); // animation time
+
+                        let ani_y = this.stack.pop() / 100 * HEIGHT;
+                        let ani_x = this.stack.pop() / 100 * WIDTH;
+
+                        if (ani_loop_m === "true") {
+                            elem_ani_move.animate(ani_time_m).move(ani_x, ani_y).loop();
+                        } else {
+                            elem_ani_move.animate(ani_time_m).move(ani_x, ani_y);
+                        }
+
+                        this.vars.push(elem_ani_move);
+                        break;
+
+                    case "@animate-color":
+                        // Input must be hex values
+                        let elem_ani_color = this.vars.pop(); // element
+
+                        let ani_loop_c = this.stack.pop(); // loop boolean
+                        let ani_time_c = parseInt(this.stack.pop()); // animation time
+
+                        let ani_color = this.stack.pop(); // color
+
+                        if (ani_loop_c === "true") {
+                            elem_ani_color.animate(ani_time_c).fill(ani_color).loop()
+                        } else {
+                            elem_ani_color.animate(ani_time_c).fill(ani_color);
+                        }
+
+                        this.vars.push(elem_ani_color);
+                        break;
+
+                    case "@move":
+                        let vt = this.vars.pop();
+                        let my = this.stack.pop() / 100 * HEIGHT;
+                        let mx = this.stack.pop() / 100 * WIDTH;
+
+                        vt.move(mx, my);
+                        this.vars.push(vt);
+
+                        break;
+
+                    case "@center":
+                        let elem_center = this.vars.pop();
+                        let c_x = this.stack.pop() / 100 * HEIGHT;
+                        let c_y = this.stack.pop() / 100 * WIDTH;
+
+                        elem_center.center(c_x, c_y);
+                        this.vars.push(elem_center);
+
+                        break;
+
+                    case "@size":
+                        let elem_size = this.vars.pop();
+                        let sh = this.stack.pop() / 100 * HEIGHT;
+                        let sw = this.stack.pop() / 100 * WIDTH;
+
+                        elem_size.size(sw, sh);
+                        this.vars.push(elem_size);
+
+                        break;
+
+                    case "@scale":
+                        let elem_scale = this.vars.pop();
+                        let sch = this.stack.pop() / 100 * HEIGHT;
+                        let scw = this.stack.pop() / 100 * WIDTH;
+
+                        elem_scale.size(scw, sch);
+                        this.vars.push(elem_scale);
+
+                        break;
+
+                    case "@flip":
+                        let elem_flip = this.vars.pop();
+                        let axis = this.stack.pop();
+                        let offset;
+                        if (axis === 'x') {
+                            offset = this.stack.pop() / 100 * HEIGHT;
+                        } else {
+                            offset = this.stack.pop() / 100 * WIDTH;
+                        }
+                        elem_flip.flip(axis, offset);
+                        this.vars.push(elem_flip);
+                        break;
+
+                    case "@diag":
+                        let elem_flip_diag = this.vars.pop();
+                        let diag_offset = this.stack.pop();
+                        elem_flip_diag.flip(diag_offset);
+                        break;
+
+                    case "@copy":
+                        let sc = this.stack.pop();
+                        let clone = this.context[sc].clone();
+                        draw.add(clone);
+                        this.vars.push(clone);
+                        break;
+
+                    case "@all":
+                        let new_draw = draw.group();
+                        draw.each(function (i, children) {
+                            if (this !== new_draw) {
+                                this.putIn(new_draw)
+                            }
+                        });
+
+                        this.vars.push(new_draw);
+                        break;
+
+                    case "@duplicate":
+                        let to_clone = this.vars.pop();
+                        clone_v = to_clone.clone();
+                        draw.add(clone_v);
+                        this.vars.push(clone_v);
+                        break;
+
+                    case "@define":
+                        let ds = this.stack.pop();
+                        let vs = this.vars.pop();
+                        this.context[ds] = vs;
+                        break;
+
+                    case "@get":
+                        let cn = this.stack.pop();
+                        let tp = this.context[cn];
+                        this.vars.push(tp);
+                        break;
+
+                    case "@group":
+                        var st = draw.group();
+                        let s = this.stack.pop();
+                        while (s) {
+                            st.add(this.context[s]);
+                            s = this.stack.pop();
+                        }
+                        this.vars.push(st);
+                        break;
+
+                    default:
+                        // look up a dynamic rule?
+                        var cmd = window.seq.commands[op];
+                        //console.log("cmd", op, cmd);
+                        if (cmd && typeof (cmd) == "function") {
+                            try {
+                                cmd(this);
+                            } catch (ex) {
+                                console.error(ex.message);
+                            }
+                        } else {
+                            console.error("unknown instruction operator:", op);
+                        }
+                        break;
+                }
+            } else {
+                this.stack.push(item);
             }
         } else {
-            this.stack.push(item);
+            console.log("done");
+            return true;
         }
-    } else {
-        console.log("done");
+    } catch (error) {
+        console.log("ERROR: ", error);
         return true;
     }
 };

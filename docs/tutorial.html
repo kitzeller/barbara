@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="shortcut icon" href="icon.png">
+
     <link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 
@@ -170,6 +172,36 @@ z** path 100 100 size #ff0000 3000 false animate-color)
 (mine get 20 20 size repeat duplicate 20 20 size repeat duplicate 45 rotate duplicate 45 rotate)
 
 (30 30 1 10 rect white color 10 rotate repeat duplicate 45 rotate duplicate 45 rotate)
+```
+
+### Randomness
+
+```
+(((random-number random-number random-number random-number rect) first-def define) first-def get random-color color yellow 10 outline)
+(((random-number random-number random-number random-number rect) sec-def define) sec-def get random-color color blue 10 outline)
+(((random-number random-number random-number random-number rect) thir-def define) thir-def get random-color color green 10 outline)
+(((random-number random-number random-number random-number rect) four-def define) four-def get random-color color red 10 outline)
+
+(first-def sec-def thir-def four-def group five-def define)
+
+(five-def get 50 50 size)
+
+(five-def copy fivedef-cpy define fivedef-cpy get 50 50 move 180 rotate)
+(five-def copy fivedef-cpy1 define fivedef-cpy1 get 0 50 move 270 rotate)
+(five-def copy fivedef-cpy2 define fivedef-cpy2 get 50 0 move 90 rotate)
+
+(five-def fivedef-cpy fivedef-cpy1 fivedef-cpy2 group bigone define)
+(bigone get 50 50 size)
+
+(bigone copy big-cpy define big-cpy get 50 50 move)
+(bigone copy big-cpy1 define big-cpy1 get 0 50 move)
+(bigone copy big-cpy2 define big-cpy2 get 50 0 move)
+
+(all 50 50 size repeat)
+(all duplicate random-number rotate)
+
+(0 0 100 100 rect random-color color back order)
+
 ```
 
 ---
