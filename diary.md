@@ -1,6 +1,24 @@
 # graphics-virtual-machine
 WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
+# 11/4/19
+
+- Improved gradient support
+- Improved UI (using skeleton.css)
+- Working on pattern definitions
+
+### Todo
+
+- Add CodeMirror
+- Add LocalStorage support for user-defined grammar
+- Add more content to Tutorial, Quilting(?), and Target Lang documentation
+- Re-evaluate target language design choices snd refactor accordingly
+- Judge Charlie's pizza language
+- Add default values for when the expected number of arguments isn't given? (like the n-number of params for the group command)
+
+![November 4th UI](img/Nov4.png)
+
+
 # 11/3/19
 
 - Swapped from Raphael back to SVG.js

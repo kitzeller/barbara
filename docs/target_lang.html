@@ -35,20 +35,44 @@ The target language was created using the SVG.js library. The language was desig
 
 ##### @circle (x, y, radius)
 
+```
+[["0","0","100","@circle"]]
+```
+
 ##### @rect (x, y, width, height)
+
+```
+[["0","0","50","50","@rect"]]
+```
 
 ##### @path (string)
 
+```
+[["M 213.1,6.7 c -32.4-14.4-73.7,0-88.1,30.6 C 110.6,4.9,67.5-9.5,36.9,6.7 C 2.8,22.9-13.4,62.4,13.5,110.9
+C 33.3,145.1,67.5,170.3,125,217 c 59.3-46.7,93.5-71.9,111.5-106.1 C 263.4,64.2,247.2,22.9,213.1,6.7 z","@path"]]
+```
+
 ##### @polygon (string)
+
+```
+[["0,0 100,50 50,100","@polygon"]]
+```
 
 ##### @text (string)
 
+```
+[["hello, world","@text"]]
+```
 
 ## Fills
 
 ##### @pattern (...)
 
 ##### @gradient (type, string)
+
+```
+[["radial","0 #f06 1, 1 #0f9 1","@gradient"]]
+```
 
 ##### @image (url)
 
@@ -57,45 +81,133 @@ The target language was created using the SVG.js library. The language was desig
 
 ##### @color (color)
 
+Colors the preceding element given a name or hex value
+
+```
+[...["red","@color"]]
+```
+
 ##### @outline (color, line-width)
+
+Outlines the preceding element
+
+```
+[...["red","5","@outline"]]
+```
 
 ##### @radius (pixels)
 
+Sets the radius of the preceding element (rounds corners for rectangles)
+
+```
+[...["5","@radius"]]
+```
+
 ##### @flip (offset, axis)
+
+Flips the preceding element
+
+```
+[...["5","x","@flip"]]
+```
 
 ##### @diag (offet)
 
+Flips the preceding element diagonally
+
+```
+[...["5","@diag"]]
+```
+
 ##### @rotate (degree)
 
-##### @repeat
+Rotates the preceding element
+
+```
+[...["180","@rotate"]]
+```
+
+##### @repeat ()
+
+Repeats the preceding element (currently mirrors 4 times by default)
+
+```
+[...["@repeat"]]
+```
 
 ##### @size (x, y)
 
+Resizes the preceding element
+
+```
+[...["50","50","@size"]]
+```
+
 ##### @move (x, y)
 
+Moves the preceding element
+
+```
+[...["50","50","@move"]]
+```
 
 ## Animations
 
 ##### @animate-color (color, time, loop?)
 
+```
+[["@all","#ffffff","4000","true","@animate-color"]]
+```
+
 ##### @animate-rotate (degree, time, loop?)
+
+```
+[["@all","360","4000","true","@animate-rotate"]]
+```
 
 ##### @animate-move (x, y, time, loop?)
 
+```
+[["@all","50","50","4000","true","@animate-move"]]
+```
 
 ## Getters, Setters, Grouping
 
 ##### @all
 
-##### @copy
+Places the entire the svg in a group, making it accessible to the next manipulation-type command
 
-##### @duplicate
+##### @copy (variable-name)
+
+Copies the variable given the name and duplicates it, returning a new identical element
+
+##### @duplicate ()
+
+Copies the last accessible element and duplicates it, returning a new identical element
 
 ##### @define (name)
 
+Creates named values ("variables") that can be re-used again later
+
+```
+[["0","0","50","50","@rect","first-def","@define"]]
+```
+
 ##### @get (name)
 
+Retrieves a variable for mental manipulation.
+
+```
+[["first-def","@get","50","50","@size"]]
+```
+
 ##### @group (elements...)
+
+Groups all the names of variables.
+
+```
+[["first-def","sec-def","thir-def","four-def","@group","five-def","@define"]]
+```
 
 ---
 
