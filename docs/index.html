@@ -40,7 +40,7 @@ Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
 TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
 HaveTerminatorAhead = . (!"**" .)* "**"
 
-word "word" = circle / rect / polygon / path / text / pattern / gradient / image / color / rotate / radius / repeat / order / define / get / group / move / copy / all / duplicate / outline / flip / diag / size / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+word "word" = circle / rect / polygon / path / text / pattern / gradient / image / color / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / outline / flip / diag / size / scale / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
 circle = "circle" { return "@circle"; }
 rect = "rect" { return "@rect"; }
@@ -61,7 +61,9 @@ diag = "diag" { return "@diag"; }
 outline = "outline" { return "@outline"; }
 rotate = "rotate" { return "@rotate"; }
 move = "move" { return "@move"; }
+center = "center" { return "@center"; }
 size = "size" { return "@size"; }
+scale = "scale" { return "@scale"; }
 
 all = "all" { return "@all"; }
 group = "group" { return "@group"; }

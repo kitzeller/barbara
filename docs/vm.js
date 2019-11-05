@@ -387,6 +387,16 @@ Q.prototype.step = function () {
 
                     break;
 
+                case "@center":
+                    let elem_center = this.vars.pop();
+                    let c_x = this.stack.pop()/100 * HEIGHT;
+                    let c_y = this.stack.pop()/100 * WIDTH;
+
+                    elem_center.center(c_x, c_y);
+                    this.vars.push(elem_center);
+
+                    break;
+
                 case "@size":
                     let elem_size = this.vars.pop();
                     let sh = this.stack.pop()/100 * HEIGHT;
@@ -394,6 +404,16 @@ Q.prototype.step = function () {
 
                     elem_size.size(sw, sh);
                     this.vars.push(elem_size);
+
+                    break;
+
+                case "@scale":
+                    let elem_scale = this.vars.pop();
+                    let sch = this.stack.pop()/100 * HEIGHT;
+                    let scw = this.stack.pop()/100 * WIDTH;
+
+                    elem_scale.size(scw, sch);
+                    this.vars.push(elem_scale);
 
                     break;
 

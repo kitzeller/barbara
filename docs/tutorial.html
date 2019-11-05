@@ -151,6 +151,27 @@ z** path 100 100 size #ff0000 3000 false animate-color)
 (all 360 4000 true animate-rotate)
 ```
 
+
+### Pizza!
+
+```
+(0 0 100 circle #BF873B color)
+(5 5 90 circle #FFFBD3 color)
+
+(radial *0 #990000 1, 1 #660000 1** gradient pep define)
+
+(30 20 15 circle $pep color 1 define)
+(20 50 15 circle $pep color 2 define)
+(40 70 15 circle $pep color 3 define)
+(70 40 15 circle $pep color 4 define)
+(70 60 15 circle $pep color 5 define)
+
+(1 2 3 4 5 group mine define)
+(mine get 20 20 size repeat duplicate 20 20 size repeat duplicate 45 rotate duplicate 45 rotate)
+
+(30 30 1 10 rect white color 10 rotate repeat duplicate 45 rotate duplicate 45 rotate)
+```
+
 ---
 
 Kit Zellerbach & Prof. Charlie Roberts

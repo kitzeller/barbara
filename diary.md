@@ -6,6 +6,8 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Improved gradient support
 - Improved UI (using skeleton.css)
 - Working on pattern definitions
+- Added scale command (subtle differences between scale and size)
+- Added center command
 
 ### Todo
 
