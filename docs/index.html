@@ -40,7 +40,7 @@ Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
 TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
 HaveTerminatorAhead = . (!"**" .)* "**"
 
-word "word" = circle / rect / polygon / path / text / pattern / gradient / image / color / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / outline / flip / diag / size / scale / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+word "word" = circle / rect / polygon / path / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / outline / flip / diag / size / scale / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
 circle = "circle" { return "@circle"; }
 rect = "rect" { return "@rect"; }
@@ -53,6 +53,7 @@ gradient = "gradient" { return "@gradient"; }
 image = "image" { return "@image"; }
 
 color = "color" { return "@color"; }
+opacity = "opacity" { return "@opacity"; }
 radius = "radius" { return "@radius"; }
 flip = "flip" { return "@flip"; }
 order = "order" { return "@order"; }
@@ -128,27 +129,6 @@ _ "whitespace" = [ \t\n\r]*
 <script src="vm.js"></script>
 
 <script>
-    /**
-     ((100 100 100 100 rect) red color first define)
-
-     ((0 0 100 100 rect) blue color second define)
-
-     ((100 0 100 100 rect) green color third define)
-
-     ((0 100 100 100 rect) yellow color fourth define)
-
-     (first second third fourth group wow define)
-     (wow get 90 rotate)
-     (wow copy wowsec define wowsec get 200 200 move)
-
-     (((100 100 100 100 rect) first-def define) first-def get 0 rotate blue color)
-     (((0 100 100 100 rect) sec-def define) sec-def get 0 rotate red color)
-     (((100 0 100 100 rect) thir-def define) thir-def get 0 rotate yellow color)
-     (((0 0 100 100 rect) four-def define) four-def get 0 rotate green color)
-
-     (first-def sec-def thir-def four-def group five-def define)
-     (five-def copy fivedef-cpy define fivedef-cpy get 200 200 move)
-     */
     function makeParser() {
         let grammer = $("#grammar").val();
         var parser = peg.generate(grammer);

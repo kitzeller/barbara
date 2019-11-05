@@ -7,7 +7,9 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Improved UI (using skeleton.css)
 - Working on pattern definitions
 - Added scale command (subtle differences between scale and size)
-- Added center command
+- Added center and opacity command
+- Added introduction page
+- Added basic target language reference/api documentation to Target Lang page
 
 ### Todo
 

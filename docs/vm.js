@@ -268,8 +268,16 @@ Q.prototype.step = function () {
 
                     break;
 
+                case "@opacity":
+                    let o_val = parseFloat(this.stack.pop());
+                    let o_elem = this.vars.pop();
+                    o_elem.opacity(o_val);
+                    this.vars.push(o_elem);
+
+                    break;
+
                 case "@radius":
-                    let r_val = parseInt(this.stack.pop());
+                    let r_val = parseFloat(this.stack.pop());
                     let rad_elem = this.vars.pop();
                     rad_elem.radius(r_val);
                     this.vars.push(rad_elem);
