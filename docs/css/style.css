@@ -3,10 +3,6 @@
     font-size: 14px;
 }
 
-textarea {
-    font-size: 10px;
-}
-
 h1, h2 {
     font-family: 'Nothing You Could Do', cursive;
 }
@@ -20,5 +16,6 @@ body {
 }
 
 .column {
-    flex: 50%;
+    /*flex: 50%;*/
+    width: 50%;
 }

@@ -1,6 +1,10 @@
 # graphics-virtual-machine
 WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
+# 11/5/19
+
+- Added CodeMirror support!
+
 # 11/4/19
 
 - Improved gradient support
