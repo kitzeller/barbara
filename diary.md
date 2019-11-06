@@ -6,25 +6,27 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Added CodeMirror support!
 - Added svg command for importing svg strings
 - Added export command for printing svg to console
-- Added random command
-    - Maybe should split into random-color and random-number?
+- Added random commands
+    - random-number
+    - random-color
 - Temp fixed error bug (added a try/catch; will implement something better later)
 
 Todo
 - https://threejs.org/ (initial page)
     - let people edit/open
     - add databases
-- Random number command
+- ~~Random number command~~
     - Breed patterns
     - "An experiment on Pattern Breeding with Barbara"
-- Add dark mode
+- Add UI dark mode
 - Polar coordinate
     - Look at p5.js
 - Kaleidoscope
 - SVG gui with pre-loaded SVGs and names for use within the editor
 - DAT.gui slider type thing in the input 
-- Change beginning and have repeated elements change too
-- map svg onto 3d babylon for quilt
+- Change beginning and have repeated elements change too e.g. duplication w/ link
+- Map svg onto 3d babylon for quilt
+- Loop command -> especially w/ random numbers and colors now
 
 # 11/4/19
 
@@ -38,13 +40,13 @@ Todo
 
 ### Todo
 
-- Add CodeMirror
+- ~~Add CodeMirror~~
 - Add LocalStorage support for user-defined grammar
 - Add more content to Tutorial, Quilting(?), and Target Lang documentation
 - Re-evaluate target language design choices snd refactor accordingly
-- Judge Charlie's pizza language
+- ~~Judge Charlie's pizza language~~
 - Add default values for when the expected number of arguments isn't given? (like the n-number of params for the group command)
-- Fix error with incorrect input values that crashes vm
+- ~~Fix error with incorrect input values that crashes vm~~
 
 ![November 4th UI](img/Nov4.png)
 
@@ -66,8 +68,8 @@ Todo
 - Added basic image support e.g. `(*https://image.shutterstock.com/image-photo/color-butterfly-isolated-on-white-260nw-570560110.jpg** image)`
 
 ### Todo    
-- Add detailed pattern and gradient creation support
-- Improve UI
+- ~~Add detailed pattern and gradient creation support~~
+- ~~Improve UI~~
 
 ![November 3rd UI](img/Nov3.png)
 
@@ -128,10 +130,10 @@ if it's not a string/operator then add the value to the stack, and then eventual
 
 #### Todo
 
-- Investigate more about good language design (for the target language)
-    - Doesn't have to be stack-based
-    - Look at SVGs and figure out how to abstract them to best represent them
-- Figure out which SVG manipulation tool to use (or develop one)
+- ~~Investigate more about good language design (for the target language)~~
+    - ~~Doesn't have to be stack-based~~
+    - ~~Look at SVGs and figure out how to abstract them to best represent them~~
+- ~~Figure out which SVG manipulation tool to use (or develop one)~~
 
 
 

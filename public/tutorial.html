@@ -177,10 +177,10 @@ z** path 100 100 size #ff0000 3000 false animate-color)
 ### Randomness
 
 ```
-(((random-number random-number random-number random-number rect) first-def define) first-def get random-color color yellow 10 outline)
-(((random-number random-number random-number random-number rect) sec-def define) sec-def get random-color color blue 10 outline)
-(((random-number random-number random-number random-number rect) thir-def define) thir-def get random-color color green 10 outline)
-(((random-number random-number random-number random-number rect) four-def define) four-def get random-color color red 10 outline)
+(((random-number random-number random-number random-number rect) first-def define) first-def get random-color color random-color random-number outline)
+(((random-number random-number random-number random-number rect) sec-def define) sec-def get random-color color random-color random-number outline)
+(((random-number random-number random-number random-number rect) thir-def define) thir-def get random-color color random-color random-number outline)
+(((random-number random-number random-number random-number rect) four-def define) four-def get random-color color random-color random-number outline)
 
 (first-def sec-def thir-def four-def group five-def define)
 
@@ -201,7 +201,6 @@ z** path 100 100 size #ff0000 3000 false animate-color)
 (all duplicate random-number rotate)
 
 (0 0 100 100 rect random-color color back order)
-
 ```
 
 ---

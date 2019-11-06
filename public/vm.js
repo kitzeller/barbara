@@ -11,6 +11,7 @@ window.seq = {
 var WIDTH = 800;
 var HEIGHT = 800;
 var draw = SVG().addTo('#drawing').size(WIDTH, HEIGHT);
+draw.viewbox(0, 0, 800, 800);
 
 // this is where the externally triggered events are buffered to synchronize them to beats
 var cq = {
@@ -125,6 +126,7 @@ function Q(score, pq, parentQ) {
     this.vars = [];
     this.parentQ = parentQ;
     this.context = {};
+    this.score = score;
 
     this.debug = true;
     if (score) this.push(score);
@@ -178,7 +180,20 @@ Q.prototype.step = function () {
                         break;
 
                     case "@export":
-                        console.log(draw.svg());
+                        let response = prompt("What do you want to call this?.");
+
+                        if (response == "" || response == null) {
+                            console.log("Not saving");
+                            return;
+                        }
+
+                        let svgText = draw.svg();
+                        $.post("savesession", {
+                            output: JSON.stringify(this.score),
+                            svg: svgText,
+                            name: response
+                        });
+
                         break;
 
                     case "@random-number":
