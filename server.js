@@ -230,7 +230,7 @@ app.post('/savesession',
 app.get('/sessions',
     function (req, res) {
 
-        Session.find({}, function (err, data) {
+        Session.find({}, { svg: 1, _id: 1 }, function (err, data) {
             //console.log(data)
             res.send(data);
         })
@@ -244,6 +244,14 @@ app.get('/sessions',
         //         res.send(data);
         //     });
         // }
+    });
+
+app.get('/sessions/:id',
+    function (req, res) {
+        Session.findOne({_id: req.params.id}, function (err, data) {
+            console.log(data);
+            res.send(data);
+        });
     });
 //
 // app.get('/loggeduser', function (req, res) {

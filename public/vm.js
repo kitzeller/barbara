@@ -180,6 +180,9 @@ Q.prototype.step = function () {
                         break;
 
                     case "@export":
+                        // console.log(grammar_cm.getValue())
+                        // console.log(input_cm.getValue())
+
                         let response = prompt("What do you want to call this?.");
 
                         if (response == "" || response == null) {
@@ -189,6 +192,8 @@ Q.prototype.step = function () {
 
                         let svgText = draw.svg();
                         $.post("savesession", {
+                            grammar: grammar_cm.getValue(),
+                            input: input_cm.getValue(),
                             output: JSON.stringify(this.score),
                             svg: svgText,
                             name: response
@@ -571,8 +576,9 @@ Q.prototype.step = function () {
 
 Q.prototype.resume = function (t) {
     while (this.todo.length) {
-        this.step();
+        this.step() ;
     }
+    window.svg = draw.svg();
     return this.todo.length > 0; // returns false if Q has no more events
 };
 

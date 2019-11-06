@@ -13,8 +13,13 @@
     <link rel="stylesheet" href="lib/codemirror.css">
 
     <style>
-        html { font-size: 50%; }
-        hr{ margin:1.5rem 0; }
+        html {
+            font-size: 50%;
+        }
+
+        hr {
+            margin: 1.5rem 0;
+        }
     </style>
 </head>
 <body>
@@ -94,7 +99,7 @@ _ "whitespace" = [ \t\n\r]*
         </textarea>
 
             <h2>Input</h2>
-            <code>Cmd+Enter</code> to parse and <code>Shift+Enter</code> to run!
+            <code>Cmd+Enter</code> to parse, <code>Shift+Enter</code> to run and <code>Alt+Enter</code> to export!
             <textarea id="input">
 (((0 0 50 50 rect) first-def define) first-def get blue color yellow 10 outline)
 (((0 50 50 50 rect) sec-def define) sec-def get red color blue 10 outline)
@@ -146,6 +151,18 @@ _ "whitespace" = [ \t\n\r]*
 <script src="lib/mode/pegjs.js"></script>
 
 <script>
+    console.log(window.location.search);
+    if (window.location.search) {
+        let res = parseQuery(window.location.search);
+        console.log(res.id);
+
+        $.getJSON("sessions/" + res.id, function (data) {
+            console.log(data);
+            $("#output").val(data.output);
+            grammar_cm.setValue(data.grammar);
+            input_cm.setValue(data.input);
+        });
+    }
 
     var grammar_cm = CodeMirror.fromTextArea(document.getElementById("grammar"), {
         mode: "pegjs",
@@ -162,6 +179,7 @@ _ "whitespace" = [ \t\n\r]*
             "Ctrl-Enter": makeParser,
             "Cmd-Enter": makeParser,
             "Shift-Enter": start,
+            "Alt-Enter": exportSVG
         }
     });
 
@@ -176,25 +194,41 @@ _ "whitespace" = [ \t\n\r]*
     }
 
     function start() {
-        // start it
-        // let grammar = grammar_cm.getValue();
-        // var parser = peg.generate(grammar);
-        // let input = input_cm.getValue().trim();
-        // let res = parser.parse(input);
         let val = $("#output").val();
 
         if (!val) {
             alert("Please parse first!");
             return;
         }
-
         val = eval(val);
-
         window.seq.define("default", val);
     }
 
+    function parseQuery(queryString) {
+        var query = {};
+        var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+        for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].split('=');
+            query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+        }
+        return query;
+    }
+
     function exportSVG() {
-        // todo?
+        let response = prompt("What do you want to call this?.");
+
+        if (response == "" || response == null) {
+            console.log("Not saving");
+            return;
+        }
+
+        $.post("savesession", {
+            grammar: grammar_cm.getValue(),
+            input: input_cm.getValue(),
+            output: $("#output").val(),
+            svg: window.svg,
+            name: response
+        });
     }
 </script>
 

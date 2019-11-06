@@ -29,7 +29,7 @@
             margin-bottom: -10px;
         }
 
-        .svg-container:hover svg {
+        .svg-container:hover {
             opacity: 0.5;
         }
 
@@ -94,6 +94,7 @@ In this workshop, participants design and implement their own languages for live
 
 Kit Zellerbach & Prof. Charlie Roberts
 
+
 </script>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script>
@@ -103,11 +104,19 @@ Kit Zellerbach & Prof. Charlie Roberts
     $.getJSON("sessions", function (data) {
         console.log(data);
         for (let d of data) {
-            $('#bg').append('<div class="svg-container">\n' +
+            $('#bg').append('<div class="svg-container" id="' +  d._id +'">' +
                 d.svg +
                 '</div>')
+
+            $('.svg-container').click(function () {
+                openPatch($(this).attr("id"));
+            })
         }
     });
+
+    function openPatch(id) {
+        window.location = "editor.html?id=" + id;
+    }
 </script>
 </body>
 </html>
