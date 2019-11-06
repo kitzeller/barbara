@@ -142,17 +142,17 @@ passport.deserializeUser(function (id, done) {
  */
 
 app.get('/',
-    loggedIn,
+    // loggedIn,
     function (req, res) {
         console.log("/ called");
-        res.sendFile(path.join(__dirname + '/public/index.html'));
+        res.sendFile(path.join(__dirname + '/public/intro.html'));
     });
 
-app.get('/main',
-    loggedIn,
-    function (req, res) {
-        res.sendFile(path.join(__dirname + '/public/index.html'));
-    });
+// app.get('/main',
+//     loggedIn,
+//     function (req, res) {
+//         res.sendFile(path.join(__dirname + '/public/index.html'));
+//     });
 
 // app.get('/me',
 //     loggedIn,
