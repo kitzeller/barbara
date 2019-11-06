@@ -53,7 +53,7 @@ Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
 TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
 HaveTerminatorAhead = . (!"**" .)* "**"
 
-word "word" = svg / circle / rect / export / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / outline / flip / diag / size / scale / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+word "word" = svg / circle / rect / export / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -84,6 +84,7 @@ all = "all" { return "@all"; }
 group = "group" { return "@group"; }
 copy = "copy" { return "@copy"; }
 duplicate = "duplicate" { return "@duplicate"; }
+link = "link" { return "@link"; }
 
 random_number = "random-number" { return "@random-number"; }
 random_color = "random-color" { return "@random-color"; }

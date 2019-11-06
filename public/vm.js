@@ -180,9 +180,7 @@ Q.prototype.step = function () {
                         break;
 
                     case "@export":
-                        // console.log(grammar_cm.getValue())
-                        // console.log(input_cm.getValue())
-
+                        // Not sure if we want it in the lang
                         let response = prompt("What do you want to call this?.");
 
                         if (response == "" || response == null) {
@@ -198,7 +196,6 @@ Q.prototype.step = function () {
                             svg: svgText,
                             name: response
                         });
-
                         break;
 
                     case "@random-number":
@@ -221,7 +218,6 @@ Q.prototype.step = function () {
                     case "@random-color":
                         this.stack.push('#' + Math.floor(Math.random() * 16777215).toString(16));
                         break;
-
 
                     case "@circle":  // [x, y, r, @circle]
                         //let cc = this.stack.pop();
@@ -519,10 +515,17 @@ Q.prototype.step = function () {
 
                     case "@duplicate":
                         let to_clone = this.vars.pop();
-                        clone_v = to_clone.clone();
+                        let clone_v = to_clone.clone();
                         draw.add(clone_v);
                         this.vars.push(clone_v);
                         break;
+
+                    case "@link":
+                        let to_link = this.vars.pop();
+                        let linked_v = draw.use(to_link);
+                        this.vars.push(linked_v);
+                        break;
+
 
                     case "@define":
                         let ds = this.stack.pop();
