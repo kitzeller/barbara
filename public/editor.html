@@ -11,6 +11,7 @@
     <link href="css/skeleton.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="lib/codemirror.css">
+    <link rel="stylesheet" href="css/darcula.css">
 
     <style>
         html {
@@ -166,6 +167,8 @@ _ "whitespace" = [ \t\n\r]*
 
     var grammar_cm = CodeMirror.fromTextArea(document.getElementById("grammar"), {
         mode: "pegjs",
+        //Darkmode
+        theme: "darcula",
         lineWrapping: true,
         lineNumbers: true,
         styleActiveLine: true,
@@ -175,6 +178,8 @@ _ "whitespace" = [ \t\n\r]*
     var input_cm = CodeMirror.fromTextArea(document.getElementById("input"), {
         lineNumbers: true,
         lineWrapping: true,
+        //Darkmode
+        theme: "darcula",
         extraKeys: {
             "Ctrl-Enter": makeParser,
             "Cmd-Enter": makeParser,

@@ -1,6 +1,16 @@
 # graphics-virtual-machine
 WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
+
+# 11/6/19
+
+- Moved to heroku
+- Added mongodb and node.js server 
+- Updated intro page with clickable user-made patches
+- Changed UI to dark mode
+
+![Nov6](img/Nov6.png)
+
 # 11/5/19
 
 - Added CodeMirror support!
@@ -12,13 +22,13 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Temp fixed error bug (added a try/catch; will implement something better later)
 
 Todo
-- https://threejs.org/ (initial page)
-    - let people edit/open
-    - add databases
+- ~~https://threejs.org/ (initial page)~~
+    - ~~let people edit/open~~
+    - ~~add databases~~
 - ~~Random number command~~
-    - Breed patterns
+    - ~~Breed patterns~~
     - "An experiment on Pattern Breeding with Barbara"
-- Add UI dark mode
+- ~~Add UI dark mode~~
 - Polar coordinate
     - Look at p5.js
 - Kaleidoscope
@@ -26,7 +36,7 @@ Todo
 - DAT.gui slider type thing in the input 
 - Change beginning and have repeated elements change too e.g. duplication w/ link
 - Map svg onto 3d babylon for quilt
-- Loop command -> especially w/ random numbers and colors now
+- Loop command -> especially w/ random numbers and colors now?
 
 # 11/4/19
 

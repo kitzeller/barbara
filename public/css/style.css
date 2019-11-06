@@ -9,6 +9,13 @@ h1, h2 {
 
 body {
     margin-top: 1%;
+    background-color: #222;
+    color: white;
+}
+
+code {
+    /*Darkmode*/
+    color: #222;
 }
 
 .row {

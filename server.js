@@ -230,7 +230,7 @@ app.post('/savesession',
 app.get('/sessions',
     function (req, res) {
 
-        Session.find({}, { svg: 1, _id: 1 }, function (err, data) {
+        Session.find({}, { svg: 1, _id: 1, name: 1 }, function (err, data) {
             //console.log(data)
             res.send(data);
         })

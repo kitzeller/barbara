@@ -29,9 +29,6 @@
             margin-bottom: -10px;
         }
 
-        .svg-container:hover {
-            opacity: 0.5;
-        }
 
         #bg {
             top: 0;
@@ -57,7 +54,37 @@
         }
 
         button {
+            flex-grow: 1;
             margin: 5px 10px 5px 10px;
+        }
+
+        .overlay {
+            transition: .5s ease;
+            opacity: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .svg-container:hover .overlay {
+            opacity: 1;
+        }
+        .svg-container:hover svg {
+            opacity: 0.5;
+        }
+
+        .svg-container:hover button {
+            margin: 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .text {
+            color: white;
+            font-size: 20px;
         }
     </style>
     <title>Introduction</title>
@@ -70,7 +97,7 @@
 
 <div id="panel">
     <h1>
-        Live Code a Graphics Language
+        Live Code a Graphics Language with Barbara
     </h1>
 
     <button class="button-primary" onclick="window.location.href='intro.html'">Introduction</button>
@@ -80,32 +107,18 @@
     <button onclick="window.location.href='editor.html'">Editor</button>
 </div>
 
-<div class="container" id="content">
-</div>
-
-<script type="bogus" id="sourcetext">
-Welcome weary travellers!
-
-In this workshop, participants design and implement their own languages for live coding graphics.
-
-**We recommend using the Google Chrome browser for this workshop.**
-
----
-
-Kit Zellerbach & Prof. Charlie Roberts
-
-
-</script>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script>
-    // var body = document.getElementById('sourcetext').innerText;
-    // document.getElementById('content').innerHTML = marked(body);
-
     $.getJSON("sessions", function (data) {
         console.log(data);
         for (let d of data) {
             $('#bg').append('<div class="svg-container" id="' +  d._id +'">' +
                 d.svg +
+                    '  <div class="overlay">\n' +
+                '    <div class="text">'+ d.name +'</div>\n' +
+                    '<button>Open</button>' +
+                '<button>Add</button>' +
+                '  </div>'+
                 '</div>')
 
             $('.svg-container').click(function () {
