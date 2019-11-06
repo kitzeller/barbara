@@ -21,6 +21,10 @@
         hr {
             margin: 1.5rem 0;
         }
+
+        #output {
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -53,12 +57,14 @@ Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
 TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
 HaveTerminatorAhead = . (!"**" .)* "**"
 
-word "word" = svg / circle / rect / export / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / export / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
 rect = "rect" { return "@rect"; }
 polygon = "polygon" { return "@polygon"; }
+ellipse = "ellipse" { return "@ellipse"; }
+line = "line" { return "@line"; }
 path = "path" { return "@path"; }
 text = "text" { return "@text"; }
 
@@ -153,19 +159,6 @@ _ "whitespace" = [ \t\n\r]*
 <script src="lib/mode/pegjs.js"></script>
 
 <script>
-    console.log(window.location.search);
-    if (window.location.search) {
-        let res = parseQuery(window.location.search);
-        console.log(res.id);
-
-        $.getJSON("sessions/" + res.id, function (data) {
-            console.log(data);
-            $("#output").val(data.output);
-            grammar_cm.setValue(data.grammar);
-            input_cm.setValue(data.input);
-        });
-    }
-
     var grammar_cm = CodeMirror.fromTextArea(document.getElementById("grammar"), {
         mode: "pegjs",
         //Darkmode
@@ -190,6 +183,7 @@ _ "whitespace" = [ \t\n\r]*
     });
 
     function makeParser() {
+        window.localStorage.setItem('barbara-vm-grammar', grammar_cm.getValue());
         let grammer = grammar_cm.getValue();
         var parser = peg.generate(grammer);
 
@@ -235,6 +229,20 @@ _ "whitespace" = [ \t\n\r]*
             svg: window.svg,
             name: response
         });
+    }
+
+    if (window.location.search) {
+        let res = parseQuery(window.location.search);
+        console.log(res.id);
+
+        $.getJSON("sessions/" + res.id, function (data) {
+            console.log(data);
+            $("#output").val(data.output);
+            grammar_cm.setValue(data.grammar);
+            input_cm.setValue(data.input);
+        });
+    } else if (window.localStorage.getItem('barbara-vm-grammar')){
+        grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
     }
 </script>
 

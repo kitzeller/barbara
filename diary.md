@@ -8,6 +8,10 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Added mongodb and node.js server 
 - Updated intro page with clickable user-made patches
 - Changed UI to dark mode
+- Added Export button
+- Added link command for making link copies of original element
+- Added ellipse and line element commands
+- Added basic LocalStorage for grammar
 
 ![Nov6](img/Nov6.png)
 
@@ -34,7 +38,7 @@ Todo
 - Kaleidoscope
 - SVG gui with pre-loaded SVGs and names for use within the editor
 - DAT.gui slider type thing in the input 
-- Change beginning and have repeated elements change too e.g. duplication w/ link
+- ~~Change beginning and have repeated elements change too e.g. duplication w/ link~~
 - Map svg onto 3d babylon for quilt
 - Loop command -> especially w/ random numbers and colors now?
 
@@ -51,7 +55,7 @@ Todo
 ### Todo
 
 - ~~Add CodeMirror~~
-- Add LocalStorage support for user-defined grammar
+- ~~Add LocalStorage support for user-defined grammar~~
 - Add more content to Tutorial, Quilting(?), and Target Lang documentation
 - Re-evaluate target language design choices snd refactor accordingly
 - ~~Judge Charlie's pizza language~~

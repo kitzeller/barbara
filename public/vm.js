@@ -255,6 +255,25 @@ Q.prototype.step = function () {
 
                         break;
 
+                    case "@ellipse":
+                        let eh = this.stack.pop() / 100 * HEIGHT;
+                        let ew = this.stack.pop() / 100 * WIDTH;
+                        let ellip = draw.ellipse(ew, eh);
+                        this.vars.push(ellip);
+
+                        break;
+
+                    case "@line":
+                        let l1 = this.stack.pop()/ 100 * HEIGHT;
+                        let l2 = this.stack.pop()/ 100 * HEIGHT;
+                        let l3 = this.stack.pop()/ 100 * HEIGHT;
+                        let l4 = this.stack.pop()/ 100 * HEIGHT;
+
+                        let li = draw.line(l4, l3, l2, l1).stroke({ width: 1, color: "#fff"});
+
+                        this.vars.push(li);
+                        break;
+
                     case "@text":
                         let text = this.stack.pop();
                         let text_elem = draw.text(text);

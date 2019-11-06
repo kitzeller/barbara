@@ -192,7 +192,6 @@ app.get('/',
  */
 app.post('/savesession',
     function (req, res) {
-        console.log(req.body);
         var session = new Session(req.body);
         session.save(function (err) {
             if (err) return handleError(err);
@@ -231,19 +230,8 @@ app.get('/sessions',
     function (req, res) {
 
         Session.find({}, { svg: 1, _id: 1, name: 1 }, function (err, data) {
-            //console.log(data)
             res.send(data);
         })
-        // console.log(req.query);
-        // if (req.query.name) {
-        //     Session.find({user: req.query.id, name: req.query.name}, function (error, data) {
-        //         res.send(data);
-        //     });
-        // } else {
-        //     Session.find({user: req.query.id}, function (error, data) {
-        //         res.send(data);
-        //     });
-        // }
     });
 
 app.get('/sessions/:id',
