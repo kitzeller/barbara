@@ -19,7 +19,14 @@ Todo
 - DAT.gui slider type thing in the input 
 - Map svg onto 3d babylon for quilt
 - Loop command -> especially w/ random numbers and colors now? maybe not idk
-    
+- Tutorial section -> search for what you want to do?
+    - For quilters
+    - For programmers
+- Improve animation capabilities!
+    - Filtering, easing, etc
+- Meet with Gillian Nov 15th
+
+
 # 11/6/19
 
 - Moved to heroku

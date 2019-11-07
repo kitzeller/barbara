@@ -9,9 +9,38 @@
     <link href="css/normalize.css" rel="stylesheet">
     <link href="css/skeleton.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        html {
+            font-size: 50%;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        h1, h2, h3, h4, h5, h6, pre {
+            clear: both;
+        }
+
+        textarea {
+            color: black;
+        }
+    </style>
     <title>Tutorial</title>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="peg-0.10.0.js"></script>
+
+    <!-- Create a simple CodeMirror instance -->
+    <script src="lib/codemirror.js"></script>
+    <script src="lib/mode/pegjs.js"></script>
 </head>
 <body>
 <!--Navbar-->
@@ -31,9 +60,27 @@
 </div>
 
 <script type="bogus" id="sourcetext">
-Welcome to this live coding workshop.
 
-# Grammar Input Examples
+<div id="toc"></div>
+
+---
+
+
+
+## The most common grammar concepts
+
+We write grammars as a set of pattern-based rules. A rule has:
+
+- a **name**, so that you can refer to it elsewhere,
+- a **pattern**, which defines what kinds of text it can recognize,
+- an optional **action**, which defines what is returned when a rule applies.
+
+
+
+![rule](img/grammar.png)
+
+
+## Grammar Input Examples
 
 ### Polygon Example
 ```
@@ -231,11 +278,38 @@ z** path 100 100 size #ff0000 3000 false animate-color)
 ---
 
 Kit Zellerbach & Prof. Charlie Roberts
+
 </script>
 
 <script>
+    var renderer = new marked.Renderer();
+    // insert a bit of extra logic to the renderer to pull out heading links:
+    var toc = [];
+    renderer.heading = function (text, level, raw) {
+        var anchor = this.options.headerPrefix + raw.toLowerCase().replace(/[^\w]+/g, '-');
+        if (level > 1) {
+            toc.push(
+                "\t".repeat(level - 2)
+                + "- [" + text + "](#" + anchor + ")"
+            );
+        }
+        return '<h' + level + ' id="' + anchor + '">'
+            + text
+            + '</h' + level + '>\n';
+    };
+
+    marked.setOptions({
+        renderer: renderer,
+        gfm: true,
+        tables: true,
+        sanitize: false,
+        smartLists: true,
+        smartypants: false
+    });
+
     var body = document.getElementById('sourcetext').innerText;
     document.getElementById('content').innerHTML = marked(body);
+    document.getElementById('toc').innerHTML = marked(toc.join("\n"));
 </script>
 </body>
 </html>

@@ -32,78 +32,80 @@
 </div>
 
 <script type="bogus" id="sourcetext">
-The target language was created using the SVG.js library. The language was designed as a stack-based language.
+<div id="toc"></div>
+
+---
 
 ## Shapes
 
-##### @circle (x, y, radius)
+### @circle (x, y, radius)
 
 ```
 [["0","0","100","@circle"]]
 ```
 
-##### @rect (x, y, width, height)
+### @rect (x, y, width, height)
 
 ```
 [["0","0","50","50","@rect"]]
 ```
 
-##### @ellipse (width, height)
+### @ellipse (width, height)
 
-##### @line (x1, y1, x2, y2)
+### @line (x1, y1, x2, y2)
 
-##### @path (string)
+### @path (string)
 
 ```
 [["M 213.1,6.7 c -32.4-14.4-73.7,0-88.1,30.6 C 110.6,4.9,67.5-9.5,36.9,6.7 C 2.8,22.9-13.4,62.4,13.5,110.9
 C 33.3,145.1,67.5,170.3,125,217 c 59.3-46.7,93.5-71.9,111.5-106.1 C 263.4,64.2,247.2,22.9,213.1,6.7 z","@path"]]
 ```
 
-##### @polygon (string)
+### @polygon (string)
 
 ```
 [["0,0 100,50 50,100","@polygon"]]
 ```
 
-##### @text (string)
+### @text (string)
 
 ```
 [["hello, world","@text"]]
 ```
 
-##### @svg (string)
+### @svg (string)
 
 Imports an svg from a string
 
-##### @export ()
+### @export ()
 
 Exports the svg
 
-##### @random-number ()
+### @random-number ()
 
 Generates a random number
 
-##### @random-color ()
+### @random-color ()
 
 Generates a random color
 
 
 ## Fills
 
-##### @pattern (...)
+### @pattern (...)
 
-##### @gradient (type, string)
+### @gradient (type, string)
 
 ```
 [["radial","0 #f06 1, 1 #0f9 1","@gradient"]]
 ```
 
-##### @image (url)
+### @image (url)
 
 
 ## Transformations
 
-##### @color (color)
+### @color (color)
 
 Colors the preceding element given a name or hex value
 
@@ -111,7 +113,7 @@ Colors the preceding element given a name or hex value
 [...["red","@color"]]
 ```
 
-##### @outline (color, line-width)
+### @outline (color, line-width)
 
 Outlines the preceding element
 
@@ -119,7 +121,7 @@ Outlines the preceding element
 [...["red","5","@outline"]]
 ```
 
-##### @opacity (value)
+### @opacity (value)
 
 Sets the opacity of the preceding element
 
@@ -127,7 +129,7 @@ Sets the opacity of the preceding element
 [...["0.5","@opacity"]]
 ```
 
-##### @radius (pixels)
+### @radius (pixels)
 
 Sets the radius of the preceding element (rounds corners for rectangles)
 
@@ -135,7 +137,7 @@ Sets the radius of the preceding element (rounds corners for rectangles)
 [...["5","@radius"]]
 ```
 
-##### @flip (offset, axis)
+### @flip (offset, axis)
 
 Flips the preceding element
 
@@ -143,7 +145,7 @@ Flips the preceding element
 [...["5","x","@flip"]]
 ```
 
-##### @diag (offet)
+### @diag (offet)
 
 Flips the preceding element diagonally
 
@@ -151,7 +153,7 @@ Flips the preceding element diagonally
 [...["5","@diag"]]
 ```
 
-##### @rotate (degree)
+### @rotate (degree)
 
 Rotates the preceding element
 
@@ -159,7 +161,7 @@ Rotates the preceding element
 [...["180","@rotate"]]
 ```
 
-##### @repeat ()
+### @repeat ()
 
 Repeats the preceding element (currently mirrors 4 times by default)
 
@@ -167,7 +169,7 @@ Repeats the preceding element (currently mirrors 4 times by default)
 [...["@repeat"]]
 ```
 
-##### @size (x, y)
+### @size (x, y)
 
 Resizes the preceding element
 
@@ -175,7 +177,7 @@ Resizes the preceding element
 [...["50","50","@size"]]
 ```
 
-##### @scale (x, y)
+### @scale (x, y)
 
 Scales the preceding element
 
@@ -183,7 +185,7 @@ Scales the preceding element
 [...["50","50","@scale"]]
 ```
 
-##### @move (x, y)
+### @move (x, y)
 
 Moves the preceding element to a given x and y position
 
@@ -191,7 +193,7 @@ Moves the preceding element to a given x and y position
 [...["50","50","@move"]]
 ```
 
-##### @center (x, y)
+### @center (x, y)
 
 Move the preceding element by its center to a given x and y position
 
@@ -201,19 +203,19 @@ Move the preceding element by its center to a given x and y position
 
 ## Animations
 
-##### @animate-color (color, time, loop?)
+### @animate-color (color, time, loop?)
 
 ```
 [["@all","#ffffff","4000","true","@animate-color"]]
 ```
 
-##### @animate-rotate (degree, time, loop?)
+### @animate-rotate (degree, time, loop?)
 
 ```
 [["@all","360","4000","true","@animate-rotate"]]
 ```
 
-##### @animate-move (x, y, time, loop?)
+### @animate-move (x, y, time, loop?)
 
 ```
 [["@all","50","50","4000","true","@animate-move"]]
@@ -221,23 +223,23 @@ Move the preceding element by its center to a given x and y position
 
 ## Getters, Setters, Grouping
 
-##### @all
+### @all
 
 Places the entire the svg in a group, making it accessible to the next manipulation-type command
 
-##### @copy (variable-name)
+### @copy (variable-name)
 
 Copies the variable given the name and duplicates it, returning a new identical element
 
-##### @duplicate ()
+### @duplicate ()
 
 Copies the last accessible element and duplicates it, returning a new identical element
 
-##### @link ()
+### @link ()
 
 Emulates the last accessible element
 
-##### @define (name)
+### @define (name)
 
 Creates named values ("variables") that can be re-used again later
 
@@ -245,7 +247,7 @@ Creates named values ("variables") that can be re-used again later
 [["0","0","50","50","@rect","first-def","@define"]]
 ```
 
-##### @get (name)
+### @get (name)
 
 Retrieves a variable for mental manipulation.
 
@@ -253,7 +255,7 @@ Retrieves a variable for mental manipulation.
 [["first-def","@get","50","50","@size"]]
 ```
 
-##### @group (elements...)
+### @group (elements...)
 
 Groups all the names of variables.
 
@@ -267,8 +269,34 @@ Kit Zellerbach & Prof. Charlie Roberts
 </script>
 
 <script>
+    var renderer = new marked.Renderer();
+    // insert a bit of extra logic to the renderer to pull out heading links:
+    var toc = [];
+    renderer.heading = function (text, level, raw) {
+        var anchor = this.options.headerPrefix + raw.toLowerCase().replace(/[^\w]+/g, '-');
+        if (level > 1) {
+            toc.push(
+                "\t".repeat(level - 2)
+                + "- [" + text + "](#" + anchor + ")"
+            );
+        }
+        return '<h' + level + ' id="' + anchor + '">'
+            + text
+            + '</h' + level + '>\n';
+    };
+
+    marked.setOptions({
+        renderer: renderer,
+        gfm: true,
+        tables: true,
+        sanitize: false,
+        smartLists: true,
+        smartypants: false
+    });
+
     var body = document.getElementById('sourcetext').innerText;
     document.getElementById('content').innerHTML = marked(body);
+    document.getElementById('toc').innerHTML = marked(toc.join("\n"));
 </script>
 </body>
 </html>
