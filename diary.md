@@ -6,7 +6,20 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Added super basic svg library system
     - Svg can be added to the library (Currently LocalStorage but will update with Mongodb and User Accounts later)
     - Svg referenced in Target Language by it's id, like `($5dc2891c8a1af11d77b65d31 svg)` 
-
+- Found some hot websites
+    - http://lab.aerotwist.com/canvas/poly-maker/
+    - https://snorpey.github.io/triangulation/
+    
+Todo
+- Redo UI
+- Polar coordinates
+    - Look at p5.js
+- Kaleidoscope
+- Add default values for when the expected number of arguments isn't given? (like the n-number of params for the group command)
+- DAT.gui slider type thing in the input 
+- Map svg onto 3d babylon for quilt
+- Loop command -> especially w/ random numbers and colors now? maybe not idk
+    
 # 11/6/19
 
 - Moved to heroku
@@ -36,17 +49,11 @@ Todo
     - ~~add databases~~
 - ~~Random number command~~
     - ~~Breed patterns~~ 
-    - "An experiment on Pattern Breeding with Barbara"
+    - ~~"An experiment on Pattern Breeding with Barbara"~~
 - ~~Add UI dark mode~~
-- Polar coordinate
-    - Look at p5.js
-- Kaleidoscope
-- Add default values for when the expected number of arguments isn't given? (like the n-number of params for the group command)
 - ~~SVG gui with pre-loaded SVGs and names for use within the editor~~
-- DAT.gui slider type thing in the input 
 - ~~Change beginning and have repeated elements change too e.g. duplication w/ link~~
-- Map svg onto 3d babylon for quilt
-- Loop command -> especially w/ random numbers and colors now?
+
 
 # 11/4/19
 

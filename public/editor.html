@@ -33,7 +33,7 @@
             z-index: 200;
             top: 0;
             right: 0;
-            background-color: #111;
+            background-color: rgba(0, 0, 0, 0.8);
             overflow-x: hidden;
             transition: 0.5s;
             padding-top: 60px;
@@ -48,8 +48,8 @@
             transition: 0.3s;
         }
 
-        .sidenav a:hover {
-            color: #f1f1f1;
+        .sidenav h5:hover {
+            color: #7c7c7c;
         }
 
         .sidenav .closebtn {
@@ -222,7 +222,8 @@ _ "whitespace" = [ \t\n\r]*
         for (let o of obj.ids) {
             $.getJSON("sessions/" + o, function (data) {
                 window.savedSessions[data._id] = data;
-                $('#side-content').append("<p>" + data.name + " - " + data._id + "</p>");
+                $('#side-content').append("<h2>" + data.name + "</h2>");
+                $('#side-content').append("<h5>" + data._id + "</h5>");
             });
         }
     }
