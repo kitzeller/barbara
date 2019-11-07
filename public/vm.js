@@ -230,23 +230,34 @@ Q.prototype.step = function () {
 
                     case "@circle":  // [x, y, r, @circle]
                         //let cc = this.stack.pop();
-                        let rc = this.stack.pop() / 100 * WIDTH;
-                        let yc = this.stack.pop() / 100 * HEIGHT;
-                        let xc = this.stack.pop() / 100 * WIDTH;
 
-                        var circ = draw.circle(rc).move(xc, yc);
-
-                        this.vars.push(circ);
+                        // TODO: Abstract "default" values
+                        if (this.stack.length < 1){
+                            // default
+                            let circ = draw.circle(400);
+                            this.vars.push(circ);
+                        } else {
+                            let rc = this.stack.pop() / 100 * WIDTH;
+                            let yc = this.stack.pop() / 100 * HEIGHT;
+                            let xc = this.stack.pop() / 100 * WIDTH;
+                            let circ = draw.circle(rc).move(xc, yc);
+                            this.vars.push(circ);
+                        }
 
                         break;
                     case "@rect":  // [x, y, width, height, @rect]
-                        let hr = this.stack.pop() / 100 * HEIGHT;
-                        let wr = this.stack.pop() / 100 * WIDTH;
-                        let yr = this.stack.pop() / 100 * HEIGHT;
-                        let xr = this.stack.pop() / 100 * WIDTH;
+                        if (this.stack.length < 1){
+                            let r = draw.rect(400, 400);
+                            this.vars.push(r);
+                        } else {
+                            let hr = this.stack.pop() / 100 * HEIGHT;
+                            let wr = this.stack.pop() / 100 * WIDTH;
+                            let yr = this.stack.pop() / 100 * HEIGHT;
+                            let xr = this.stack.pop() / 100 * WIDTH;
 
-                        var r = draw.rect(wr, hr).move(xr, yr);
-                        this.vars.push(r);
+                            let r = draw.rect(wr, hr).move(xr, yr);
+                            this.vars.push(r);
+                        }
 
                         break;
 
@@ -291,10 +302,29 @@ Q.prototype.step = function () {
                         break;
 
                     case "@pattern":
-                        var pattern = draw.pattern(20, 20, function (add) {
-                            add.rect(20, 20).fill('#f06');
-                            add.rect(10, 10);
-                            add.rect(10, 10).move(10, 10);
+                        // var pattern = draw.pattern(20, 20, function (add) {
+                        //     add.rect(20, 20).fill('#f06');
+                        //     add.rect(10, 10);
+                        //     add.rect(10, 10).move(10, 10);
+                        // });
+
+                        // let svg_pattern_string = this.stack.pop();
+                        //
+                        // if (svg_pattern_string.includes('$')) {
+                        //     let result = svg_pattern_string.split('$')[1];
+                        //     svg_pattern_string = window.savedSessions[result].svg;
+                        // }
+
+                        //let svg_pattern_group = draw.group();
+                        //svg_pattern_group.svg(svg_string);
+
+                        let pattern_h = this.stack.pop();
+                        let pattern_w = this.stack.pop();
+
+                        let next_item = this.vars.pop();
+
+                        var pattern = draw.pattern(pattern_w, pattern_h, function (add) {
+                            add.add(next_item)
                         });
 
                         this.vars.push(pattern);
@@ -370,6 +400,28 @@ Q.prototype.step = function () {
                         elem_rotate.rotate(degree);
 
                         this.vars.push(elem_rotate);
+                        break;
+
+                    case "@end-loop":
+                        // Do nothing?
+                        break;
+
+                    case "@loop":
+                        // TODO: Add end-loop?
+                        let loop_num = parseInt(this.stack.pop());
+                        let original_todo = this.todo;
+
+                        let ind = original_todo.findIndex(function(element) {
+                            return element === "@end-loop"
+                        });
+
+                        original_todo = original_todo.slice(ind);
+                        console.log("LOOP", original_todo);
+
+
+                        for (let i = 0; i < loop_num; i++){
+                            this.todo = this.todo.concat(original_todo);
+                        }
                         break;
 
                     case "@repeat":

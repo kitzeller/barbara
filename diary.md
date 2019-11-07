@@ -9,21 +9,30 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Found some hot websites
     - http://lab.aerotwist.com/canvas/poly-maker/
     - https://snorpey.github.io/triangulation/
+- Added default values for circle and rect
+- Added loop command!
+- Updated pattern logic. Now patterns can be created from other svgs as well as svgs created within the editor.
+
+![Nov7 Looping](img/Nov7Looping.png)
+
+![Nov7 Pattern](img/Nov7Pattern.png)
     
 Todo
 - Redo UI
 - Polar coordinates
     - Look at p5.js
 - Kaleidoscope
-- Add default values for when the expected number of arguments isn't given? (like the n-number of params for the group command)
+- ~~Add default values for rect/circle when the expected number of arguments isn't given?~~
 - DAT.gui slider type thing in the input 
 - Map svg onto 3d babylon for quilt
-- Loop command -> especially w/ random numbers and colors now? maybe not idk
+- ~~Loop command -> especially w/ random numbers and colors now?~~
+    - ~~for looping the code? e.g. loop queue!~~
 - Tutorial section -> search for what you want to do?
     - For quilters
     - For programmers
 - Improve animation capabilities!
     - Filtering, easing, etc
+- ~~Improve pattern command~~
 - Meet with Gillian Nov 15th
 
 

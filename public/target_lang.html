@@ -92,7 +92,13 @@ Generates a random color
 
 ## Fills
 
-### @pattern (...)
+### @pattern (width, height)
+
+Any element can be used as a pattern. The preceding element in the stack will be used. For example, a call to @svg in order to use a saved
+svg patch, or input a new svg string. A call to @all can turn the entire screen into a pattern!
+
+```
+["800","800","@pattern"]
 
 ### @gradient (type, string)
 
@@ -105,9 +111,9 @@ Generates a random color
 
 ## Transformations
 
-### @color (color)
+### @color (color/patternId)
 
-Colors the preceding element given a name or hex value
+Colors the preceding element given a name or hex value, or fills with a pattern given the pattern id that has been saved using the define command
 
 ```
 [...["red","@color"]]
@@ -222,6 +228,8 @@ Move the preceding element by its center to a given x and y position
 ```
 
 ## Getters, Setters, Grouping
+
+### @loop (times)
 
 ### @all
 
