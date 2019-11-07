@@ -195,6 +195,7 @@ _ "whitespace" = [ \t\n\r]*
             <button onclick="makeParser()">Parse!</button>
             <button onclick="start()">Start</button>
             <button onclick="exportSVG()">Export</button>
+            <button id="loop" onclick="loopSVG()">Start Loop</button>
 
             <h2>Output</h2>
             <textarea id="output" style="width: 700px; height: 100px"></textarea>
@@ -217,6 +218,8 @@ _ "whitespace" = [ \t\n\r]*
 <script src="lib/mode/pegjs.js"></script>
 
 <script>
+    var looping = false;
+    var interval;
     var savedSVGs = window.localStorage.getItem('barbara-vm-svgs');
     window.savedSessions = {};
     if (savedSVGs) {
@@ -281,6 +284,21 @@ _ "whitespace" = [ \t\n\r]*
         }
         val = eval(val);
         window.seq.define("default", val);
+    }
+
+    function loopSVG(){
+        if (looping){
+            looping = false;
+            clearInterval(interval);
+            $("#loop").text("Start Loop");
+        } else {
+            looping = true;
+            interval = setInterval(function(){
+                makeParser();
+                start();
+            }, 1000);
+            $("#loop").text("Stop Loop");
+        }
     }
 
     function parseQuery(queryString) {

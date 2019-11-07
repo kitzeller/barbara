@@ -10,7 +10,8 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
     - http://lab.aerotwist.com/canvas/poly-maker/
     - https://snorpey.github.io/triangulation/
 - Added default values for circle and rect
-- Added loop command!
+- Added loop command for looping code!
+- Added loop button for auto-parsing and starting the input every second.
 - Updated pattern logic. Now patterns can be created from other svgs as well as svgs created within the editor.
 
 ![Nov7 Looping](img/Nov7Looping.png)
