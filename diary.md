@@ -1,6 +1,11 @@
 # graphics-virtual-machine
 WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
+# 11/6/19
+
+- Added super basic svg library system
+    - Svg can be added to the library (Currently LocalStorage but will update with Mongodb and User Accounts later)
+    - Svg referenced in Target Language by it's id, like `($5dc2891c8a1af11d77b65d31 svg)` 
 
 # 11/6/19
 
@@ -30,13 +35,14 @@ Todo
     - ~~let people edit/open~~
     - ~~add databases~~
 - ~~Random number command~~
-    - ~~Breed patterns~~
+    - ~~Breed patterns~~ 
     - "An experiment on Pattern Breeding with Barbara"
 - ~~Add UI dark mode~~
 - Polar coordinate
     - Look at p5.js
 - Kaleidoscope
-- SVG gui with pre-loaded SVGs and names for use within the editor
+- Add default values for when the expected number of arguments isn't given? (like the n-number of params for the group command)
+- ~~SVG gui with pre-loaded SVGs and names for use within the editor~~
 - DAT.gui slider type thing in the input 
 - ~~Change beginning and have repeated elements change too e.g. duplication w/ link~~
 - Map svg onto 3d babylon for quilt
@@ -56,10 +62,9 @@ Todo
 
 - ~~Add CodeMirror~~
 - ~~Add LocalStorage support for user-defined grammar~~
-- Add more content to Tutorial, Quilting(?), and Target Lang documentation
-- Re-evaluate target language design choices snd refactor accordingly
+- ~~Add more content to Tutorial, Quilting(?), and Target Lang documentation~~
+- ~~Re-evaluate target language design choices snd refactor accordingly~~
 - ~~Judge Charlie's pizza language~~
-- Add default values for when the expected number of arguments isn't given? (like the n-number of params for the group command)
 - ~~Fix error with incorrect input values that crashes vm~~
 
 ![November 4th UI](img/Nov4.png)

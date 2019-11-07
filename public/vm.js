@@ -174,8 +174,17 @@ Q.prototype.step = function () {
                     case "@svg":
                         // creates svg as group
                         let svg_string = this.stack.pop();
+
+                        if (svg_string.includes('$')) {
+                            let result = svg_string.split('$')[1];
+                            svg_string = window.savedSessions[result].svg;
+                            // console.log(result)
+                            // console.log(svg_string);
+                        }
+
                         let svg_group = draw.group();
                         svg_group.svg(svg_string);
+                        console.log(draw.svg(false));
                         this.vars.push(svg_group);
                         break;
 
@@ -188,7 +197,8 @@ Q.prototype.step = function () {
                             return;
                         }
 
-                        let svgText = draw.svg();
+                        // Added false?
+                        let svgText = draw.svg(false);
                         $.post("savesession", {
                             grammar: grammar_cm.getValue(),
                             input: input_cm.getValue(),
@@ -487,10 +497,10 @@ Q.prototype.step = function () {
 
                     case "@scale":
                         let elem_scale = this.vars.pop();
-                        let sch = this.stack.pop() / 100 * HEIGHT;
-                        let scw = this.stack.pop() / 100 * WIDTH;
+                        let sch = this.stack.pop() / 100;
+                        let scw = this.stack.pop() / 100;
 
-                        elem_scale.size(scw, sch);
+                        elem_scale.scale(sch, scw);
                         this.vars.push(elem_scale);
 
                         break;
@@ -534,6 +544,7 @@ Q.prototype.step = function () {
 
                     case "@duplicate":
                         let to_clone = this.vars.pop();
+                        console.log(to_clone);
                         let clone_v = to_clone.clone();
                         draw.add(clone_v);
                         this.vars.push(clone_v);
@@ -600,7 +611,7 @@ Q.prototype.resume = function (t) {
     while (this.todo.length) {
         this.step() ;
     }
-    window.svg = draw.svg();
+    window.svg = draw.svg(false);
     return this.todo.length > 0; // returns false if Q has no more events
 };
 

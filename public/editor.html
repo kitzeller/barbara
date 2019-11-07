@@ -25,6 +25,50 @@
         #output {
             color: black;
         }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 200;
+            top: 0;
+            right: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -41,9 +85,22 @@
         <button onclick="window.location.href='tutorial.html'">Tutorial</button>
         <button onclick="window.location.href='quilting.html'">Quilting</button>
         <button class="button-primary" onclick="window.location.href='index.html'">Editor</button>
+        <button onclick="openNav()">Library</button>
+
+        <!--        <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>-->
     </div>
 </div>
 
+
+<!--Sidebar-->
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="side-content" style="padding: 10px">
+        <h2>Saved Sessions</h2>
+    </div>
+</div>
+
+<!--CodeMirror-->
 <div class="container-m10">
     <div class="row">
         <div class="column">
@@ -148,7 +205,6 @@ _ "whitespace" = [ \t\n\r]*
     </div>
 </div>
 
-
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="peg-0.10.0.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
@@ -159,6 +215,26 @@ _ "whitespace" = [ \t\n\r]*
 <script src="lib/mode/pegjs.js"></script>
 
 <script>
+    var savedSVGs = window.localStorage.getItem('barbara-vm-svgs');
+    window.savedSessions = {};
+    if (savedSVGs) {
+        let obj = JSON.parse(savedSVGs);
+        for (let o of obj.ids) {
+            $.getJSON("sessions/" + o, function (data) {
+                window.savedSessions[data._id] = data;
+                $('#side-content').append("<p>" + data.name + " - " + data._id + "</p>");
+            });
+        }
+    }
+
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
     var grammar_cm = CodeMirror.fromTextArea(document.getElementById("grammar"), {
         mode: "pegjs",
         //Darkmode
@@ -241,7 +317,7 @@ _ "whitespace" = [ \t\n\r]*
             grammar_cm.setValue(data.grammar);
             input_cm.setValue(data.input);
         });
-    } else if (window.localStorage.getItem('barbara-vm-grammar')){
+    } else if (window.localStorage.getItem('barbara-vm-grammar')) {
         grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
     }
 </script>

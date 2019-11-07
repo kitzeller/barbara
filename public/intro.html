@@ -72,6 +72,7 @@
         .svg-container:hover .overlay {
             opacity: 1;
         }
+
         .svg-container:hover svg {
             opacity: 0.5;
         }
@@ -113,20 +114,32 @@
         console.log(data);
         data = shuffle(data);
         for (let d of data) {
-            $('#bg').append('<div class="svg-container" id="' +  d._id +'">' +
-                d.svg +
-                    '  <div class="overlay">\n' +
-                '    <div class="text">'+ d.name +'</div>\n' +
-                    '<button>Open</button>' +
-                '<button>Add</button>' +
-                '  </div>'+
+            // TODO: Make this less laggy, also not sure svg definition is the best
+            $('#bg').append('<div class="svg-container" id="' + d._id + '">' +
+                '<svg width="800" height="800" viewBox="0 0 800 800">' + d.svg + '</svg>' +
+                '  <div class="overlay">\n' +
+                '    <div class="text">' + d.name + '</div>\n' +
+                '<button onclick="openPatch(\'' + d._id + '\')">Open</button>' +
+                '<button onclick="savePatch(\'' + d._id + '\')">Add</button>' +
+                '  </div>' +
                 '</div>')
-
-            $('.svg-container').click(function () {
-                openPatch($(this).attr("id"));
-            })
         }
     });
+
+    function savePatch(id) {
+        // Save to local storage!
+        alert(id);
+        let obj = window.localStorage.getItem('barbara-vm-svgs');
+
+        if (obj){
+            console.log(obj);
+            obj = JSON.parse(obj);
+            obj.ids.push(id);
+        } else {
+            obj = {ids: [id]};
+        }
+        window.localStorage.setItem('barbara-vm-svgs', JSON.stringify(obj));
+    }
 
     function shuffle(a) {
         var j, x, i;
