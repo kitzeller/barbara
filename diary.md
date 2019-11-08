@@ -14,6 +14,7 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Added loop button for auto-parsing and starting the input every second.
 - Updated pattern logic. Now patterns can be created from other svgs as well as svgs created within the editor.
 - Fix error with random colors not being valid!
+- Added optional text styling (font-family, size)
 
 ![Nov7 Looping](img/Nov7Looping.png)
 
@@ -35,6 +36,7 @@ Todo
 - Improve animation capabilities!
     - Filtering, easing, etc
 - ~~Improve pattern command~~
+- Set Text Font and other various attributes
 - Meet with Gillian Nov 15th
 
 
