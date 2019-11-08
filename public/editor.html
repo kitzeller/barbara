@@ -114,7 +114,7 @@ Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
 TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
 HaveTerminatorAhead = . (!"**" .)* "**"
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -140,6 +140,7 @@ diag = "diag" { return "@diag"; }
 outline = "outline" { return "@outline"; }
 rotate = "rotate" { return "@rotate"; }
 move = "move" { return "@move"; }
+translate = "translate" { return "@translate"; }
 center = "center" { return "@center"; }
 size = "size" { return "@size"; }
 scale = "scale" { return "@scale"; }

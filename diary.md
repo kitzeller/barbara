@@ -16,6 +16,8 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Fix error with random colors not being valid!
 - Added optional text styling (font-family, size)
 - Added @triangle command for basic half square triangle
+- Added @translate command
+- Read up on [code crafters](http://www.code-crafter.com/wp/software/)
 
 ![Nov7 Looping](img/Nov7Looping.png)
 
@@ -25,6 +27,7 @@ Todo
 - Redo UI
 - Polar coordinates
     - Look at p5.js
+- Better Triangle support (for the quilters!)
 - Kaleidoscope?
 - ~~Add default values for rect/circle when the expected number of arguments isn't given?~~
 - DAT.gui slider type thing in the input 
@@ -50,8 +53,8 @@ Todo
 - Updated intro page with clickable user-made patches
 - Changed UI to dark mode
 - Added Export button
-- Added link command for making link copies of original element
-- Added ellipse and line element commands
+- Added @link command for making link copies of original element
+- Added @ellipse and @line element commands
 - Added basic LocalStorage for grammar
 
 ![Nov6](img/Nov6.png)
@@ -59,11 +62,11 @@ Todo
 # 11/5/19
 
 - Added CodeMirror support!
-- Added svg command for importing svg strings
-- Added export command for printing svg to console
+- Added @svg command for importing svg strings
+- Added @export command for printing svg to console
 - Added random commands
-    - random-number
-    - random-color
+    - @random-number
+    - @random-color
 - Temp fixed error bug (added a try/catch; will implement something better later)
 
 Todo
@@ -83,8 +86,8 @@ Todo
 - Improved gradient support
 - Improved UI (using skeleton.css)
 - Working on pattern definitions
-- Added scale command (subtle differences between scale and size)
-- Added center and opacity command
+- Added @scale command (subtle differences between scale and size)
+- Added @center and @opacity command
 - Added introduction page
 - Added basic target language reference/api documentation to Target Lang page
 
@@ -104,10 +107,10 @@ Todo
 
 - Swapped from Raphael back to SVG.js
 - Started working with transformations, rotations, etc
-- Added 'group', 'copy', 'def', and 'get', 'radius' commands
+- Added '@group', '@copy', '@def', and '@get', '@radius' commands
 - Also adding sizing and basic animations
-- Added the 'all' command for selecting everything in the svg and making it a group
-- Added the 'duplication' command for inline element duplication
+- Added the '@all' command for selecting everything in the svg and making it a group
+- Added the '@duplication' command for inline element duplication
 - Using percentages instead of pixels now for sizing
 - Found cool svg pattern project
     - http://btmills.github.io/geopattern/geopattern.html

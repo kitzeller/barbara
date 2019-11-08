@@ -549,6 +549,16 @@ Q.prototype.step = function () {
 
                         break;
 
+                    case "@translate":
+                        let vtt = this.vars.pop();
+                        let myt = this.stack.pop() / 100 * HEIGHT;
+                        let mxt = this.stack.pop() / 100 * WIDTH;
+
+                        vtt.translate(mxt, myt);
+                        this.vars.push(vtt);
+
+                        break;
+
                     case "@center":
                         let elem_center = this.vars.pop();
                         let c_x = this.stack.pop() / 100 * HEIGHT;
