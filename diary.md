@@ -45,6 +45,7 @@ Todo
 - ~~Improve pattern command~~
 - Implement error messages (no small task) 
 - ~~Add half-square triangles (look at p5.js)~~
+- ~~Fix text outline bug~~
 - Meet with Gillian Nov 15th
 
 

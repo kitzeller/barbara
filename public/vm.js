@@ -387,8 +387,8 @@ Q.prototype.step = function () {
                         break;
 
                     case "@outline":
-                        let out_color = this.stack.pop();
                         let out_width = this.stack.pop();
+                        let out_color = this.stack.pop();
                         let out_elem = this.vars.pop();
                         try{
                             out_elem.stroke({width: out_width, color: out_color});
