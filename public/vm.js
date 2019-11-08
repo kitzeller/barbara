@@ -362,7 +362,11 @@ Q.prototype.step = function () {
                             let result = color.split('$')[1];
                             elem.fill(this.context[result]);
                         } else {
-                            elem.fill(color);
+                            try{
+                                elem.fill(color);
+                            } catch {
+                                elem.fill("#000000");
+                            }
                         }
                         this.vars.push(elem);
 
@@ -372,7 +376,11 @@ Q.prototype.step = function () {
                         let out_width = this.stack.pop();
                         let out_color = this.stack.pop();
                         let out_elem = this.vars.pop();
-                        out_elem.stroke({width: out_width, color: out_color});
+                        try{
+                            out_elem.stroke({width: out_width, color: out_color});
+                        } catch {
+                            out_elem.stroke({width: out_width, color: "#000000"});
+                        }
                         this.vars.push(out_elem);
 
                         break;
