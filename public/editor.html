@@ -114,11 +114,12 @@ Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
 TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
 HaveTerminatorAhead = . (!"**" .)* "**"
 
-word "word" = svg / circle / rect / line / ellipse / export / loop / end_loop / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
 rect = "rect" { return "@rect"; }
+triangle = "triangle" { return "@triangle"; }
 polygon = "polygon" { return "@polygon"; }
 ellipse = "ellipse" { return "@ellipse"; }
 line = "line" { return "@line"; }
@@ -270,9 +271,20 @@ _ "whitespace" = [ \t\n\r]*
         var parser = peg.generate(grammer);
 
         let input = input_cm.getValue().trim();
-        let res = parser.parse(input);
-        console.log(res);
-        $("#output").val(JSON.stringify(res));
+
+        // TODO: Check error checking?
+        try {
+            let res = parser.parse(input);
+            console.log(res);
+            $("#output").val(JSON.stringify(res));
+        } catch(ex) {
+            console.log(ex.message);
+            $("#output").val(ex.message);
+        }
+
+        // let res = parser.parse(input);
+        // console.log(res);
+        // $("#output").val(JSON.stringify(res));
     }
 
     function start() {

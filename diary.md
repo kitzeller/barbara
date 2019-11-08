@@ -10,11 +10,12 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
     - http://lab.aerotwist.com/canvas/poly-maker/
     - https://snorpey.github.io/triangulation/
 - Added default values for circle and rect
-- Added loop command for looping code!
+- Added @loop command for looping code!
 - Added loop button for auto-parsing and starting the input every second.
 - Updated pattern logic. Now patterns can be created from other svgs as well as svgs created within the editor.
 - Fix error with random colors not being valid!
 - Added optional text styling (font-family, size)
+- Added @triangle command for basic half square triangle
 
 ![Nov7 Looping](img/Nov7Looping.png)
 
@@ -24,7 +25,7 @@ Todo
 - Redo UI
 - Polar coordinates
     - Look at p5.js
-- Kaleidoscope
+- Kaleidoscope?
 - ~~Add default values for rect/circle when the expected number of arguments isn't given?~~
 - DAT.gui slider type thing in the input 
 - Map svg onto 3d babylon for quilt
@@ -36,8 +37,10 @@ Todo
 - Improve animation capabilities!
     - Filtering, easing, etc
 - ~~Improve pattern command~~
-- Set Text Font and other various attributes
+- Implement error messages (no small task) 
+- ~~Add half-square triangles (look at p5.js)~~
 - Meet with Gillian Nov 15th
+
 
 
 # 11/6/19

@@ -275,6 +275,13 @@ Q.prototype.step = function () {
 
                         break;
 
+                    case "@triangle":
+                        // Maybe not necessary?
+                        let triangle = draw.path("M 0,200 L 200,0 L 200,200 z");
+                        this.vars.push(triangle);
+
+                        break;
+
                     case "@ellipse":
                         let eh = this.stack.pop() / 100 * HEIGHT;
                         let ew = this.stack.pop() / 100 * WIDTH;
