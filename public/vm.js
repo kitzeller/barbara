@@ -127,7 +127,7 @@ function Q(score, pq, parentQ) {
     this.context = {};
     this.score = score;
 
-    this.debug = true;
+    this.debug = false;
     if (score) this.push(score);
 };
 
@@ -169,7 +169,6 @@ Q.prototype.step = function () {
 
                 // Target language
                 switch (op) {
-
                     case "@svg":
                         // creates svg as group
                         let svg_string = this.stack.pop();
@@ -388,8 +387,8 @@ Q.prototype.step = function () {
                         break;
 
                     case "@outline":
-                        let out_width = this.stack.pop();
                         let out_color = this.stack.pop();
+                        let out_width = this.stack.pop();
                         let out_elem = this.vars.pop();
                         try{
                             out_elem.stroke({width: out_width, color: out_color});
@@ -428,9 +427,11 @@ Q.prototype.step = function () {
                     case "@end-loop":
                         // Do nothing?
                         break;
+                    case "@index":
+                        // Do nothing?
+                        break;
 
                     case "@loop":
-                        // TODO: Add end-loop?
                         let loop_num = parseInt(this.stack.pop());
                         let original_todo = this.todo;
 
@@ -441,10 +442,27 @@ Q.prototype.step = function () {
                         original_todo = original_todo.slice(ind);
                         console.log("LOOP", original_todo);
 
-
-                        for (let i = 0; i < loop_num; i++){
-                            this.todo = this.todo.concat(original_todo);
+                        // Get index
+                        while (this.todo.includes("@index")){
+                            let ind = this.todo.findIndex(function(element) {
+                                return element === "@index"
+                            });
+                            this.todo[ind] = loop_num;
                         }
+
+                        for (let i = loop_num-1; i > 0; i--){
+                            console.log(i);
+                            console.log("orig ", original_todo);
+                            this.todo = this.todo.concat(original_todo);
+
+                            while (this.todo.includes("@index")){
+                                let ind = this.todo.findIndex(function(element) {
+                                    return element === "@index"
+                                });
+                                this.todo[ind] = i;
+                            }
+                        }
+                        console.log(this.todo);
                         break;
 
                     case "@repeat":
@@ -661,6 +679,28 @@ Q.prototype.step = function () {
                             s = this.stack.pop();
                         }
                         this.vars.push(st);
+                        break;
+
+                    // Arithmetic Operators
+                    case "@*":
+                        let v2_mult = this.stack.pop();
+                        let v1_mult = this.stack.pop();
+
+                        this.stack.push(v1_mult * v2_mult);
+                        break;
+
+                    case "@+":
+                        let v2_plus = this.stack.pop();
+                        let v1_plus = this.stack.pop();
+
+                        this.stack.push(v1_plus + v2_plus);
+                        break;
+
+                    case "@-":
+                        let v2_minus = this.stack.pop();
+                        let v1_minus = this.stack.pop();
+
+                        this.stack.push(v1_minus - v2_minus);
                         break;
 
                     default:

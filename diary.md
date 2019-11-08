@@ -17,8 +17,10 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Added optional text styling (font-family, size)
 - Added @triangle command for basic half square triangle
 - Added @translate command
+- Added @index reference for looping
 - Read up on [code crafters](http://www.code-crafter.com/wp/software/)
-
+- [Polar coords](https://varun.ca/polar-coords/)
+ 
 ![Nov7 Looping](img/Nov7Looping.png)
 
 ![Nov7 Pattern](img/Nov7Pattern.png)
@@ -29,6 +31,7 @@ Todo
     - Look at p5.js
 - Better Triangle support (for the quilters!)
 - Kaleidoscope?
+- Debug @flip and @diag? I think @flip is okay, but @diag has an issue
 - ~~Add default values for rect/circle when the expected number of arguments isn't given?~~
 - DAT.gui slider type thing in the input 
 - Map svg onto 3d babylon for quilt

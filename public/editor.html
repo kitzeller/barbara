@@ -114,7 +114,7 @@ Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
 TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
 HaveTerminatorAhead = . (!"**" .)* "**"
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / add / mult / subtract / $[^() \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -163,8 +163,11 @@ animate_rotate = "animate-rotate" { return "@animate-rotate"; }
 animate_move = "animate-move" { return "@animate-move"; }
 animate_color = "animate-color" { return "@animate-color"; }
 
-_ "whitespace" = [ \t\n\r]*
+add = "+" { return "@+"; }
+mult = "*" { return "@*"; }
+subtract = "-" { return "@-"; }
 
+_ "whitespace" = [ \t\n\r]*
         </textarea>
 
             <h2>Input</h2>

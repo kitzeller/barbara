@@ -295,6 +295,15 @@ z** path 100 100 size #ff0000 3000 false animate-color)
 (end-loop)
 ```
 
+### Looping with Index
+
+```
+0 0 10 10 rect white color
+2 loop
+	duplicate 4 @index * 5 * red outline 10 10 translate
+end-loop
+```
+
 ---
 
 Kit Zellerbach & Prof. Charlie Roberts
