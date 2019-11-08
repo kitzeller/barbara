@@ -37,7 +37,7 @@ Todo
 - Map svg onto 3d babylon for quilt
 - ~~Loop command -> especially w/ random numbers and colors now?~~
     - ~~for looping the code? e.g. loop queue!~~
-- Tutorial section -> search for what you want to do?
+- Tutorial section -> search for what you want to do? (By Monday Nov 11th)
     - For quilters
     - For programmers
 - Improve animation capabilities!

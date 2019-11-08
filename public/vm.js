@@ -435,34 +435,32 @@ Q.prototype.step = function () {
                         let loop_num = parseInt(this.stack.pop());
                         let original_todo = this.todo;
 
-                        let ind = original_todo.findIndex(function(element) {
-                            return element === "@end-loop"
-                        });
-
-                        original_todo = original_todo.slice(ind);
-                        console.log("LOOP", original_todo);
+                        let end_loop_ind = original_todo.lastIndexOf("@end-loop");
+                        original_todo = original_todo.slice(end_loop_ind);
 
                         // Get index
-                        while (this.todo.includes("@index")){
-                            let ind = this.todo.findIndex(function(element) {
-                                return element === "@index"
-                            });
-                            this.todo[ind] = loop_num;
+                        let while_ind = this.todo.lastIndexOf("@index");
+                        while (this.todo.includes("@index") && while_ind > end_loop_ind){
+                            while_ind = this.todo.lastIndexOf("@index");
+                            if (while_ind < end_loop_ind){
+                                break;
+                            }
+                            this.todo[while_ind] = 0;
                         }
 
-                        for (let i = loop_num-1; i > 0; i--){
-                            console.log(i);
-                            console.log("orig ", original_todo);
-                            this.todo = this.todo.concat(original_todo);
+                        for (let i = 1; i < loop_num; i++){
+                            this.todo.splice(end_loop_ind, 0, ...original_todo);
+                            console.log("todo ", this.todo);
 
-                            while (this.todo.includes("@index")){
-                                let ind = this.todo.findIndex(function(element) {
-                                    return element === "@index"
-                                });
+                            let ind = this.todo.lastIndexOf("@index")
+                            while (this.todo.includes("@index")  && ind  > end_loop_ind){
+                                ind = this.todo.lastIndexOf("@index")
+                                if (ind < end_loop_ind){
+                                    break;
+                                }
                                 this.todo[ind] = i;
                             }
                         }
-                        console.log(this.todo);
                         break;
 
                     case "@repeat":
