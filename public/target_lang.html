@@ -31,253 +31,151 @@
     <div id="content"></div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="peg-0.10.0.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
+<script src="vm.js"></script>
+
 <script type="bogus" id="sourcetext">
 <div id="toc"></div>
 
 ---
 
+Click any of the code blocks to run the code. The clear button will clear the shapes.
+
 ## Shapes
 
-### @circle (x, y, radius)
+Let's begin with creating some simple shapes.
 
-```
-[["0","0","100","@circle"]]
-```
-
-### @rect (x, y, width, height)
-
-```
-[["0","0","50","50","@rect"]]
+```javascript
+["0","0","50","50","@rect"]
 ```
 
-### @ellipse (width, height)
-
-### @line (x1, y1, x2, y2)
-
-### @path (string)
-
-```
-[["M 213.1,6.7 c -32.4-14.4-73.7,0-88.1,30.6 C 110.6,4.9,67.5-9.5,36.9,6.7 C 2.8,22.9-13.4,62.4,13.5,110.9
-C 33.3,145.1,67.5,170.3,125,217 c 59.3-46.7,93.5-71.9,111.5-106.1 C 263.4,64.2,247.2,22.9,213.1,6.7 z","@path"]]
+```javascript
+["50","100","@ellipse"]
 ```
 
-### @polygon (string)
-
+```javascript
+["0","0","50","@circle"]
 ```
-[["0,0 100,50 50,100","@polygon"]]
-```
-
-### @text (string, {font-family}, {size})
-
-Creates a Text element with the specified string. The font-family and size are optional.
-
-```
-[["hello, world","@text"]]
-```
-
-### @svg (string)
-
-Imports an svg from a string containing a svg declaration, or ${id} of a pattern in your library
-
-### @export ()
-
-Exports the svg
-
-### @random-number ()
-
-Generates a random number
-
-### @random-color ()
-
-Generates a random color
 
 
 ## Fills
 
-### @pattern (width, height)
+Now we can add color to our shapes.
 
-Any element can be used as a pattern. The preceding element in the stack will be used. For example, a call to @svg in order to use a saved
-svg patch, or input a new svg string. A call to @all can turn the entire screen into a pattern!
-
-```
-["800","800","@pattern"]
+```javascript
+["0","0","50","50","@rect","red","@color"]
 ```
 
-### @gradient (type, string)
+Or perhaps a gradient.
 
+```javascript
+["radial","0 #f06 1, 1 #0f9 1","@gradient",
+"mygrad","@define","0","0","100",
+"@circle","$mygrad","@color"]
 ```
-[["radial","0 #f06 1, 1 #0f9 1","@gradient"]]
-```
-
-### @image (url)
-
 
 ## Transformations
 
-### @color (color/patternId)
+Then we can move it:
 
-Colors the preceding element given a name or hex value, or fills with a pattern given the pattern id that has been saved using the define command
-
-```
-[...["red","@color"]]
+```javascript
+["0","0","50","50","@rect","red","@color","50","50","@move"]
 ```
 
-### @outline (color, line-width)
-
-Outlines the preceding element
-
-```
-[...["red","5","@outline"]]
+```javascript
+["0","0","50","50","@rect","red","@color","15","15","@move","45","@rotate"]
 ```
 
-### @opacity (value)
-
-Sets the opacity of the preceding element
-
-```
-[...["0.5","@opacity"]]
+```javascript
+["0","0","50","50","@rect","red","@color","50","x","@flip"]
 ```
 
-### @radius (pixels)
 
-Sets the radius of the preceding element (rounds corners for rectangles)
-
-```
-[...["5","@radius"]]
-```
-
-### @flip (offset, axis)
-
-Flips the preceding element
-
-```
-[...["5","x","@flip"]]
-```
-
-### @diag (offet)
-
-Flips the preceding element diagonally
-
-```
-[...["5","@diag"]]
-```
-
-### @rotate (degree)
-
-Rotates the preceding element
-
-```
-[...["180","@rotate"]]
-```
-
-### @repeat ()
-
-Repeats the preceding element (currently mirrors 4 times by default)
-
-```
-[...["@repeat"]]
-```
-
-### @size (x, y)
-
-Resizes the preceding element
-
-```
-[...["50","50","@size"]]
-```
-
-### @scale (x, y)
-
-Scales the preceding element
-
-```
-[...["50","50","@scale"]]
-```
-
-### @translate (x, y)
-
-Moves the preceding element by a given x and y increment
+## Math
 
 
-### @move (x, y)
-
-Moves the preceding element by its upper left corner to a given x and y position
-
-```
-[...["50","50","@move"]]
-```
-
-### @center (x, y)
-
-Move the preceding element by its center to a given x and y position
-
-```
-[...["50","50","@center"]]
-```
 
 ## Animations
 
-### @animate-color (color, time, loop?)
+Now we can animate our shape.
 
-```
-[["@all","#ffffff","4000","true","@animate-color"]]
-```
-
-### @animate-rotate (degree, time, loop?)
-
-```
-[["@all","360","4000","true","@animate-rotate"]]
+```javascript
+["0","0","50","50","@rect","#ffffff","3000","true","@animate-color"]
 ```
 
-### @animate-move (x, y, time, loop?)
 
-```
-[["@all","50","50","4000","true","@animate-move"]]
-```
+## Getting & Setting
 
-## Getters, Setters, Grouping
 
-### @loop (times)
+---
 
-### @all
+## Reference
 
-Places the entire the svg in a group, making it accessible to the next manipulation-type command
+Here are all the important concepts supported and how to format them in the target code:
 
-### @copy (variable-name)
+Shape 						    | Format
+:--- 							| :---
+Circle					    	| ```x, y, radius, @circle``` or ```@circle```
+Rectangle				    	| ```x, y, width, height, @rect``` or ```@rect```
+Ellipse					    	| ```width, height, @ellipse```
+Line					    	| ```x1, y1, x2, y2, @line```
+Polygon					    	| ```string, @polygon```
+Path					    	| ```string, @path```
+Text					    	| ```string, font-family, text-size, @text```
+SVG					        	| ```string, @svg```
 
-Copies the variable given the name and duplicates it, returning a new identical element
 
-### @duplicate ()
+Fills 						    | Format
+:--- 							| :---
+Pattern					    	| ```width, height, @pattern```
+Image				    	    | ```url, @image```
+Gradient					    | ```type, string, @gradient```
 
-Copies the last accessible element and duplicates it, returning a new identical element
 
-### @link ()
+Math			                | Format
+:--- 							| :---
+random integer from 0 to 100	| ```"@random-number"```
+a + b							| ```a, b, "@add"``` or ```a, b, "@+"```
+a - b							| ```a, b, "@sub"``` or ```a, b, "@-"```
+a * b							| ```a, b, "@mul"``` or ```a, b, "@*"```
+a / b							| ```a, b, "@div"``` or ```a, b, "@/"```
 
-Emulates the last accessible element
 
-### @define (name)
+Transformations		 			| Format
+:--- 							| :---
+Color							| ```color, @color```
+Outline							| ```color, line-width, @outline```
+Opacity							| ```alpha, @opacity```
+Radius							| ```pixels, @radius```
+Flip							| ```offset, axis, @flip```
+Diagonal Flip					| ```offset, @diag```
+Rotate							| ```degrees, @rotate```
+Repeat							| ```@repeat```
+Size							| ```width, height, @size```
+Scale							| ```width-factor, height-factor, @scale```
+Translate						| ```x-factor, y-factor, @translate```
+Move							| ```x, y, @move```
+Center							| ```x, y, @center```
 
-Creates named values ("variables") that can be re-used again later
 
-```
-[["0","0","50","50","@rect","first-def","@define"]]
-```
+Animations		                | Format
+:--- 							| :---
+Color							| ```color, time, loop?, @animate-color```
+Rotate							| ```degrees, time, loop?, @animate-rotate```
+Move							| ```x, y, time, loop?, @animate-move```
 
-### @get (name)
-
-Retrieves a variable for mental manipulation.
-
-```
-[["first-def","@get","50","50","@size"]]
-```
-
-### @group (elements...)
-
-Groups all the names of variables.
-
-```
-[["first-def","sec-def","thir-def","four-def","@group","five-def","@define"]]
-```
+Getters and Setters             | Format
+:--- 							| :---
+All							    | ```@all```
+Copy							| ```@copy```
+Duplicate						| ```@duplicate```
+Link	    					| ```@link```
+Define	    					| ```name, @define```
+Get				        		| ```name, @get```
+Group				    		| ```...names, @group```
 
 ---
 
@@ -313,6 +211,28 @@ Kit Zellerbach & Prof. Charlie Roberts
     var body = document.getElementById('sourcetext').innerText;
     document.getElementById('content').innerHTML = marked(body);
     document.getElementById('toc').innerHTML = marked(toc.join("\n"));
+
+    $(".language-javascript").each(function() {
+
+        $(this).click(function() {
+            window.seq.play_element_text(this);
+        });
+
+        $(this).parent().before('<button style="float: right" class="button-primary btn-clear">Clear</button>');
+        $(this).parent().after('<div class="res"></div>').uniqueId();
+
+    });
+
+    $(".res").each(function () {
+        $(this).uniqueId();
+    });
+
+    $(".btn-clear").each(function() {
+        $(this).click(function() {
+            $(this).next().next( ".res" ).empty()
+        });
+    });
+
 </script>
 </body>
 </html>

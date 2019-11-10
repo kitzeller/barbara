@@ -9,13 +9,36 @@ window.seq = {
 // SVG Drawing
 var WIDTH = 800;
 var HEIGHT = 800;
-var draw = SVG().addTo('#drawing').size(WIDTH, HEIGHT);
-draw.viewbox(0, 0, 800, 800);
+var draw;
 
 // this is where the externally triggered events are buffered to synchronize them to beats
 var cq = {
     cmds: []
 };
+
+uid = (function() {
+    var id = 0;
+    return function() {
+        id++;
+        return "uid"+id;
+    }
+})();
+
+///
+window.seq.play_element_text = function(element) {
+    // play element's text:
+    //console.log($(element).parent().nextAll().find(".res")[0]);
+    let id = "#" + $(element).parent().next( ".res" )[0].id;
+    window.seq.define(uid(), JSON.parse(element.innerText), id);
+    // stop the click from selecting the text:
+    // if(document.selection && document.selection.empty) {
+    //     document.selection.empty();
+    // } else if(window.getSelection) {
+    //     var sel = window.getSelection();
+    //     sel.removeAllRanges();
+    // }
+};
+///
 
 
 cq.tick = function (t) {
@@ -36,7 +59,11 @@ window.seq.addCommand = function (name, impl) {
 
 // define a svg instance.
 // if name didn't exist, create a new one.
-window.seq.define = function (name, score) {
+window.seq.define = function (name, score, dom_id) {
+    $(dom_id).empty();
+    draw = SVG().addTo(dom_id).size(WIDTH, HEIGHT);
+    draw.viewbox(0, 0, 800, 800);
+
     console.log("Creating " + typeof name + " " + Array.isArray(score));
 
     // Clear the SVG

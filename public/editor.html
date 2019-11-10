@@ -201,6 +201,7 @@ _ "whitespace" = [ \t\n\r]*
             <button onclick="start()">Start</button>
             <button onclick="exportSVG()">Export</button>
             <button id="loop" onclick="loopSVG()">Start Loop</button>
+            <button onclick="saveGrammar()">Save</button>
 
             <h2>Output</h2>
             <textarea id="output" style="width: 700px; height: 100px"></textarea>
@@ -237,6 +238,10 @@ _ "whitespace" = [ \t\n\r]*
             });
         }
     }
+    
+    function saveGrammar() {
+        window.localStorage.setItem('barbara-vm-grammar', grammar_cm.getValue());
+    }
 
     function openNav() {
         document.getElementById("mySidenav").style.width = "250px";
@@ -270,7 +275,6 @@ _ "whitespace" = [ \t\n\r]*
     });
 
     function makeParser() {
-        window.localStorage.setItem('barbara-vm-grammar', grammar_cm.getValue());
         let grammer = grammar_cm.getValue();
         var parser = peg.generate(grammer);
 
@@ -299,7 +303,7 @@ _ "whitespace" = [ \t\n\r]*
             return;
         }
         val = eval(val);
-        window.seq.define("default", val);
+        window.seq.define("default", val, "#drawing");
     }
 
     function loopSVG(){
