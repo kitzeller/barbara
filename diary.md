@@ -1,6 +1,11 @@
 # graphics-virtual-machine
 WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 
+# 11/10/19
+
+- Updated "Target Lang" page with better reference documentation and runnable code fragments.
+- Fixed a couple bugs.
+
 # 11/6/19
 
 - Added super basic svg library system
