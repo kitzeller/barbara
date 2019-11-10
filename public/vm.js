@@ -24,22 +24,11 @@ uid = (function() {
     }
 })();
 
-///
+
 window.seq.play_element_text = function(element) {
-    // play element's text:
-    //console.log($(element).parent().nextAll().find(".res")[0]);
     let id = "#" + $(element).parent().next( ".res" )[0].id;
     window.seq.define(uid(), JSON.parse(element.innerText), id);
-    // stop the click from selecting the text:
-    // if(document.selection && document.selection.empty) {
-    //     document.selection.empty();
-    // } else if(window.getSelection) {
-    //     var sel = window.getSelection();
-    //     sel.removeAllRanges();
-    // }
 };
-///
-
 
 cq.tick = function (t) {
     this.resume();

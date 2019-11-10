@@ -9,6 +9,7 @@
     <link href="css/normalize.css" rel="stylesheet">
     <link href="css/skeleton.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+
     <title>Target Language</title>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -60,6 +61,19 @@ Let's begin with creating some simple shapes.
 ["0","0","50","@circle"]
 ```
 
+```javascript
+["@triangle"]
+```
+
+Some more complex shapes.
+
+```javascript
+["0,0 100,50 50,100","@polygon"]
+```
+
+```javascript
+["100,10 40,198 190,78 10,78 160,198","@polygon"]
+```
 
 ## Fills
 
@@ -93,9 +107,27 @@ Then we can move it:
 ["0","0","50","50","@rect","red","@color","50","x","@flip"]
 ```
 
+```javascript
+["@triangle","30","30","@center","@repeat"]
+```
+
+```javascript
+["@rect","red","@color","@duplicate","blue","@color","50","50","@move"]
+```
+
+
+```javascript
+["0","0","100","@circle","black","@color",
+"50","50","50","@circle","lightblue","@color","50","50","@center",
+"0","0","100","100","@rect","lightgrey","@color","back","@order"]
+```
 
 ## Math
 
+```javascript
+["@random-number","@random-number","@random-number","@random-number","@line",
+"@random-color","@random-number","@outline"]
+```
 
 
 ## Animations
@@ -106,8 +138,38 @@ Now we can animate our shape.
 ["0","0","50","50","@rect","#ffffff","3000","true","@animate-color"]
 ```
 
+```javascript
+["10","10","50","50","@rect","360","3000","true","@animate-rotate"]
+```
+
 
 ## Getting & Setting
+
+```javascript
+["0","0","50","50","@rect","first-def","@define","first-def","@get","blue","@color"]
+```
+
+```javascript
+["10","10","15","@circle","red","@color","1","@define",
+"20","20","15","@circle","green","@color","2","@define",
+"30","30","15","@circle","blue","@color","3","@define",
+"40","40","15","@circle","white","@color","4","@define",
+"1","2","3","4","@group","5","@define",
+"5","@get","@repeat"]
+```
+
+
+## Misc.
+
+Looping!
+
+```javascript
+["0","0","10","10","@rect",
+"white","@color",
+"2","@loop",
+"@duplicate","4","@index","@*","5","@*","red","@outline","10","10","@translate",
+"@end-loop"]
+```
 
 
 ---
@@ -124,6 +186,7 @@ Ellipse					    	| ```width, height, @ellipse```
 Line					    	| ```x1, y1, x2, y2, @line```
 Polygon					    	| ```string, @polygon```
 Path					    	| ```string, @path```
+Triangle				    	| ```@triangle```
 Text					    	| ```string, font-family, text-size, @text```
 SVG					        	| ```string, @svg```
 
@@ -135,8 +198,9 @@ Image				    	    | ```url, @image```
 Gradient					    | ```type, string, @gradient```
 
 
-Math			                | Format
+Math/Random			            | Format
 :--- 							| :---
+random color                    | ```"@random-color"```
 random integer from 0 to 100	| ```"@random-number"```
 a + b							| ```a, b, "@add"``` or ```a, b, "@+"```
 a - b							| ```a, b, "@sub"``` or ```a, b, "@-"```
@@ -159,6 +223,7 @@ Scale							| ```width-factor, height-factor, @scale```
 Translate						| ```x-factor, y-factor, @translate```
 Move							| ```x, y, @move```
 Center							| ```x, y, @center```
+Order							| ```placement, @order``` where placement is one of ```back, backward, front, forward```
 
 
 Animations		                | Format
@@ -167,7 +232,7 @@ Color							| ```color, time, loop?, @animate-color```
 Rotate							| ```degrees, time, loop?, @animate-rotate```
 Move							| ```x, y, time, loop?, @animate-move```
 
-Getters and Setters             | Format
+Getters, Setters and Misc       | Format
 :--- 							| :---
 All							    | ```@all```
 Copy							| ```@copy```
@@ -176,6 +241,9 @@ Link	    					| ```@link```
 Define	    					| ```name, @define```
 Get				        		| ```name, @get```
 Group				    		| ```...names, @group```
+Begin Loop		          		| ```@loop```
+End Loop		          		| ```@end-loop```
+Loop Index	          	    	| ```@index```
 
 ---
 
