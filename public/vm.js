@@ -759,7 +759,8 @@ Q.prototype.step = function () {
                         $("#" + the_uid).on("input",function(){
                             switch (slider_type) {
                                 case "rotation":
-                                    that.context[var_name].rotate($(this).val());
+                                    let current_rotation = that.context[var_name].transform().rotate;
+                                    that.context[var_name].rotate($(this).val() - current_rotation);
                                     break;
                                 case "sizingxy":
                                     console.log($(this).val());
