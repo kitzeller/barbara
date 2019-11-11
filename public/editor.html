@@ -311,15 +311,23 @@ all repeat
         htmlNode.value = 0;
         htmlNode.step = 1;
         // input_cm.addWidget({ch: A2, line: A1}, htmlNode, true);
-        var mt = input_cm.markText({line: A1, ch: B1}, {line: A1, ch: B2}, {
+        input_cm.markText({line: A1, ch: B1}, {line: A1, ch: B2}, {
             className: "to-replace",
             replacedWith: htmlNode
         });
         htmlNode.onchange = function(){
+            if (input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2}).includes(" ")){
+                B2--;
+            }
             input_cm.replaceRange(this.value,{line: A1, ch: B1}, {line: A1, ch: B2});
             console.log(B1, B2);
             makeParser();
             start();
+
+            input_cm.markText({line: A1, ch: B1}, {line: A1, ch: B1 + this.value.length}, {
+                className: "to-replace",
+                replacedWith: htmlNode
+            });
         };
     }
 
