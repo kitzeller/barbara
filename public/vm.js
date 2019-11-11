@@ -292,9 +292,14 @@ Q.prototype.step = function () {
                         break;
 
                     case "@triangle":
-                        // Maybe not necessary?
-                        let triangle = draw.path("M 0,200 L 200,0 L 200,200 z");
-                        this.vars.push(triangle);
+                        if (this.stack.length < 1) {
+                            let triangle = draw.path("M 0,200 L 200,0 L 200,200 z");
+                            this.vars.push(triangle);
+                        } else {
+                            let side_size = parseInt(this.stack.pop())/100 * WIDTH;
+                            let triangle = draw.path("M 0,"+side_size+" L "+side_size+",0 L "+side_size+","+side_size+" z");
+                            this.vars.push(triangle);
+                        }
 
                         break;
 
@@ -712,13 +717,23 @@ Q.prototype.step = function () {
 
                     // Arithmetic Operators
                     case "@*":
+                    case "@mul":
                         let v2_mult = this.stack.pop();
                         let v1_mult = this.stack.pop();
 
                         this.stack.push(v1_mult * v2_mult);
                         break;
 
+                    case "@/":
+                    case "@div":
+                        let v2_div = this.stack.pop();
+                        let v1_div = this.stack.pop();
+
+                        this.stack.push(v1_div / v2_div);
+                        break;
+
                     case "@+":
+                    case "@add":
                         let v2_plus = this.stack.pop();
                         let v1_plus = this.stack.pop();
 
@@ -726,6 +741,7 @@ Q.prototype.step = function () {
                         break;
 
                     case "@-":
+                    case "@sub":
                         let v2_minus = this.stack.pop();
                         let v1_minus = this.stack.pop();
 

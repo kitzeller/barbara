@@ -7,7 +7,22 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Updated "Parsing" page, totally stealing everything from https://worldmaking.github.io/workshop_nime_2017/tutorial.html
 - Updated "Quilting page", for a tutorial geared towards quilters. (Still a work in progress)
 - Fixed a couple bugs.
+- Updated @triangle for optional sizes
 - Added polar coordinate system `r, theta, @polar`
+    - https://editor.p5js.org/liz-peng/sketches/CdYMzb7KI
+    - https://github.com/liz-peng/p5.polar
+- Looked at http://www.eukleides.org/samples.html
+
+Todo
+- Better Triangle support (for the quilters!)
+- Kaleidoscope?
+- Debug @flip and @diag? I think @flip is okay, but @diag has an issue
+- DAT.gui slider type thing in the input 
+- Map svg onto 3d babylon for quilt
+- Improve animation capabilities!
+    - Filtering, easing, etc
+- Meet with Gillian Nov 15th
+- Implement error messages (no small task) 
 
 # 11/6/19
 
@@ -34,30 +49,17 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 ![Nov7 Pattern](img/Nov7Pattern.png)
     
 Todo
-- Redo UI
 - ~~Polar coordinates~~
     - ~~Look at p5.js~~
-    - https://editor.p5js.org/liz-peng/sketches/CdYMzb7KI
-    - https://github.com/liz-peng/p5.polar
-- Better Triangle support (for the quilters!)
-- Kaleidoscope?
-- Debug @flip and @diag? I think @flip is okay, but @diag has an issue
 - ~~Add default values for rect/circle when the expected number of arguments isn't given?~~
-- DAT.gui slider type thing in the input 
-- Map svg onto 3d babylon for quilt
 - ~~Loop command -> especially w/ random numbers and colors now?~~
     - ~~for looping the code? e.g. loop queue!~~
 - ~~Tutorial section (By Monday Nov 11th)~~
     - ~~For quilters~~
     - ~~For programmers~~
-- Improve animation capabilities!
-    - Filtering, easing, etc
 - ~~Improve pattern command~~
-- Implement error messages (no small task) 
 - ~~Add half-square triangles (look at p5.js)~~
 - ~~Fix text outline bug~~
-- Meet with Gillian Nov 15th
-
 
 
 # 11/6/19

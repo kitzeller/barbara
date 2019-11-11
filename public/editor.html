@@ -174,28 +174,15 @@ _ "whitespace" = [ \t\n\r]*
             <h2>Input</h2>
             <code>Cmd+Enter</code> to parse, <code>Shift+Enter</code> to run and <code>Alt+Enter</code> to export!
             <textarea id="input">
-(((0 0 50 50 rect) first-def define) first-def get blue color yellow 10 outline)
-(((0 50 50 50 rect) sec-def define) sec-def get red color blue 10 outline)
-(((50 0 50 50 rect) thir-def define) thir-def get yellow color green 10 outline)
-(((50 50 50 50 rect) four-def define) four-def get green color red 10 outline)
-
-(first-def sec-def thir-def four-def group five-def define)
-
-(five-def get 50 50 size)
-
-(five-def copy fivedef-cpy define fivedef-cpy get 50 50 move 180 rotate)
-(five-def copy fivedef-cpy1 define fivedef-cpy1 get 0 50 move 270 rotate)
-(five-def copy fivedef-cpy2 define fivedef-cpy2 get 50 0 move 90 rotate)
-
-(five-def fivedef-cpy fivedef-cpy1 fivedef-cpy2 group bigone define)
-(bigone get 50 50 size)
-
-(bigone copy big-cpy define big-cpy get 50 50 move)
-(bigone copy big-cpy1 define big-cpy1 get 0 50 move)
-(bigone copy big-cpy2 define big-cpy2 get 50 0 move)
-
-(all 50 50 size repeat)
-(all duplicate 45 rotate)
+triangle random-color color 180 rotate
+triangle random-color color 180 rotate 25 0 translate
+triangle random-color color 25 0 translate
+triangle random-color color 180 rotate 0 25 translate
+triangle random-color color 0 25 translate
+triangle random-color color
+duplicate 25 25 translate random-color color
+duplicate 180 rotate random-color color
+all repeat
         </textarea>
 
             <button onclick="makeParser()">Parse!</button>

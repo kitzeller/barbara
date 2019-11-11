@@ -237,7 +237,6 @@ app.get('/sessions',
 app.get('/sessions/:id',
     function (req, res) {
         Session.findOne({_id: req.params.id}, function (err, data) {
-            console.log(data);
             res.send(data);
         });
     });
