@@ -12,17 +12,18 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
     - https://editor.p5js.org/liz-peng/sketches/CdYMzb7KI
     - https://github.com/liz-peng/p5.polar
 - Looked at http://www.eukleides.org/samples.html
+- Created GitHub project page
 
 Todo
 - Better Triangle support (for the quilters!)
 - Kaleidoscope?
 - Debug @flip and @diag? I think @flip is okay, but @diag has an issue
 - DAT.gui slider type thing in the input 
-- Map svg onto 3d babylon for quilt
 - Improve animation capabilities!
     - Filtering, easing, etc
 - Meet with Gillian Nov 15th
 - Implement error messages (no small task) 
+- Clean up UI CSS
 
 # 11/6/19
 
