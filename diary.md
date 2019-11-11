@@ -14,6 +14,16 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Looked at http://www.eukleides.org/samples.html
 - Updated color command to allow for groups!
 - Created GitHub project page for future TODO tasks
+- Added _very_ basic slider
+
+```
+["@triangle","@random-color","@color",
+"50","50","@move","tri1","@define",
+"tri1","rotation","0","360","@slider",
+"@triangle","@random-color","@color",
+"tri2","@define",
+"tri2","sizingxy","1","100","@slider"]
+```
 
 # 11/6/19
 

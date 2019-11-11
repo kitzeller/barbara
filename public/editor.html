@@ -98,6 +98,14 @@
     <div id="side-content" style="padding: 10px">
         <h2>Saved Sessions</h2>
     </div>
+
+    <div style="padding: 10px">
+        <h2>Sliders</h2>
+    </div>
+
+    <div id="sliders" style="padding: 10px">
+
+    </div>
 </div>
 
 <!--CodeMirror-->
@@ -114,7 +122,7 @@ Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
 TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
 HaveTerminatorAhead = . (!"**" .)* "**"
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / add / mult / subtract / $[^() \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / add / mult / subtract / $[^() \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -153,6 +161,7 @@ group = "group" { return "@group"; }
 copy = "copy" { return "@copy"; }
 duplicate = "duplicate" { return "@duplicate"; }
 link = "link" { return "@link"; }
+slider = "slider" { return "@slider"; }
 
 random_number = "random-number" { return "@random-number"; }
 random_color = "random-color" { return "@random-color"; }
@@ -222,7 +231,7 @@ all repeat
         for (let o of obj.ids) {
             $.getJSON("sessions/" + o, function (data) {
                 window.savedSessions[data._id] = data;
-                $('#side-content').append("<h2>" + data.name + "</h2>");
+                $('#side-content').append("<h3>" + data.name + "</h3>");
                 $('#side-content').append("<h5>" + data._id + "</h5>");
             });
         }
@@ -266,7 +275,6 @@ all repeat
     function makeParser() {
         let grammer = grammar_cm.getValue();
         var parser = peg.generate(grammer);
-
         let input = input_cm.getValue().trim();
 
         // TODO: Check error checking?
@@ -278,10 +286,6 @@ all repeat
             console.log(ex.message);
             $("#output").val(ex.message);
         }
-
-        // let res = parser.parse(input);
-        // console.log(res);
-        // $("#output").val(JSON.stringify(res));
     }
 
     function start() {

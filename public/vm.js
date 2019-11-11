@@ -52,6 +52,7 @@ window.seq.define = function (name, score, dom_id) {
     $(dom_id).empty();
     draw = SVG().addTo(dom_id).size(WIDTH, HEIGHT);
     draw.viewbox(0, 0, 800, 800);
+    $("#sliders").empty();
 
     console.log("Creating " + typeof name + " " + Array.isArray(score));
 
@@ -742,6 +743,30 @@ Q.prototype.step = function () {
                             s = this.stack.pop();
                         }
                         this.vars.push(st);
+                        break;
+
+                    case "@slider":
+                        let max_val = this.stack.pop();
+                        let min_val = this.stack.pop();
+                        let slider_type = this.stack.pop();
+                        let var_name = this.stack.pop();
+
+                        let the_uid = uid();
+                        console.log(the_uid);
+                        $("#sliders").append("<h3>" + var_name + " - " + slider_type + "</h3>")
+                        $("#sliders").append("<input type = \"range\" min=\""+min_val+"\" max=\""+ max_val+"\" value=\"0\" step=\"1\" id=\""+the_uid+"\"/>")
+                        const that = this;
+                        $("#" + the_uid).on("change",function(){
+                            switch (slider_type) {
+                                case "rotation":
+                                    that.context[var_name].rotate($(this).val());
+                                    break;
+                                case "sizingxy":
+                                    console.log($(this).val());
+                                    that.context[var_name].size($(this).val()/100 * WIDTH, $(this).val()/100 * HEIGHT);
+                                    break;
+                            }
+                        });
                         break;
 
                     // Arithmetic Operators
