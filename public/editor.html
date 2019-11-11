@@ -316,8 +316,12 @@ all repeat
             replacedWith: htmlNode
         });
         htmlNode.onchange = function(){
+            // Still pretty glitchy - works great if the value is on it's own line
             if (input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2}).includes(" ")){
                 B2--;
+            } else if (parseInt(input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2+1}))){
+                B2++;
+                B2++;
             }
             input_cm.replaceRange(this.value,{line: A1, ch: B1}, {line: A1, ch: B2});
             console.log(B1, B2);
