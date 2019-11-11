@@ -9,6 +9,52 @@
     <link href="css/normalize.css" rel="stylesheet">
     <link href="css/skeleton.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        /* see http://getskeleton.com/ */
+        html {
+            font-size: 50%;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .input {
+            color: black;
+            min-height: 100px;
+            width: 50%;
+            max-width: 50%;
+            font-family: monospace;
+            word-wrap: break-word;
+        }
+
+        h1, h2, h3, h4, h5, h6, pre {
+            clear: both;
+        }
+
+        .result {
+            float: right;
+            width: 45%;
+            max-width: 45%;
+            min-height: 80px;
+            padding: 1%;
+            background: #eee;
+            word-wrap: break-word;
+            white-space: pre-wrap; /* css-3 */
+            white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+            white-space: -o-pre-wrap; /* Opera 7 */
+        }
+
+        textarea {
+        }
+    </style>
+
     <title>Quilting</title>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -22,7 +68,7 @@
 
     <button onclick="window.location.href='intro.html'">Introduction</button>
     <button onclick="window.location.href='target_lang.html'">Target Lang</button>
-    <button onclick="window.location.href='tutorial.html'">Tutorial</button>
+    <button onclick="window.location.href='tutorial.html'">Parsing</button>
     <button class="button-primary" onclick="window.location.href='quilting.html'">Quilting</button>
     <button onclick="window.location.href='editor.html'">Editor</button>
 </div>
@@ -31,23 +77,281 @@
 </div>
 
 <script type="bogus" id="sourcetext">
-The VM was developed to help quilters.
-
 "Quilting is the process of sewing two or more layers of fabric together to make a thicker padded material, usually to create a quilt or quilted garment" - [wikipedia](https://en.wikipedia.org/wiki/Quilting)
+
+
+<div id="toc"></div>
+
+
+## Examples
+
+
+### Circles
+
+```peg
+start "start" = term +
+term "term" = body:(word) _ { return body; }
+
+word "word" = circle
+
+circle = "circle" { return "@circle"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">circle</textarea>
+
+
+### Circles v2
+
+```peg
+start "start" = term +
+term "term" = body:(word) _ { return body; }
+
+word "word" = circle / $[^ \t\n\r]+
+
+circle = "circle" { return "@circle"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">0 0 50 circle</textarea>
+
+### Triangles
+
+```peg
+start "start" = term +
+term "term" = body:(Text / list / word) _ { return body; }
+list "list" = "(" _ body:term* ")" { return body; }
+
+Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
+TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
+HaveTerminatorAhead = . (!"**" .)* "**"
+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
+
+svg = "svg" { return "@svg"; }
+circle = "circle" { return "@circle"; }
+rect = "rect" { return "@rect"; }
+triangle = "triangle" { return "@triangle"; }
+polygon = "polygon" { return "@polygon"; }
+ellipse = "ellipse" { return "@ellipse"; }
+line = "line" { return "@line"; }
+path = "path" { return "@path"; }
+text = "text" { return "@text"; }
+
+pattern = "pattern" { return "@pattern"; }
+gradient = "gradient" { return "@gradient"; }
+image = "image" { return "@image"; }
+
+color = "color" { return "@color"; }
+opacity = "opacity" { return "@opacity"; }
+radius = "radius" { return "@radius"; }
+flip = "flip" { return "@flip"; }
+order = "order" { return "@order"; }
+repeat = "repeat" { return "@repeat"; }
+diag = "diag" { return "@diag"; }
+outline = "outline" { return "@outline"; }
+rotate = "rotate" { return "@rotate"; }
+move = "move" { return "@move"; }
+translate = "translate" { return "@translate"; }
+center = "center" { return "@center"; }
+size = "size" { return "@size"; }
+scale = "scale" { return "@scale"; }
+
+end_loop = "end-loop" { return "@end-loop"; }
+loop = "loop" { return "@loop"; }
+all = "all" { return "@all"; }
+group = "group" { return "@group"; }
+copy = "copy" { return "@copy"; }
+duplicate = "duplicate" { return "@duplicate"; }
+link = "link" { return "@link"; }
+
+random_number = "random-number" { return "@random-number"; }
+random_color = "random-color" { return "@random-color"; }
+define = "define" { return "@define"; }
+get = "get" { return "@get"; }
+export = "export" { return "@export"; }
+
+animate_rotate = "animate-rotate" { return "@animate-rotate"; }
+animate_move = "animate-move" { return "@animate-move"; }
+animate_color = "animate-color" { return "@animate-color"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">triangle random-color color 180 rotate
+triangle random-color color 180 rotate 25 0 translate
+triangle random-color color 25 0 translate
+triangle random-color color 180 rotate 0 25 translate
+triangle random-color color 0 25 translate
+triangle random-color color
+duplicate 25 25 translate random-color color
+duplicate 180 rotate random-color color
+all repeat
+</textarea>
+
+### Looping
+
+```peg
+start "start" = term +
+term "term" = body:(Text / list / word) _ { return body; }
+list "list" = "(" _ body:term* ")" { return body; }
+
+Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
+TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
+HaveTerminatorAhead = . (!"**" .)* "**"
+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / add / mult / subtract / $[^() \t\n\r]+
+
+svg = "svg" { return "@svg"; }
+circle = "circle" { return "@circle"; }
+rect = "rect" { return "@rect"; }
+triangle = "triangle" { return "@triangle"; }
+polygon = "polygon" { return "@polygon"; }
+ellipse = "ellipse" { return "@ellipse"; }
+line = "line" { return "@line"; }
+path = "path" { return "@path"; }
+text = "text" { return "@text"; }
+
+pattern = "pattern" { return "@pattern"; }
+gradient = "gradient" { return "@gradient"; }
+image = "image" { return "@image"; }
+
+color = "color" { return "@color"; }
+opacity = "opacity" { return "@opacity"; }
+radius = "radius" { return "@radius"; }
+flip = "flip" { return "@flip"; }
+order = "order" { return "@order"; }
+repeat = "repeat" { return "@repeat"; }
+diag = "diag" { return "@diag"; }
+outline = "outline" { return "@outline"; }
+rotate = "rotate" { return "@rotate"; }
+move = "move" { return "@move"; }
+translate = "translate" { return "@translate"; }
+center = "center" { return "@center"; }
+size = "size" { return "@size"; }
+scale = "scale" { return "@scale"; }
+
+end_loop = "end-loop" { return "@end-loop"; }
+loop = "loop" { return "@loop"; }
+all = "all" { return "@all"; }
+group = "group" { return "@group"; }
+copy = "copy" { return "@copy"; }
+duplicate = "duplicate" { return "@duplicate"; }
+link = "link" { return "@link"; }
+
+random_number = "random-number" { return "@random-number"; }
+random_color = "random-color" { return "@random-color"; }
+define = "define" { return "@define"; }
+get = "get" { return "@get"; }
+export = "export" { return "@export"; }
+
+animate_rotate = "animate-rotate" { return "@animate-rotate"; }
+animate_move = "animate-move" { return "@animate-move"; }
+animate_color = "animate-color" { return "@animate-color"; }
+
+add = "+" { return "@+"; }
+mult = "*" { return "@*"; }
+subtract = "-" { return "@-"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">0 0 10 10 rect white color
+4 loop
+	duplicate red @index @index * 5 * outline 10 10 translate
+end-loop
+all repeat
+all duplicate 45 rotate
+all duplicate 22.5 rotate
+0 0 100 100 rect black color back order
+</textarea>
 
 ---
 
 Kit Zellerbach & Prof. Charlie Roberts
+
 </script>
 
-<!--<script src="https://code.jquery.com/jquery-3.4.1.js"></script>-->
-<!--<script src="peg-0.10.0.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>-->
-<!--<script src="vm.js"></script>-->
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="peg-0.10.0.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
+<script src="vm.js"></script>
 
 <script>
-var body = document.getElementById('sourcetext').innerText;
-document.getElementById('content').innerHTML = marked(body);
+    var renderer = new marked.Renderer();
+    // insert a bit of extra logic to the renderer to pull out heading links:
+    var toc = [];
+    renderer.heading = function (text, level, raw) {
+        var anchor = this.options.headerPrefix + raw.toLowerCase().replace(/[^\w]+/g, '-');
+        if (level > 1) {
+            toc.push(
+                "\t".repeat(level - 2)
+                + "- [" + text + "](#" + anchor + ")"
+            );
+        }
+        return '<h' + level + ' id="' + anchor + '">'
+            + text
+            + '</h' + level + '>\n';
+    };
+
+    marked.setOptions({
+        renderer: renderer,
+        gfm: true,
+        tables: true,
+        sanitize: false,
+        smartLists: true,
+        smartypants: false
+    });
+
+    var body = document.getElementById('sourcetext').innerText;
+    document.getElementById('content').innerHTML = marked(body);
+    document.getElementById('toc').innerHTML = marked(toc.join("\n"));
+
+    $(".input").each(function() {
+        $(this).keyup(function() { changed_value(this); });
+        $(this).focus(function() { changed_value(this); });
+        $(this).after('<div class="res"></div>');
+        $(this).after('<code class="result"></code>');
+        changed_value(this, true);
+    });
+
+    $(".res").each(function () {
+        $(this).uniqueId();
+    });
+
+    function changed_value(element, noplay) {
+        var input = $(element)[0].value;
+        var grammar;
+        // find previous grammar:
+        try{
+            grammar = $(element).parent().prevAll(":has(.language-peg):first").find(".language-peg")[0].innerText;
+        } catch(ex) {
+            return;
+        }
+
+        var result = "";
+        try {
+            // update our parser:
+            var parser = peg.generate(grammar);
+            var output = parser.parse(input);
+            result = JSON.stringify(output);
+            // try to play it?
+            if (!noplay && Array.isArray(output)) {
+                // console.log(window.seq.define, output);
+                // window.seq.clear();
+                console.log($(element).next().next()[0]);
+                let id = "#" + $(element).next().next()[0].id;
+                window.seq.define("default", output, id);
+            }
+        } catch(ex) {
+            //console.log(ex.message);
+            result = ex.message;
+        }
+        $(element).next( ".result" )[0].innerText = result; //.text(result);
+    }
 </script>
 </body>
 </html>

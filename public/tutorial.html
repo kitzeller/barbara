@@ -11,28 +11,31 @@
     <link href="css/style.css" rel="stylesheet">
 
     <style>
-        html {
-            font-size: 50%;
+        html { font-size: 50%; }
+        table { width:100%; }
+        img { width: 100%; max-width: 100%; }
+        .input {
+            min-height: 1em; width:50%; max-width: 50%;
+            font-family: monospace;
         }
-
-        table {
-            width: 100%;
-        }
-
-        img {
-            width: 100%;
-            max-width: 100%;
-        }
-
         h1, h2, h3, h4, h5, h6, pre {
             clear: both;
         }
+        .result {
+            float: right;
+            width:45%; max-width: 45%; padding: 1%;
+            background: #eee;
+            word-wrap: break-word;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+        }
 
-        textarea {
+        textarea{
             color: black;
         }
     </style>
-    <title>Tutorial</title>
+    <title>Parsing Tutorial</title>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
@@ -51,7 +54,7 @@
 
     <button onclick="window.location.href='intro.html'">Introduction</button>
     <button onclick="window.location.href='target_lang.html'">Target Lang</button>
-    <button class="button-primary" onclick="window.location.href='tutorial.html'">Tutorial</button>
+    <button class="button-primary" onclick="window.location.href='tutorial.html'">Parsing</button>
     <button onclick="window.location.href='quilting.html'">Quilting</button>
     <button onclick="window.location.href='editor.html'">Editor</button>
 </div>
@@ -65,7 +68,7 @@
 
 ---
 
-
+**In any of the examples below, you can edit the input text and see the output immediately.**
 
 ## The most common grammar concepts
 
@@ -80,229 +83,675 @@ We write grammars as a set of pattern-based rules. A rule has:
 ![rule](img/grammar.png)
 
 
-## Grammar Input Examples
+The simplest grammar has only one rule, and the simplest kind of rule looks like this:
 
-### Polygon Example
-```
-(*0,0 100,50 50,100** polygon)
-```
-
-### Duplication Example
-```
-(*0,0 100,50 50,100** polygon
-duplicate 10 10 move
-duplicate 20 20 move
-duplicate 30 30 move)
+```peg
+start = "hello"
 ```
 
-### Duplication Example
-```
-(0 0 100 100 rect red color)
-(*100,10 40,198 190,78 10,78 160,198** polygon duplicate 25 25 move duplicate 50 50 move duplicate 75 75 move)
-(all 50 50 size duplicate 50 50 move duplicate 0 50 move duplicate 50 0 move)
-(all duplicate 50 50 size 25 25 move 90 rotate white color)
-(all 50 50 size)
-(all duplicate 50 x flip)
-(all duplicate 50 y flip)
-```
+Here `start` is the rule's name, and `"hello"` is the pattern it recognizes. In this case it will **match** the input only if the input has exactly the word *hello* (and nothing else). That is, if you give it the input string hello it will output "hello". But if you give it any other input string, like bye, it will result in an error like *Expected "hello" but "b" found.* Even an extra space or fullstop after the *hello* will break it. Try it:
 
+<textarea class="input">hello</textarea>
 
-### Repetition, Ordering & Animation
-```
-(0 0 100 circle black color)
-(50 50 50 circle lightblue color)
-(all 50 50 size repeat)
-(all 50 50 size repeat)
-(all 50 50 size 35 rotate)
-(all repeat)
+Parsing grammars are often used to more than just *match* an input; they become really powerful when they do some kind of **translation** of the input. This generally means *modifying what a rule returns*. The concept of *modifying what a rule returns* is achieved through **actions**. Actions redefine what the rule returns when it matches input (rather than just returning the input itself). Actions are wrapped in ```{``` and ```}``` curly parentheses, and should contain a ```return``` statement to specify what is returned. For example, we could add an action to our parser to return our input in a different language:
 
-(all 360 3000 true animate-rotate)
-
-(0 0 100 100 rect lightgrey color back order)
+```peg
+start = "hello" { return "hej"; }
 ```
 
-### Repetition, Ordering & Animation
-```
-(0 0 100 circle black color)
-(50 50 50 circle lightblue color)
-(all 50 50 size repeat)
-(all 50 50 size repeat)
-(all 50 50 size 35 rotate)
-(all repeat)
+<textarea class="input">hello</textarea>
 
-(all 360 3000 true animate-rotate)
+When considering a parser as a translator like this (sometimes also known as a "transpiler"), the language recognized and translated from is the **source language**, and the language produced as a result is the **target language**. We're going to be inventing new mini-languages for live coding as our source languages, and we're going to use a simple list-based instruction set for making sounds, loops, and so on as our target language.
 
-(((0 0 50 50 rect) first-def define) first-def get grey color)
-(((0 50 50 50 rect) sec-def define) sec-def get pink color)
-(((50 0 50 50 rect) thir-def define) thir-def get lightgreen color)
-(((50 50 50 50 rect) four-def define) four-def get violet color)
+---
 
-(first-def sec-def thir-def four-def group five-def define)
-(five-def get 50 50 size repeat five-def define)
-(five-def get back order)
-```
+These are the basics. The rest is just learning how these can get more expressive. For example, the patterns of a rule can include more than just strings of text; they can have sequences, alternate options, optional items, and most importantly, they can refer to other rules. And as we shall see later, what goes between the ```{``` and ```}``` of an action is actually a fragment of Javascript code. That means we can do all kinds of interesting transformations in our translations.
 
-### Squares!
-```
-(((0 0 50 50 rect) first-def define) first-def get blue color)
-(((0 50 50 50 rect) sec-def define) sec-def get red color)
-(((50 0 50 50 rect) thir-def define) thir-def get yellow color)
-(((50 50 50 50 rect) four-def define) four-def get green color)
+---
 
-(first-def sec-def thir-def four-def group five-def define)
+### This then that (sequence)
 
-(five-def get 50 50 size)
+There are only a handful of basic concepts used in the design of a rule's pattern. Let's look at the most common ones.
 
-(five-def copy fivedef-cpy define fivedef-cpy get 50 50 move 180 rotate)
-(five-def copy fivedef-cpy1 define fivedef-cpy1 get 0 50 move 270 rotate)
-(five-def copy fivedef-cpy2 define fivedef-cpy2 get 50 0 move 90 rotate)
+The simplest concept is of the *sequence of items*. And to specify this concept in a pattern, we just put each of the items in the pattern, with spaces between. For example, we could have considered our match of ```hello``` as matching a sequence of characters, and written it as follows. It functions in exactly the same way:
 
-(five-def fivedef-cpy fivedef-cpy1 fivedef-cpy2 group bigone define)
-(bigone get 50 50 size)
-
-(bigone copy big-cpy define big-cpy get 50 50 move)
-(bigone copy big-cpy1 define big-cpy1 get 0 50 move)
-(bigone copy big-cpy2 define big-cpy2 get 50 0 move)
-
-(all 50 50 size repeat)
-(all duplicate 45 rotate)
-
+```peg
+start = "h" "e" "l" "l" "o"
 ```
 
+<textarea class="input">hello</textarea>
 
-### Glowing Red Heart
-```
-(*M 213.1,6.7
-c -32.4-14.4-73.7,0-88.1,30.6
-C 110.6,4.9,67.5-9.5,36.9,6.7
-C 2.8,22.9-13.4,62.4,13.5,110.9
-C 33.3,145.1,67.5,170.3,125,217
-c 59.3-46.7,93.5-71.9,111.5-106.1
-C 263.4,64.2,247.2,22.9,213.1,6.7
-z** path 100 100 size #ff0000 3000 false animate-color)
+### This or that (alternates)
+
+Grammars would be pretty uselessly inflexible if they only recognized one thing. To make flexibility we have a few options. For example, to recognize one of two words, we could use the ```/``` alternate symbol:
+
+```peg
+start = "hello" / "bye"
 ```
 
+<textarea class="input">hello</textarea>
 
+<textarea class="input">bye</textarea>
 
-### Patterns
+*Choice is ordered*, which is important. If the first of a set of alternatives matches, the others will be ignored. It can be important therefore to list your alternatives with the most specific/complex first, the most general/simple last. As a simple example, ```"a" / "aa"``` will never select the second option, as the first one would have been valid.
 
-```
-(rect random-color color)
-(rect random-color color 50 50 move)
-(rect random-color color 0 50 move)
-(rect random-color color 50 0 move)
-(all 50 50 size repeat)
-(all 50 50 size repeat)
-(all 50 50 size repeat)
+Back to our grammar above, the problem is, this can only recognize the words we defined in the grammar. What if we wanted to recognize any old word (even nonsense and imaginary ones)? Well, remembering that we can split a word into a sequence of letters, let's simplify the problem to recognizing any letter. We could start with something like this:
 
-(800 800 pattern mything define)
-(0 0 100 circle $mything color)
+```peg
+letter = "a" / "b" / "c" / "d" / "e"
 ```
 
-### Gradient
+...and so on. Didn't want to write all 26 letters.
 
-```
-(radial *0 #f06 1, 1 #0f9 1** gradient mygrad define)
-(0 0 100 circle $mygrad color)
-(all 50 50 size repeat)
-(all 360 4000 true animate-rotate)
-```
+### One of these (sets and ranges)
 
+Luckily, there's a simple way to express a *set* of characters. It means, match any one of the items in the set. Sets are delimited by ```[``` and ```]``` square brackets like this:
 
-### Pizza!
-
-```
-(0 0 100 circle #BF873B color)
-(5 5 90 circle #FFFBD3 color)
-
-(radial *0 #990000 1, 1 #660000 1** gradient pep define)
-
-(30 20 15 circle $pep color 1 define)
-(20 50 15 circle $pep color 2 define)
-(40 70 15 circle $pep color 3 define)
-(70 40 15 circle $pep color 4 define)
-(70 60 15 circle $pep color 5 define)
-
-(1 2 3 4 5 group mine define)
-(mine get 20 20 size repeat duplicate 20 20 size repeat duplicate 45 rotate duplicate 45 rotate)
-
-(30 30 1 10 rect white color 10 rotate repeat duplicate 45 rotate duplicate 45 rotate)
+```peg
+letter = [abcdefghijklmnopqrstuvwxyz]
 ```
 
-### Randomness
+It's still a bit of a mouthful, so there's also a simpler way to express a *range* of characters, like this:
 
-```
-(((random-number random-number random-number random-number rect) first-def define) first-def get random-color color random-color random-number outline)
-(((random-number random-number random-number random-number rect) sec-def define) sec-def get random-color color random-color random-number outline)
-(((random-number random-number random-number random-number rect) thir-def define) thir-def get random-color color random-color random-number outline)
-(((random-number random-number random-number random-number rect) four-def define) four-def get random-color color random-color random-number outline)
-
-(first-def sec-def thir-def four-def group five-def define)
-
-(five-def get 50 50 size)
-
-(five-def copy fivedef-cpy define fivedef-cpy get 50 50 move 180 rotate)
-(five-def copy fivedef-cpy1 define fivedef-cpy1 get 0 50 move 270 rotate)
-(five-def copy fivedef-cpy2 define fivedef-cpy2 get 50 0 move 90 rotate)
-
-(five-def fivedef-cpy fivedef-cpy1 fivedef-cpy2 group bigone define)
-(bigone get 50 50 size)
-
-(bigone copy big-cpy define big-cpy get 50 50 move)
-(bigone copy big-cpy1 define big-cpy1 get 0 50 move)
-(bigone copy big-cpy2 define big-cpy2 get 50 0 move)
-
-(all 50 50 size repeat)
-(all duplicate random-number rotate)
-
-(0 0 100 100 rect random-color color back order)
+```peg
+letter = [a-z]
 ```
 
+<textarea class="input">a</textarea>
 
-### Lines!
+A set can contain several ranges and other characters, for example like this:
 
-```
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
-(random-number random-number random-number random-number line random-color random-number outline repeat)
+```peg
+letter = [a-z] / [A-Z] / "@"
 ```
 
-### Looping
+But this can be even more simply written as:
 
-```
-(rect random-color color)
-(rect random-color color 50 50 move)
-(rect random-color color 0 50 move)
-(rect random-color color 50 0 move)
-(4 loop)
-(all 50 50 size repeat)
-(end-loop)
+```peg
+letter = [a-zA-Z@]
 ```
 
-### Looping with Index
+<textarea class="input">A</textarea>
 
+By the way, there's also an inverse set, indicated via ```^```:
+
+```peg
+nonletter = [^a-zA-Z]
 ```
-0 0 10 10 rect white color
-2 loop
-	duplicate 4 @index * 5 * red outline 10 10 translate
-end-loop
+
+### One or more
+
+Now to make a word, we can use our letter rule, and we want to say that a word has *one or more* letters. The *one or more* concept is expressed by adding a ```+``` symbol to the end of the pattern, like this:
+
+```peg
+word = [a-zA-Z@]+
 ```
+
+<textarea class="input">hello</textarea>
+
+There's also a *zero or more* concept, which is expressed by adding ```*``` instead. We'll use that a bit later.
+
+### Use a rule in many places
+
+Since we'd already defined what a letter is, why not re-use it? Our grammars can easily use rules inside other rules, and this can make things easier to read, more flexible, and eventually also more powerful:
+
+```peg
+word = letter+
+letter = [a-zA-Z@]
+```
+
+<textarea class="input">hello</textarea>
+
+All this means is that to match the ```word``` rule, we have to match the ```letter``` rule, one or more times. Simple!
+
+So how about a sentence? A sentence has one or more words, so we can use the ```+``` concept again.
+
+But words are separated by spaces. We can take a first stab at this by adding spaces to the ends of our words, like this:
+
+```peg
+sentence = word+
+word = letter+ space
+letter = [a-zA-Z@]
+space = " "
+```
+
+To match the ```word``` rule here means you must find *one or more* ```letters```, followed by a ```space```.
+
+<textarea class="input">live coding</textarea>
+
+We have a problem though. Given an input string ```"live coding"```, our grammar can match up to ```"live "``` as a word. But it can't match ```"coding"``` as a word, since it doesn't have a space after it. And since that fails, the whole parse will fail too. Only if the input has an extra space at the end will the parse succeed.
+
+### Optional items
+
+To work around this, we can use the concept of an *optional item*, which won't fail the parse if it isn't present. We mark the space as optional by adding a ```?``` to it:
+
+```peg
+sentence = word+
+word = letter+ space?
+letter = [a-zA-Z@]
+space = " "
+```
+
+<textarea class="input">live coding</textarea>
+
+Similarly, we could add support for sentences that end in an optional full stop (period) like this:
+
+```peg
+sentence = word+ "."?
+word = letter+ space?
+letter = [a-zA-Z@]
+space = " "
+```
+
+<textarea class="input">live coding.</textarea>
+
+We might even want to be flexible and allow multiple spaces, in which case we can use the concept of *zero or more times*, which we indicate with ```*```:
+
+```peg
+sentence = word+ "."?
+word = letter+ space*
+letter = [a-zA-Z@]
+space = " "
+```
+
+<textarea class="input">live    coding.</textarea>
+
+To recap, ```?``` means zero or one, ```*``` means zero or more, and ```+``` means one or more.
+
+### Give me the raw text
+
+Now look at that output -- what a mess of square brackets, spaces, and empty lists!
+
+Where did all those square brackets come from? Every time a *one or more* or *zero or more* rule is used, it will return a list of the items found. In our case for example this is happening in the ```letter+``` pattern. We probably don't want this much detail; we don't care about the individual letters, we just want the words as raw text. We can get that *just give it to me raw* concept by prefixing a pattern with a ```$```. (I don't know why a dollar means *just give it to me raw*.) For example:
+
+```peg
+sentence = word+ "."?
+word = $letter+ space*
+letter = [a-zA-Z@]
+space = " "
+```
+
+<textarea class="input">live coding.</textarea>
+
+This is better, but there are still lots of lists. Lists are also produced every time a *sequence* concept is used, such as ```*``` and ```+```. When a rule has a sequence of more than one element (like the ```space*``` in our ```word``` rule), it will also return a list to contain the elements' matches.
+
+Actually we don't really care about the spaces, we only want to keep the words. Here's how:
+
+### Give me specific parts
+
+Keeping certain parts means throwing others away. It implies *modifying what a rule returns* via an action, but to do this we also need to identify what parts of a pattern we are interested in keeping (also known as captures). And in fact, quite often a lot of the syntax is irrelevant, so frequently our first stage in parsing is throwing away what we don't need and cleaning up what we have. We do this by giving them names (also known as labels) marked by the ```:``` colon character. For example, we can label the important part of our ```word``` pattern with the name "text" like this:
+
+```peg
+word = text:$letter+ space*
+```
+
+Once named, you can use this within the action like this:
+
+```peg
+sentence = word+ "."?
+word = text:$letter+ space* { return text; }
+letter = [a-zA-Z@]
+space = " "
+```
+
+I.e. the rule matches words and spaces, but only returns the word parts.
+
+<textarea class="input">live coding.</textarea>
+
+We can ignore the full stop in the same way:
+
+```peg
+sentence = words:word+ "."? { return words; }
+word = text:$letter+ space* { return text; }
+letter = [a-zA-Z@]
+space = " "
+```
+
+The result looks immeasurably better:
+
+<textarea class="input">live coding.</textarea>
+
+Now you can easily imagine adding another rule for paragraphs as one or more sentences:
+
+```peg
+paragraph = sentence+
+sentence = words:word+ "."? space* { return words; }
+word = text:$letter+ space* { return text; }
+letter = [a-zA-Z@]
+space = " "
+```
+
+<textarea class="input">Live coding. For the win.</textarea>
+
+Notice how the paragraph and sentence structure is now encoded in the list structure.
+
+### Do some transformations on them
+
+In most languages, correct syntax doesn't guarantee correct semantics. **Moreover, colourless green ideas sleep furiously.** We might be able to *validate* the semantics from within the parser, but sometimes we need a secondary (or more) passes over the result.
+
+We can do quite a lot of work directly in the grammar by defining more complex actions, which will be performed on the result of the match. This is where we can do extra cleaning up or transformations. Actions are just bodies of JavaScript. You can put pretty much any javascript in there:
+
+```peg
+paragraph = sentence+
+sentence = words:word+ "."? space* { return words.join(""); }
+word = text:$letter+ space* { return text[0].toUpperCase(); }
+letter = [a-zA-Z@]
+space = " "
+```
+
+<textarea class="input">Live coding. For the win.</textarea>
+
+
+```peg
+paragraph = sentences:sentence+ { return sentences.join(""); }
+sentence = words:word+ "."? space* { return words.reverse().join("|")+"!!!"; }
+word = text:$letter+ space* { return text.toUpperCase(); }
+letter = [a-zA-Z@]
+space = " "
+```
+
+<textarea class="input">I am calm. very calm.</textarea>
+
+### Except, unless, and anything
+
+Sometimes you have a pattern, but there are some exceptions you want to exclude from it. For example, we want to match a variable name, except if it a reserved keyword. In this case, the ```!``` **except** concept works for us:
+
+```peg
+// a var name is a word that is not a keyword
+varname = !keyword w:word { return w; }
+
+// these are not valid variable names:
+keyword = "evil" / "nasty"
+
+word = $letter+
+letter = [a-zA-Z@]
+```
+
+<textarea class="input">hello</textarea>
+
+Sometimes you want to capture *any character at all*. The *any character at all* is represented by the humble dot ```.```:
+
+```peg
+// this will match absolutely any input
+anything = .*
+```
+
+<textarea class="input">whatever you want.</textarea>
+
+Because grammars are greedy, the ```.*``` pattern will just eat up everything -- but the *anything* and *except* patterns together permit an *anything until* pattern. This can be essential for detecting nested structures, like quotes, brackets, etc.
+
+```peg
+// every item is either a list or not-a-list
+item = list / nonlist
+
+// a list is several items wrapped in parentheses:
+list = "(" a:item* ")" { return a; }
+
+// a non-list is any run of characters except for parentheses:
+nonlist = $(!"(" !")" .)+
+```
+
+<textarea class="input">(x(xx)x(x(x))())</textarea>
+
+The terms can be flipped around to make an **unless-followed-by** concept:
+
+```peg
+// a statement is a word unless followed by a question mark:
+stat = $(word !"?")
+
+word = [a-z]+
+```
+
+<textarea class="input">what</textarea>
+
+These rules give some fun opportunities to make a grammar more context sensitive.
+
+---
+
+## Recap
+
+Concept											| Syntax 					| Result
+:--- 											| :---						| :---
+Exactly the text "abc"							| ```"abc"```				| string: "abc"
+A then B (sequence) 							| ```A B```					| array: [A, B]
+A or B (ordered choice) 						| ```A / B```				| A or B
+Optional A 										| ```A?```					| A or null
+Zero or more A's (returns an array)				| ```A*```					| array of A
+One or more A's (returns an array)				| ```A+```					| array of A
+Any one of these characters						| ```[abcdefgABCDEFG]```	| string (single character)
+ (or simply)									| ```[a-gA-G]```			| string (single character)
+Any integer										| ```[0-9]```				| string (single character)
+Any non-letter									| ```[^a-zA-Z]```			| string (single character)
+Any character at all							| ```.```					| string (single character)
+Capture the raw text of the pattern	A			| ```$A```					| string (source of A)
+Capture A as ```a``` and B as ```b``` for the action | ```a:A b:B```		| action arguments a and b, or [A, B]
+A so long as it is not also a B					| ```!B A```				| array: [null, A]
+A so long as it *is* also a B					| ```&B A```				| array: [null, A]
+A unless followed by B							| ```A !B```				| array: [A, null]
+
+That's nearly all the important concepts. There's a handful of other trickier ones but we'll get to them if we need to. But really, nearly everything can be done with the above handful.
+
+---
+
+
+---
+
+## Common JavaScript techniques for actions
+
+A rule action are just the body of JavaScript function, with named rule elements being available as if they were function arguments. The arguments corresponding to *one-or-more* and *zero-or-more* patterns are always arrays. Pretty much every other pattern argument becomes a string. JavaScript has [lots of useful functions for working with [arrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) and [strings](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String). For common operations on numbers, see the [Math documentation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math).
+
+Below are some useful idioms:
+
+- Convert a string to a number with ```+text```.
+- Read an individual character from a string ```text``` with ```text[n]```.
+- Convert a string ```text``` into an array of single characters with ```Array.from(text)```.
+- Concatenate strings with ```+```, e.g. ```"a" + "b"``` makes ```"ab"```.
+- Check if ```x``` is an array with ```Array.isArray(x)```.
+- Reverse an array with ```.reverse()```
+
+Get length (works with both arrays and strings). E.g. useful when mapping string length to pattern timing:
+
+```peg
+start = letters:[a-z]* {
+	return letters.length;
+}
+```
+
+<textarea class="input">abc</textarea>
+
+Convert array to string with separator character:
+
+```peg
+start = letters:[a-z]* {
+	return letters.join("+");
+}
+```
+
+<textarea class="input">abc</textarea>
+
+Merge arrays together with ```concat()```:
+
+
+```peg
+start = letters:[a-z]* numbers:[0-9]* {
+	return letters.concat(numbers);
+}
+```
+
+<textarea class="input">abc123</textarea>
+
+```peg
+start = letters:[a-z]* {
+	return letters.concat(letters.join(""));
+}
+```
+
+<textarea class="input">abc</textarea>
+
+Copy an array with a transformation with ```array.map()```
+
+```peg
+start = letters:[a-z]* {
+	// return letters.map(function(e, i) { return [i, e]; });
+	return letters.map((e, i) => [i, e]);
+}
+```
+
+<textarea class="input">abc</textarea>
+
+Strip out elements using ```filter()```:
+
+```peg
+start = letters:[a-z]* {
+	return letters.filter(e => { return e > "a" });
+}
+```
+
+<textarea class="input">abc</textarea>
+
+Use backquote strings for easy template interpolation (*note this is not a single-quote character but a back-tick quote character*):
+
+```peg
+start = first:[0-9] second:[0-9] {
+	return `${first} and ${first} makes ${second}`
+}
+```
+
+<textarea class="input">24</textarea>
+
+---
+
+
+## Some common rules
+
+### Empty space
+
+Many grammars use the _ underscore character to identify areas of space, as it draws more attention to the other, more significant parts of patterns. (Except for languages in which space is really significant...). The following rules define optional and mandatory space, including tabs and newlines:
+
+```peg
+// optional space
+_ = [ \t\r\n]*
+
+// mandatory space
+__ = [ \t\r\n]+
+```
+
+For example:
+
+```peg
+start = _ ("a"+ __)+
+
+_ = [ \t\r\n]*
+__ = [ \t\r\n]+
+```
+
+<textarea class="input"> a  a
+a aaa a
+a  a
+a a a
+</textarea>
+
+### Numbers
+
+TL;DR: -- captures decimal numbers and converts to Javascript numbers:
+
+```peg
+number = "-"? (([0-9]+ "." [0-9]*) / ("."? [0-9]+)) { return +text(); }
+```
+
+<textarea class="input">0.4</textarea>
+
+Let's build that up. Here's a positive whole number:
+
+
+```peg
+positive_integer = [0-9]+ { return +text(); }
+```
+
+<textarea class="input">107</textarea>
+
+Supporting negative whole numbers too is easy:
+
+```peg
+integer = "-"? [0-9]+ { return +text(); }
+```
+
+<textarea class="input">-123</textarea>
+
+The use of ```text()``` is equivalent to wrapping ```$``` around the whole input -- i.e. it means give the entire input as raw text. The use of ```+``` is a cheap way of converting text into a javascript number.
+
+Here's a basic decimal:
+
+```peg
+decimal = "-"? [0-9]+ "." [0-9]+ { return +text(); }
+```
+
+<textarea class="input">3.141</textarea>
+
+However this fails for "1." and ".1", and "1". Here's a more robust version:
+
+```peg
+number = "-"? (([0-9]+ "." [0-9]*) / ("."? [0-9]+)) { return +text(); }
+```
+
+<textarea class="input">-.123</textarea>
+
+How about ratios? For this we need the parts so we can do the division:
+
+```peg
+ratio = a:$("-"? [0-9]+) "/" b:$("-"? [0-9]+) { return +a / +b; }
+```
+
+<textarea class="input">1/-10</textarea>
+
+Maybe want to add something special if b happens to be zero...
+
+### This is the end
+
+To detect the end of the entire input string, we can assert that there is nothing after it:
+
+```peg
+end_of_input = !.
+```
+
+To grab everything to the end of the input, just capture zero or more anythings (typically you want this as raw text):
+
+```peg
+rest_of_input = $.*
+```
+
+### LISP
+
+The Lisp programming language has one of the simplest grammars. Everything is a term, which could be a single word be a list of terms; lists are bounded by parentheses and their terms are separated by space characters, or can be empty. Four rules are enough to recognize this language and return its structure in nested arrays:
+
+```peg
+// an item can be followed by whitespace
+// which we ignore by using the action
+// the item itself could be a list or a word
+term "term" = body:(list / word) _ { return body; }
+
+// a pattern is enclosed within parentheses
+// it could also be empty
+list "list" = "(" _ body:term* ")" { return body; }
+
+// a symbol must not contain parentheses nor whitespace
+// use the "$" to get the raw text
+word "word" = $[^() \t\n\r]+
+
+// white space is zero or more spaces or tabs (or newlines)
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">(defun factorial (N)
+  (if (= N 1)
+      1
+    (* N (factorial (- N 1)))))
+</textarea>
+
+## Some common errors
+
+### First, getting better errors
+
+If you annotate a rule by putting a string after the rule name, then this string will be used in error reporting.
+
+```peg
+myrule "myrule" = A B
+```
+
+This also lets the PEG.js parser know this is a likely location for errors (and it will suppress errors from any nested rules). Usually it's best to put these annotations on the lowest-level rules, so that errors become more localized. Definitely don't put them on your highest-level rules!
+
+### "Expected (something...) but end of input found"
+
+This means the grammar got to the end of the input without completing a rule. For example:
+
+```peg
+start = "hello"
+```
+
+<textarea class="input">hell</textarea>
+
+With grammars that have lots of rules it can be quite tricky to figure out where the problem is. Try changing the start rule and working up from smaller fragments to find out where it is breaking -- which rule isn't able to complete. And use the 'getting better errors' tip above to make the (something...) part of the error more helpful.
+
+#### "Expected end of input but (someting...) found"
+
+In this case, the grammar completely matched, but there were some extra text left over that couldn't be matched. The (something...) tells you what part of the input it gave up at. For example:
+
+```peg
+start = "hello"
+```
+
+<textarea class="input">hello!</textarea>
+
+One thing you can do is add an ```$.*``` to the end of the top-most rule, which will capture all the rest of the text to the end in a big string. That might help identify where it is going wrong.
+
+### "Infinite loop detected"
+
+It's really easy to make a grammar that can never terminate. Here's a failed attempt to match a string of one or more "a" characters:
+
+```peg
+// BAD!!!
+X = Y+
+Y = "a"*
+```
+
+The problem here is that Y can match nothing (the empty string), since it can match zero or more of something, and X can match one or more of these Y's. That is, X can match one or more nothings. If you think about it, there are an infinite number of times you can match nothing. So X will keep on matching nothing until you run out of memory, and the parser will give up in a poof of ennui.
+
+All you need to do is make sure than under any array-like operation (i.e. any use of + or *), there is no expansion that can match an empty string (e.g. through the use of ? and *).
+
+So the above grammar can be fixed simply by moving the zero-or-more up to the top:
+
+```peg
+X = Y*
+Y = "a"+
+```
+
+### "Left recursion detected"
+
+There's another common way to make a grammar that can't terminate. A really common example of this is handling math expressions. To match statements like "1", "1+2", "1+2+3" etc, it might be tempting to write this:
+
+```peg
+// BAD!!!
+Expression = Addition / Value
+Addition = Expression "+" Expression
+Value = [0-9]
+```
+
+The problem is that the Addition rule's first item is Expression, whose first item is Addition, and so on forever -- the parser will keep following this trail of links until it runs out of memory, and never finish its job.
+
+An even simpler example:
+
+```peg
+StringOfAs = StringOfAs "a" / "a"
+```
+
+If you get the "Left recursion detected" error, look through each of your rules for their first (left-most) items, and make sure they can't resolve back to themselves. The math grammar above can be fixed by removing this feedback loop by changing the first item in the Addition rule as follows:
+
+```peg
+Expression = Addition / Value
+Addition = Value ("+" Expression)*
+Value = [0-9]
+```
+
+However note that the structure it returns will look different. We can use actions to reshuffle the parse tree into the format that we actually want.
+
+---
+
+### Language oriented programming
+
+This workshop is an example of [Language-oriented programming](https://en.wikipedia.org/wiki/Language-oriented_programming) (LOP); a style of computer programming in which, rather than solving problems in general-purpose programming languages, the programmer creates one or more domain-specific languages for the problem first, and solves the problem in those languages.
+
+One way of thinking about how to design a language is to start from the result, and work back. The results are the kinds of things our engine can actually produce (or more accurately, the subset of these things that we are likely to want to produce). This way of thinking effectively means designing a collection of short-cuts, short-hands, macros, simple fragments that can expand into fully-specified events.
+
+Though a grammar is defined top-down, it's usually easier to build & think about bottom up. How about coming up with a palette of interesting basic patterns or phrases, then starting to find ways to combine them via grammar abstractions?
+
+Sketching out a few examples of simple phrases or statements the grammar should understand (and what it should reject!) can help.
+
+You can also think about it in a modular way: what types of things can be plugged into others. E.g., for the form "A + B" you might think of being able to plug numbers, words, and parentheses clauses in, e.g. "a + 1", "x + (y + z)", etc. The rules of the grammar identify things that can be plugged in, and what can be plugged into them. We make rules ("nonterminals") for several reasons:
+- the same sub-pattern can reappear in many different locations
+- to break up complex patterns into more digestible chunks, with helpful names
+- to identify points in the grammar at which structure can change
+
+Some live coding languages make an effort to use textual space in a temporally-meaningful way. In ixilang patterns, textual space maps directly onto sound. This works well because sound events are always a single character. To create a rest, insert a space character. The number of characters in a pattern is also the temporal length of the pattern. In Tidal, patterns have a loop length determined by context, which could be for example a couple of beats. By default, events within the pattern are distributed evenly in time, making it easy to create different subdivisions of a meter. Events are delimited by spaces (making them like words). In Gibber, a pattern includes two separate lists, one for the event data, the other for the timing of that data. However in some cases events can be single-characters, granting a mapping of space to time as with ixilang. How will you determine the timing of events in a pattern, and will it use character- and/or word-based spacing?
 
 ---
 
@@ -339,6 +788,44 @@ Kit Zellerbach & Prof. Charlie Roberts
     var body = document.getElementById('sourcetext').innerText;
     document.getElementById('content').innerHTML = marked(body);
     document.getElementById('toc').innerHTML = marked(toc.join("\n"));
+
+    $(".input").each(function() {
+        $(this).keyup(function() { changed_value(this); });
+        $(this).focus(function() { changed_value(this); });
+        $(this).after('<code class="result"></code>');
+        changed_value(this, true);
+    });
+
+
+    function changed_value(element, noplay) {
+        var input = $(element)[0].value;
+        var grammar;
+        // find previous grammar:
+        try{
+            grammar = $(element).parent().prevAll(":has(.language-peg):first").find(".language-peg")[0].innerText;
+        } catch(ex) {
+            return;
+        }
+
+        var result = "";
+        try {
+            // update our parser:
+            var parser = peg.generate(grammar);
+            var output = parser.parse(input);
+            result = JSON.stringify(output);
+            // try to play it?
+            // if (!noplay && Array.isArray(output)) {
+            //     console.log(window.seq.define, output);
+            //     window.seq.clear();
+            //     window.seq.define("default", output);
+            // }
+        } catch(ex) {
+            //console.log(ex.message);
+            result = ex.message;
+        }
+        $(element).next( ".result" )[0].innerText = result; //.text(result);
+    }
+
 </script>
 </body>
 </html>

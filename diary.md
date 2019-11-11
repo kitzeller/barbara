@@ -4,6 +4,8 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 # 11/10/19
 
 - Updated "Target Lang" page with better reference documentation and runnable code fragments.
+- Updated "Parsing" page, totally stealing everything from https://worldmaking.github.io/workshop_nime_2017/tutorial.html
+- Updated "Quilting page", for a tutorial geared towards quilters. (Still a work in progress)
 - Fixed a couple bugs.
 
 # 11/6/19
@@ -42,9 +44,9 @@ Todo
 - Map svg onto 3d babylon for quilt
 - ~~Loop command -> especially w/ random numbers and colors now?~~
     - ~~for looping the code? e.g. loop queue!~~
-- Tutorial section -> search for what you want to do? (By Monday Nov 11th)
-    - For quilters
-    - For programmers
+- ~~Tutorial section (By Monday Nov 11th)~~
+    - ~~For quilters~~
+    - ~~For programmers~~
 - Improve animation capabilities!
     - Filtering, easing, etc
 - ~~Improve pattern command~~
