@@ -746,6 +746,7 @@ Q.prototype.step = function () {
                         break;
 
                     case "@slider":
+                        let current_val = this.stack.pop();
                         let max_val = this.stack.pop();
                         let min_val = this.stack.pop();
                         let slider_type = this.stack.pop();
