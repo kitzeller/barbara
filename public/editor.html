@@ -69,6 +69,10 @@
                 font-size: 18px;
             }
         }
+
+        .to-replace {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -268,12 +272,16 @@ all repeat
             "Ctrl-Enter": makeParser,
             "Cmd-Enter": makeParser,
             "Shift-Enter": start,
-            "Alt-Enter": exportSVG
+            "Alt-Enter": exportSVG,
+            "Alt-LeftClick": getCursor
         }
     });
 
     var htmlNode;
-    input_cm.on('cursorActivity', function () {
+
+    function getCursor() {
+        console.log(input_cm.getCursor());
+
         var A1 = input_cm.getCursor().line;
         var A2 = input_cm.getCursor().ch;
 
@@ -286,24 +294,41 @@ all repeat
         if (htmlNode){
             htmlNode.parentNode.removeChild(htmlNode);
         }
+
+        var min = prompt("What is the min val?");
+        if (!min) return;
+        var max = prompt("What is the max val?", "0");
+        if (!max) return;
+
+        min = parseInt(min);
+        max = parseInt(max);
+
         htmlNode = document.createElement("input");
         htmlNode.id = "volume";
         htmlNode.type = 'range';
-        htmlNode.min = -180;
-        htmlNode.max = 180;
+        htmlNode.min = min;
+        htmlNode.max = max;
         htmlNode.value = 0;
         htmlNode.step = 1;
-        //input_cm.addWidget({ch: A2, line: A1}, htmlNode, true)
-
-        input_cm.markText({line: A1, ch: B1}, {line: A1, ch: B2}, {
+        // input_cm.addWidget({ch: A2, line: A1}, htmlNode, true);
+        var mt = input_cm.markText({line: A1, ch: B1}, {line: A1, ch: B2}, {
+            className: "to-replace",
             replacedWith: htmlNode
-        })
-    });
+        });
+        htmlNode.onchange = function(){
+            input_cm.replaceRange(this.value,{line: A1, ch: B1}, {line: A1, ch: B2});
+            console.log(B1, B2);
+            makeParser();
+            start();
+        };
+    }
+
 
     function makeParser() {
         let grammer = grammar_cm.getValue();
         var parser = peg.generate(grammer);
         let input = input_cm.getValue().trim();
+        console.log(input);
 
         // TODO: Check error checking?
         try {
