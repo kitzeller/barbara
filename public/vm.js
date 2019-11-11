@@ -756,7 +756,7 @@ Q.prototype.step = function () {
                         $("#sliders").append("<h3>" + var_name + " - " + slider_type + "</h3>")
                         $("#sliders").append("<input type = \"range\" min=\""+min_val+"\" max=\""+ max_val+"\" value=\"0\" step=\"1\" id=\""+the_uid+"\"/>")
                         const that = this;
-                        $("#" + the_uid).on("change",function(){
+                        $("#" + the_uid).on("input",function(){
                             switch (slider_type) {
                                 case "rotation":
                                     that.context[var_name].rotate($(this).val());
