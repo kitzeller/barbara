@@ -16,17 +16,17 @@ var cq = {
     cmds: []
 };
 
-uid = (function() {
+uid = (function () {
     var id = 0;
-    return function() {
+    return function () {
         id++;
-        return "uid"+id;
+        return "uid" + id;
     }
 })();
 
 
-window.seq.play_element_text = function(element) {
-    let id = "#" + $(element).parent().next( ".res" )[0].id;
+window.seq.play_element_text = function (element) {
+    let id = "#" + $(element).parent().next(".res")[0].id;
     window.seq.define(uid(), JSON.parse(element.innerText), id);
 };
 
@@ -241,14 +241,23 @@ Q.prototype.step = function () {
                         break;
 
                     case "@random-color":
+                        // TODO: Update
                         this.stack.push('#' + Math.floor(Math.random() * 16777215).toString(16));
+                        break;
+
+                    case "@random-theme":
+                        let c_mode = this.stack.pop();
+                        // vibrant, sine, pastel, dark, rgb, lab, grey
+
+                        let r_color = SVG.Color.random(c_mode).toHex();
+                        this.stack.push(r_color);
                         break;
 
                     case "@circle":  // [x, y, r, @circle]
                         //let cc = this.stack.pop();
 
                         // TODO: Abstract "default" values
-                        if (this.stack.length < 1){
+                        if (this.stack.length < 1) {
                             // default
                             let circ = draw.circle(400);
                             this.vars.push(circ);
@@ -262,7 +271,7 @@ Q.prototype.step = function () {
 
                         break;
                     case "@rect":  // [x, y, width, height, @rect]
-                        if (this.stack.length < 1){
+                        if (this.stack.length < 1) {
                             let r = draw.rect(400, 400);
                             this.vars.push(r);
                         } else {
@@ -296,8 +305,8 @@ Q.prototype.step = function () {
                             let triangle = draw.path("M 0,200 L 200,0 L 200,200 z");
                             this.vars.push(triangle);
                         } else {
-                            let side_size = parseInt(this.stack.pop())/100 * WIDTH;
-                            let triangle = draw.path("M 0,"+side_size+" L "+side_size+",0 L "+side_size+","+side_size+" z");
+                            let side_size = parseInt(this.stack.pop()) / 100 * WIDTH;
+                            let triangle = draw.path("M 0," + side_size + " L " + side_size + ",0 L " + side_size + "," + side_size + " z");
                             this.vars.push(triangle);
                         }
 
@@ -312,22 +321,22 @@ Q.prototype.step = function () {
                         break;
 
                     case "@line":
-                        let l1 = this.stack.pop()/ 100 * HEIGHT;
-                        let l2 = this.stack.pop()/ 100 * HEIGHT;
-                        let l3 = this.stack.pop()/ 100 * HEIGHT;
-                        let l4 = this.stack.pop()/ 100 * HEIGHT;
+                        let l1 = this.stack.pop() / 100 * HEIGHT;
+                        let l2 = this.stack.pop() / 100 * HEIGHT;
+                        let l3 = this.stack.pop() / 100 * HEIGHT;
+                        let l4 = this.stack.pop() / 100 * HEIGHT;
 
-                        let li = draw.line(l4, l3, l2, l1).stroke({ width: 1, color: "#fff"});
+                        let li = draw.line(l4, l3, l2, l1).stroke({width: 1, color: "#fff"});
 
                         this.vars.push(li);
                         break;
 
                     case "@text":
-                        if (this.stack.length > 2){
+                        if (this.stack.length > 2) {
                             let font_size = parseInt(this.stack.pop());
                             let font = this.stack.pop();
                             let text = this.stack.pop();
-                            let text_elem = draw.text(text).font({ size: font_size, family: font });
+                            let text_elem = draw.text(text).font({size: font_size, family: font});
                             this.vars.push(text_elem);
                         } else {
                             let text = this.stack.pop();
@@ -391,19 +400,32 @@ Q.prototype.step = function () {
 
                     case "@color":
                         let elem = this.vars.pop();
-                        // cant color groups
                         let color = this.stack.pop();
+
+                        if (elem.type === "g") {
+                            // group
+                            elem.each(function (i, children) {
+                                this.fill({color: '#f06'})
+                            }, true)
+                        }
 
                         if (color.includes('$')) {
                             let result = color.split('$')[1];
-                            elem.fill(this.context[result]);
-                        } else {
-                            try{
-                                elem.fill(color);
-                            } catch {
-                                elem.fill("#000000");
-                            }
+                            color = this.context[result]
                         }
+
+                        try {
+                            if (elem.type === "g") {
+                                elem.each(function (i, children) {
+                                    this.fill({color: color})
+                                }, true)
+                            } else {
+                                elem.fill(color);
+                            }
+                        } catch {
+                            elem.fill("#000000");
+                        }
+
                         this.vars.push(elem);
 
                         break;
@@ -412,7 +434,7 @@ Q.prototype.step = function () {
                         let out_width = this.stack.pop();
                         let out_color = this.stack.pop();
                         let out_elem = this.vars.pop();
-                        try{
+                        try {
                             out_elem.stroke({width: out_width, color: out_color});
                         } catch {
                             out_elem.stroke({width: out_width, color: "#000000"});
@@ -448,7 +470,7 @@ Q.prototype.step = function () {
 
                     case "@polar":
                         let theta = parseInt(this.stack.pop());
-                        let r = parseInt(this.stack.pop())/100 * WIDTH/2;
+                        let r = parseInt(this.stack.pop()) / 100 * WIDTH / 2;
 
                         const x = r * Math.cos(theta);
                         const y = r * Math.sin(theta);
@@ -476,22 +498,22 @@ Q.prototype.step = function () {
 
                         // Get index
                         let while_ind = this.todo.lastIndexOf("@index");
-                        while (this.todo.includes("@index") && while_ind > end_loop_ind){
+                        while (this.todo.includes("@index") && while_ind > end_loop_ind) {
                             while_ind = this.todo.lastIndexOf("@index");
-                            if (while_ind < end_loop_ind){
+                            if (while_ind < end_loop_ind) {
                                 break;
                             }
                             this.todo[while_ind] = 0;
                         }
 
-                        for (let i = 1; i < loop_num; i++){
+                        for (let i = 1; i < loop_num; i++) {
                             this.todo.splice(end_loop_ind, 0, ...original_todo);
                             console.log("todo ", this.todo);
 
                             let ind = this.todo.lastIndexOf("@index")
-                            while (this.todo.includes("@index")  && ind  > end_loop_ind){
+                            while (this.todo.includes("@index") && ind > end_loop_ind) {
                                 ind = this.todo.lastIndexOf("@index")
-                                if (ind < end_loop_ind){
+                                if (ind < end_loop_ind) {
                                     break;
                                 }
                                 this.todo[ind] = i;
@@ -692,6 +714,13 @@ Q.prototype.step = function () {
                         this.vars.push(linked_v);
                         break;
 
+                    case "@merge":
+                        // TODO
+                        var box1 = draw.rect(100, 100).move(50, 50).bbox();
+                        var box2 = draw.rect(100, 100).move(200, 200).bbox();
+                        var box3 = box1.merge(box2);
+
+                        break;
 
                     case "@define":
                         let ds = this.stack.pop();
@@ -778,7 +807,7 @@ Q.prototype.step = function () {
 
 Q.prototype.resume = function (t) {
     while (this.todo.length) {
-        this.step() ;
+        this.step();
     }
     window.svg = draw.svg(false);
     return this.todo.length > 0; // returns false if Q has no more events

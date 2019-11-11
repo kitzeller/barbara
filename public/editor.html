@@ -114,7 +114,7 @@ Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
 TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
 HaveTerminatorAhead = . (!"**" .)* "**"
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / polar / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / add / mult / subtract / $[^() \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / add / mult / subtract / $[^() \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -156,6 +156,7 @@ link = "link" { return "@link"; }
 
 random_number = "random-number" { return "@random-number"; }
 random_color = "random-color" { return "@random-color"; }
+random_theme = "random-theme" { return "@random-theme"; }
 define = "define" { return "@define"; }
 get = "get" { return "@get"; }
 export = "export" { return "@export"; }

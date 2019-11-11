@@ -32,6 +32,7 @@
             max-width: 50%;
             font-family: monospace;
             word-wrap: break-word;
+            border:solid 2px orange;
         }
 
         h1, h2, h3, h4, h5, h6, pre {
@@ -49,6 +50,7 @@
             white-space: pre-wrap; /* css-3 */
             white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
             white-space: -o-pre-wrap; /* Opera 7 */
+            border:solid 2px blue;
         }
 
         textarea {
@@ -85,8 +87,12 @@
 
 ## Examples
 
+Welcome to this tutorial. We will go through the steps of how different languages can be used to accomplish different tasks.
+At any point, you can click the input text box (identified by the <span style="color:orange">orange</span> border) of any example to run that code.
 
 ### Circles
+
+Let's start with a very basic language. This language will only recognize the command to create a circle.
 
 ```peg
 start "start" = term +
@@ -102,7 +108,9 @@ _ "whitespace" = [ \t\n\r]*
 <textarea class="input">circle</textarea>
 
 
-### Circles v2
+### Moving Circles
+
+Now we can update the language to allow for other inputs. Try making multiple different circles by changing the three values. Remember, the command is `x y radius circle`
 
 ```peg
 start "start" = term +
@@ -117,65 +125,176 @@ _ "whitespace" = [ \t\n\r]*
 
 <textarea class="input">0 0 50 circle</textarea>
 
-### Triangles
+### Coloring Circles
+
+Our language now accepts the color command. Let's use it to color our circles. The color command can take hex values or color names.
 
 ```peg
 start "start" = term +
-term "term" = body:(Text / list / word) _ { return body; }
-list "list" = "(" _ body:term* ")" { return body; }
+term "term" = body:(word) _ { return body; }
 
-Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
-TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
-HaveTerminatorAhead = . (!"**" .)* "**"
+word "word" = circle / color / $[^ \t\n\r]+
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / polygon / path / random_number / random_color / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / $[^() \t\n\r]+
-
-svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
-rect = "rect" { return "@rect"; }
-triangle = "triangle" { return "@triangle"; }
-polygon = "polygon" { return "@polygon"; }
-ellipse = "ellipse" { return "@ellipse"; }
-line = "line" { return "@line"; }
-path = "path" { return "@path"; }
-text = "text" { return "@text"; }
-
-pattern = "pattern" { return "@pattern"; }
-gradient = "gradient" { return "@gradient"; }
-image = "image" { return "@image"; }
-
 color = "color" { return "@color"; }
-opacity = "opacity" { return "@opacity"; }
-radius = "radius" { return "@radius"; }
-flip = "flip" { return "@flip"; }
-order = "order" { return "@order"; }
-repeat = "repeat" { return "@repeat"; }
-diag = "diag" { return "@diag"; }
-outline = "outline" { return "@outline"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">0 0 50 circle red color
+50 0 50 circle #008080 color
+50 50 50 circle pink color
+0 50 50 circle #800080 color
+</textarea>
+
+### Triangles
+
+Our language now accepts triangles.
+
+```peg
+start "start" = term +
+term "term" = body:(word) _ { return body; }
+
+word "word" = circle / triangle / color / $[^ \t\n\r]+
+
+circle = "circle" { return "@circle"; }
+triangle = "triangle" { return "@triangle"; }
+color = "color" { return "@color"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">50 triangle
+</textarea>
+
+### Triangle Transformations
+
+We have three new commands: rotate, translate and scale. These are common transformations we can apply to our shapes.
+We can even apply multiple transformations to a shape, if we look at the <span style="color:purple">purple</span> triangle,
+we can see that it's been rotated by 90 degrees, translated by 50% in the x-axis, and scale to half it's width and height.
+
+```peg
+start "start" = term +
+term "term" = body:(word) _ { return body; }
+
+word "word" = circle / triangle / color / rotate / translate / scale / $[^ \t\n\r]+
+
+circle = "circle" { return "@circle"; }
+triangle = "triangle" { return "@triangle"; }
+
 rotate = "rotate" { return "@rotate"; }
-move = "move" { return "@move"; }
 translate = "translate" { return "@translate"; }
-center = "center" { return "@center"; }
-size = "size" { return "@size"; }
 scale = "scale" { return "@scale"; }
 
-end_loop = "end-loop" { return "@end-loop"; }
-loop = "loop" { return "@loop"; }
-all = "all" { return "@all"; }
-group = "group" { return "@group"; }
-copy = "copy" { return "@copy"; }
-duplicate = "duplicate" { return "@duplicate"; }
-link = "link" { return "@link"; }
+color = "color" { return "@color"; }
 
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">50 triangle red color 90 rotate
+50 triangle blue color 50 50 translate
+50 triangle purple color 90 rotate 50 0 translate 50 50 scale
+</textarea>
+
+
+### Duplicating Triangle Transformations
+
+Instead of having to write everything out, we can use the duplicate command to copy things we've already created and modify them.
+Try removing each line starting from the bottom to see how this pattern is built.
+
+```peg
+start "start" = term +
+term "term" = body:(word) _ { return body; }
+
+word "word" = circle / triangle / color / rotate / translate / scale / duplicate / all / move / $[^ \t\n\r]+
+
+circle = "circle" { return "@circle"; }
+triangle = "triangle" { return "@triangle"; }
+
+rotate = "rotate" { return "@rotate"; }
+translate = "translate" { return "@translate"; }
+scale = "scale" { return "@scale"; }
+move = "move" { return "@move"; }
+duplicate = "duplicate" { return "@duplicate"; }
+all = "all" { return "@all"; }
+
+color = "color" { return "@color"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">triangle
+duplicate 25 0 move
+all duplicate 50 0 move
+all duplicate 0 25 move
+all duplicate 0 50 move
+all blue color
+all duplicate 180 rotate red color
+</textarea>
+
+### Repeating Patterns
+
+Now let's see what happens when we combine the size and repeat command. The repeat command mirrors the pattern on the x, y and diagonal axes.
+
+```peg
+start "start" = term +
+term "term" = body:(word) _ { return body; }
+
+word "word" = circle / triangle / color / rotate / translate / scale / duplicate / all / move / repeat / size / $[^ \t\n\r]+
+
+circle = "circle" { return "@circle"; }
+triangle = "triangle" { return "@triangle"; }
+
+rotate = "rotate" { return "@rotate"; }
+translate = "translate" { return "@translate"; }
+scale = "scale" { return "@scale"; }
+move = "move" { return "@move"; }
+duplicate = "duplicate" { return "@duplicate"; }
+all = "all" { return "@all"; }
+repeat = "repeat" { return "@repeat"; }
+size = "size" { return "@size"; }
+
+color = "color" { return "@color"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">triangle
+duplicate 25 0 move
+all duplicate 50 0 move
+all duplicate 0 25 move
+all duplicate 0 50 move
+all blue color
+all duplicate 180 rotate red color
+all 50 50 size repeat
+</textarea>
+
+### Random
+
+We can use `random-color` to generate a random color. Try replacing the numbers with the `random-number` command and see what happens.
+
+```peg
+start "start" = term +
+term "term" = body:(word) _ { return body; }
+
+word "word" = circle / triangle / color / rotate / translate / scale / duplicate / all / move / repeat / size /
+random_number / random_color / $[^ \t\n\r]+
+
+circle = "circle" { return "@circle"; }
+triangle = "triangle" { return "@triangle"; }
+
+rotate = "rotate" { return "@rotate"; }
+translate = "translate" { return "@translate"; }
+scale = "scale" { return "@scale"; }
+move = "move" { return "@move"; }
+duplicate = "duplicate" { return "@duplicate"; }
+all = "all" { return "@all"; }
+repeat = "repeat" { return "@repeat"; }
+size = "size" { return "@size"; }
+
+color = "color" { return "@color"; }
 random_number = "random-number" { return "@random-number"; }
 random_color = "random-color" { return "@random-color"; }
-define = "define" { return "@define"; }
-get = "get" { return "@get"; }
-export = "export" { return "@export"; }
-
-animate_rotate = "animate-rotate" { return "@animate-rotate"; }
-animate_move = "animate-move" { return "@animate-move"; }
-animate_color = "animate-color" { return "@animate-color"; }
 
 _ "whitespace" = [ \t\n\r]*
 ```
@@ -191,7 +310,48 @@ duplicate 180 rotate random-color color
 all repeat
 </textarea>
 
-### Looping
+
+
+### Basic Looping
+
+We can use the loop function to repeat commands within the block.
+
+```peg
+start "start" = term +
+term "term" = body:(word) _ { return body; }
+
+word "word" = circle / triangle / color / rotate / translate / scale / duplicate / all / move / repeat / size /
+random_number / random_color / loop / end_loop / $[^ \t\n\r]+
+
+circle = "circle" { return "@circle"; }
+triangle = "triangle" { return "@triangle"; }
+
+rotate = "rotate" { return "@rotate"; }
+translate = "translate" { return "@translate"; }
+scale = "scale" { return "@scale"; }
+move = "move" { return "@move"; }
+duplicate = "duplicate" { return "@duplicate"; }
+all = "all" { return "@all"; }
+repeat = "repeat" { return "@repeat"; }
+size = "size" { return "@size"; }
+
+color = "color" { return "@color"; }
+random_number = "random-number" { return "@random-number"; }
+random_color = "random-color" { return "@random-color"; }
+
+end_loop = "end-loop" { return "@end-loop"; }
+loop = "loop" { return "@loop"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">0 0 100 100 rect random-color color
+20 loop
+triangle random-number random-number move random-color color repeat
+end-loop
+</textarea>
+
+### Looping with Index
 
 ```peg
 start "start" = term +
