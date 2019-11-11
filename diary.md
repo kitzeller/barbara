@@ -7,6 +7,7 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
 - Updated "Parsing" page, totally stealing everything from https://worldmaking.github.io/workshop_nime_2017/tutorial.html
 - Updated "Quilting page", for a tutorial geared towards quilters. (Still a work in progress)
 - Fixed a couple bugs.
+- Added polar coordinate system `r, theta, @polar`
 
 # 11/6/19
 
@@ -34,8 +35,10 @@ WPI ISP creating a virtual machine for live coding visuals (B-term 2019)
     
 Todo
 - Redo UI
-- Polar coordinates
-    - Look at p5.js
+- ~~Polar coordinates~~
+    - ~~Look at p5.js~~
+    - https://editor.p5js.org/liz-peng/sketches/CdYMzb7KI
+    - https://github.com/liz-peng/p5.polar
 - Better Triangle support (for the quilters!)
 - Kaleidoscope?
 - Debug @flip and @diag? I think @flip is okay, but @diag has an issue

@@ -176,6 +176,15 @@ Looping!
 "@end-loop"]
 ```
 
+Polar coords
+
+```javascript
+["50","@loop",
+"@circle","0.5","@opacity",
+"15","10","@index","@*","@polar","@move",
+"@random-color","@color","@end-loop",
+"@all","50","50","@center","50","50","@scale"]
+```
 
 ---
 
@@ -229,6 +238,7 @@ Translate						| ```x-factor, y-factor, @translate```
 Move							| ```x, y, @move```
 Center							| ```x, y, @center```
 Order							| ```placement, @order``` where placement is one of ```back, backward, front, forward```
+Polar							| ```r, theta, @polar```
 
 
 Animations		                | Format

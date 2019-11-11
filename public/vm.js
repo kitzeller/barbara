@@ -185,6 +185,7 @@ Q.prototype.step = function () {
 
                 // Target language
                 switch (op) {
+
                     case "@svg":
                         // creates svg as group
                         let svg_string = this.stack.pop();
@@ -438,6 +439,20 @@ Q.prototype.step = function () {
                         elem_rotate.rotate(degree);
 
                         this.vars.push(elem_rotate);
+                        break;
+
+                    case "@polar":
+                        let theta = parseInt(this.stack.pop());
+                        let r = parseInt(this.stack.pop())/100 * WIDTH/2;
+
+                        const x = r * Math.cos(theta);
+                        const y = r * Math.sin(theta);
+
+                        console.log(x, y);
+
+                        this.stack.push(x);
+                        this.stack.push(y);
+
                         break;
 
                     case "@end-loop":
