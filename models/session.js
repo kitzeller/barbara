@@ -7,5 +7,7 @@ module.exports = mongoose.model('Session',{
     output: String,
     input: String,
     grammar: String,
+    markdown: String,
+    originalUrl: String,
     private: {type: Boolean, default: false}
 });

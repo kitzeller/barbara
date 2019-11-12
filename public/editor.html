@@ -216,18 +216,47 @@ all repeat
             <div id="drawing"></div>
         </div>
     </div>
+
+    <h2>Information</h2>
+    <div class="row">
+        <div class="column">
+            <form>
+                <textarea id="markdown"></textarea>
+            </form>
+        </div>
+        <div class="column">
+            <div id="markdown_render">
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="peg-0.10.0.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="vm.js"></script>
 
 <!-- Create a simple CodeMirror instance -->
 <script src="lib/codemirror.js"></script>
+<script src="lib/mode/overlay.js"></script>
+<script src="lib/mode/markdown.js"></script>
 <script src="lib/mode/pegjs.js"></script>
+<script src="lib/mode/gfm.js"></script>
 
 <script>
+
+    //Marked
+    var renderer = new marked.Renderer();
+    marked.setOptions({
+        renderer: renderer,
+        gfm: true,
+        tables: true,
+        sanitize: false,
+        smartLists: true,
+        smartypants: false
+    });
+
     var looping = false;
     var interval;
     var savedSVGs = window.localStorage.getItem('barbara-vm-svgs');
@@ -279,6 +308,19 @@ all repeat
         }
     });
 
+
+    var markdown_cm = CodeMirror.fromTextArea(document.getElementById("markdown"), {
+        mode: "gfm",
+        lineNumbers: true,
+        theme: "darcula",
+        lineWrapping: true,
+        styleActiveLine: true
+    });
+
+    markdown_cm.on("change", function (cm, change) {
+        document.getElementById('markdown_render').innerHTML = marked(cm.getValue());
+    });
+
     var htmlNode;
 
     function getCursor() {
@@ -293,7 +335,7 @@ all repeat
         console.log(input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2}));
 
         // create a node
-        if (htmlNode){
+        if (htmlNode) {
             htmlNode.parentNode.removeChild(htmlNode);
         }
 
@@ -317,15 +359,15 @@ all repeat
             className: "to-replace",
             replacedWith: htmlNode
         });
-        htmlNode.onchange = function(){
+        htmlNode.onchange = function () {
             // Still pretty glitchy - works great if the value is on it's own line
-            if (input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2}).includes(" ")){
+            if (input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2}).includes(" ")) {
                 B2--;
-            } else if (parseInt(input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2+1}))){
+            } else if (parseInt(input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2 + 1}))) {
                 B2++;
                 B2++;
             }
-            input_cm.replaceRange(this.value,{line: A1, ch: B1}, {line: A1, ch: B2});
+            input_cm.replaceRange(this.value, {line: A1, ch: B1}, {line: A1, ch: B2});
             console.log(B1, B2);
             makeParser();
             start();
@@ -408,7 +450,8 @@ all repeat
                     output: $("#output").val(),
                     svg: window.svg,
                     name: response,
-                    user: data.username._id
+                    user: data.username._id,
+                    markdown: markdown_cm.getValue()
                 });
             } else {
                 $.post("savesession", {
@@ -416,7 +459,8 @@ all repeat
                     input: input_cm.getValue(),
                     output: $("#output").val(),
                     svg: window.svg,
-                    name: response
+                    name: response,
+                    markdown: markdown_cm.getValue()
                 });
             }
         });
@@ -431,6 +475,8 @@ all repeat
             $("#output").val(data.output);
             grammar_cm.setValue(data.grammar);
             input_cm.setValue(data.input);
+            markdown_cm.setValue(data.markdown);
+            start();
         });
     } else if (window.localStorage.getItem('barbara-vm-grammar')) {
         grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
