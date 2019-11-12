@@ -190,15 +190,29 @@ app.get('/logout',
 /**
  * Save Session
  */
+// TODO: Save session if user assigned
 app.post('/savesession',
     function (req, res) {
         var session = new Session(req.body);
         session.save(function (err) {
             if (err) return handleError(err);
             console.log("saved session");
-            res.status(200).json({status: "ok"});
+
+            if (req.body.user) {
+                User.findOne({_id: req.body.user}, function (err, data) {
+                    data.sessions.push(session._id);
+                    data.save(function (err) {
+                            res.status(200).json({status: "ok w/ user"});
+                        }
+                    )
+                });
+            } else {
+                res.status(200).json({status: "just ok"});
+            }
         });
     });
+
+
 //
 // /**
 //  * Deletes
@@ -229,7 +243,7 @@ app.post('/savesession',
 app.get('/sessions',
     function (req, res) {
 
-        Session.find({}, { svg: 1, _id: 1, name: 1 }, function (err, data) {
+        Session.find({}, {svg: 1, _id: 1, name: 1}, function (err, data) {
             res.send(data);
         })
     });
@@ -240,6 +254,16 @@ app.get('/sessions/:id',
             res.send(data);
         });
     });
+
+// TODO: Populate user sessions
+app.get('/sessions/user/:id',
+    function (req, res) {
+        User.findOne({_id: req.params.id}, {sessions: 1}).populate('sessions').exec(function (err, data) {
+            if (err) return handleError(err);
+            res.send(data);
+        });
+    });
+
 
 app.get('/loggeduser', function (req, res) {
     if (req.user === undefined) {

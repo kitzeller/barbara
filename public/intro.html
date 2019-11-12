@@ -227,6 +227,25 @@
                 '        <button type="submit">logout</button>\n' +
                 '    </form>');
 
+
+            $.ajax({
+                url: '/sessions/user/' + data.username._id,
+                type: 'get',
+                success: function (data) {
+                    if (data) {
+                        $("#account").append("<hr>");
+                        $("#account").append("<h2> Your Sessions </h2>");
+
+                        for (let o of data.sessions) {
+                            $('#side-content').append("<h3>" + o.name + "</h3>");
+                            $('#side-content').append("<h5>" + o._id + "</h5>");
+                        }
+                        // show my sessions
+                        console.log(data);
+                    }
+                }
+            });
+
         }
     });
 
