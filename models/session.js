@@ -6,5 +6,6 @@ module.exports = mongoose.model('Session',{
     svg: String,
     output: String,
     input: String,
-    grammar: String
+    grammar: String,
+    private: {type: Boolean, default: false}
 });

@@ -87,6 +87,54 @@
             color: white;
             font-size: 20px;
         }
+
+        input {
+            color: black;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 200;
+            top: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav h5:hover {
+            color: #7c7c7c;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
     </style>
     <title>Introduction</title>
 
@@ -94,7 +142,34 @@
 </head>
 <body>
 
+<button style="position: absolute; top: 0; right: 0; z-index: 150" onclick="openNav()">Account</button>
+
 <div id="bg" style="padding: 0; margin: 0"></div>
+
+<!--Sidebar-->
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="side-content" style="padding: 10px; text-align: center">
+        <h1>Your Account</h1>
+        <hr>
+        <div id="account" style="text-align: center">
+            <form id="theform" method="post" action="/login">
+                <h2>Login</h2>
+                <label>
+                    Username:
+                    <input id="username" class="u-full-width" type="text" name="username" placeholder="Username">
+                </label>
+                <label>
+                    Password:
+                    <input id="password" class="u-full-width" type="password" name="password" placeholder="Password">
+                </label>
+                <button type="submit">Login</button>
+            </form>
+            <button id="register">Register</button>
+        </div>
+    </div>
+</div>
+
 
 <div id="panel">
     <h1>
@@ -110,6 +185,7 @@
 
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script>
+    var loggedUser;
     $.getJSON("sessions", function (data) {
         console.log(data);
         data = shuffle(data);
@@ -126,12 +202,48 @@
         }
     });
 
+    $("#register").click(function () {
+        $.ajax({
+            url: '/signup',
+            type: 'post',
+            dataType: 'json',
+            data: $('form#theform').serialize(),
+            success: function (data) {
+                if (data.status === "ok") {
+                    window.location = "/";
+                }
+            }
+        });
+
+    });
+
+    $.getJSON("loggeduser", function (data) {
+        // Make sure the data contains the username as expected before using it
+        if (data.hasOwnProperty('username')) {
+            loggedUser = data;
+            $("#account").empty();
+            $("#account").append("<h3> Welcome, " + data.username.username + "</h3>");
+            $("#account").append(' <form action="/logout" method="get">\n' +
+                '        <button type="submit">logout</button>\n' +
+                '    </form>');
+
+        }
+    });
+
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
     function savePatch(id) {
         // Save to local storage!
         alert("Patch added successfully!");
         let obj = window.localStorage.getItem('barbara-vm-svgs');
 
-        if (obj){
+        if (obj) {
             console.log(obj);
             obj = JSON.parse(obj);
             obj.ids.push(id);

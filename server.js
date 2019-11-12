@@ -164,29 +164,29 @@ app.get('/',
  * Login & Sign-up
  */
 
-// app.get('/login',
-//     function (req, res) {
-//         res.sendFile(path.join(__dirname + '/public/login.html'));
-//     });
-//
-// app.post('/login',
-//     passport.authenticate('login', {failureRedirect: '/'}),
-//     function (req, res) {
-//         res.redirect('/main');
-//     });
-//
-// app.post('/signup',
-//     passport.authenticate('signup', {failureRedirect: '/'}),
-//     function (req, res) {
-//         res.status(200).json({status: "ok"});
-//     });
-//
-// app.get('/logout',
-//     function (req, res) {
-//         req.logout();
-//         res.redirect('/');
-//     });
-//
+app.get('/login',
+    function (req, res) {
+        res.sendFile(path.join(__dirname + '/public/intro.html'));
+    });
+
+app.post('/login',
+    passport.authenticate('login', {failureRedirect: '/'}),
+    function (req, res) {
+        res.redirect('/');
+    });
+
+app.post('/signup',
+    passport.authenticate('signup', {failureRedirect: '/'}),
+    function (req, res) {
+        res.status(200).json({status: "ok"});
+    });
+
+app.get('/logout',
+    function (req, res) {
+        req.logout();
+        res.redirect('/');
+    });
+
 /**
  * Save Session
  */
@@ -240,17 +240,17 @@ app.get('/sessions/:id',
             res.send(data);
         });
     });
-//
-// app.get('/loggeduser', function (req, res) {
-//     if (req.user === undefined) {
-//         // The user is not logged in
-//         res.json({});
-//     } else {
-//         res.json({
-//             username: req.user
-//         });
-//     }
-// });
+
+app.get('/loggeduser', function (req, res) {
+    if (req.user === undefined) {
+        // The user is not logged in
+        res.json({});
+    } else {
+        res.json({
+            username: req.user
+        });
+    }
+});
 
 
 /**

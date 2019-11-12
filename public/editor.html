@@ -236,7 +236,7 @@ all repeat
             });
         }
     }
-    
+
     function saveGrammar() {
         window.localStorage.setItem('barbara-vm-grammar', grammar_cm.getValue());
     }
@@ -282,7 +282,7 @@ all repeat
             let res = parser.parse(input);
             console.log(res);
             $("#output").val(JSON.stringify(res));
-        } catch(ex) {
+        } catch (ex) {
             console.log(ex.message);
             $("#output").val(ex.message);
         }
@@ -299,14 +299,14 @@ all repeat
         window.seq.define("default", val, "#drawing");
     }
 
-    function loopSVG(){
-        if (looping){
+    function loopSVG() {
+        if (looping) {
             looping = false;
             clearInterval(interval);
             $("#loop").text("Start Loop");
         } else {
             looping = true;
-            interval = setInterval(function(){
+            interval = setInterval(function () {
                 makeParser();
                 start();
             }, 1000);
@@ -332,12 +332,26 @@ all repeat
             return;
         }
 
-        $.post("savesession", {
-            grammar: grammar_cm.getValue(),
-            input: input_cm.getValue(),
-            output: $("#output").val(),
-            svg: window.svg,
-            name: response
+        $.getJSON("loggeduser", function (data) {
+            // Make sure the data contains the username as expected before using it
+            if (data.hasOwnProperty('username')) {
+                $.post("savesession", {
+                    grammar: grammar_cm.getValue(),
+                    input: input_cm.getValue(),
+                    output: $("#output").val(),
+                    svg: window.svg,
+                    name: response,
+                    user: data.username._id
+                });
+            } else {
+                $.post("savesession", {
+                    grammar: grammar_cm.getValue(),
+                    input: input_cm.getValue(),
+                    output: $("#output").val(),
+                    svg: window.svg,
+                    name: response
+                });
+            }
         });
     }
 
