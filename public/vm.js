@@ -746,6 +746,7 @@ Q.prototype.step = function () {
                         break;
 
                     case "@slider":
+                        let current_val = this.stack.pop();
                         let max_val = this.stack.pop();
                         let min_val = this.stack.pop();
                         let slider_type = this.stack.pop();
@@ -779,12 +780,22 @@ Q.prototype.step = function () {
                         this.stack.push(v1_mult * v2_mult);
                         break;
 
+                    case "@%":
+                    case "@mod":
+                        let v2_mod = this.stack.pop();
+                        let v1_mod = this.stack.pop();
+
+                        console.log(v1_mod % v2_mod);
+
+                        this.stack.push(v1_mod % v2_mod);
+                        break;
+
                     case "@/":
                     case "@div":
                         let v2_div = this.stack.pop();
                         let v1_div = this.stack.pop();
 
-                        this.stack.push(v1_div / v2_div);
+                        this.stack.push(Math.floor(v1_div / v2_div));
                         break;
 
                     case "@+":

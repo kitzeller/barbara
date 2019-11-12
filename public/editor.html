@@ -69,6 +69,10 @@
                 font-size: 18px;
             }
         }
+
+        .to-replace {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -122,7 +126,7 @@ Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
 TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
 HaveTerminatorAhead = . (!"**" .)* "**"
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / add / mult / subtract / $[^() \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / add / mult / subtract / divide / modulo / $[^() \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -177,6 +181,8 @@ animate_color = "animate-color" { return "@animate-color"; }
 add = " + " { return "@+"; }
 mult = " * " { return "@*"; }
 subtract = " - " { return "@-"; }
+divide = " / " { return "@/"; }
+modulo = " % " { return "@%"; }
 
 _ "whitespace" = [ \t\n\r]*
         </textarea>
@@ -268,14 +274,75 @@ all repeat
             "Ctrl-Enter": makeParser,
             "Cmd-Enter": makeParser,
             "Shift-Enter": start,
-            "Alt-Enter": exportSVG
+            "Alt-Enter": exportSVG,
+            "Alt-LeftClick": getCursor
         }
     });
+
+    var htmlNode;
+
+    function getCursor() {
+        console.log(input_cm.getCursor());
+
+        var A1 = input_cm.getCursor().line;
+        var A2 = input_cm.getCursor().ch;
+
+        var B1 = input_cm.findWordAt({line: A1, ch: A2}).anchor.ch;
+        var B2 = input_cm.findWordAt({line: A1, ch: A2}).head.ch;
+
+        console.log(input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2}));
+
+        // create a node
+        if (htmlNode){
+            htmlNode.parentNode.removeChild(htmlNode);
+        }
+
+        var min = prompt("What is the min val?");
+        if (!min) return;
+        var max = prompt("What is the max val?", "0");
+        if (!max) return;
+
+        min = parseInt(min);
+        max = parseInt(max);
+
+        htmlNode = document.createElement("input");
+        htmlNode.id = "volume";
+        htmlNode.type = 'range';
+        htmlNode.min = min;
+        htmlNode.max = max;
+        htmlNode.value = 0;
+        htmlNode.step = 1;
+        // input_cm.addWidget({ch: A2, line: A1}, htmlNode, true);
+        input_cm.markText({line: A1, ch: B1}, {line: A1, ch: B2}, {
+            className: "to-replace",
+            replacedWith: htmlNode
+        });
+        htmlNode.onchange = function(){
+            // Still pretty glitchy - works great if the value is on it's own line
+            if (input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2}).includes(" ")){
+                B2--;
+            } else if (parseInt(input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2+1}))){
+                B2++;
+                B2++;
+            }
+            input_cm.replaceRange(this.value,{line: A1, ch: B1}, {line: A1, ch: B2});
+            console.log(B1, B2);
+            makeParser();
+            start();
+
+            input_cm.markText({line: A1, ch: B1}, {line: A1, ch: B1 + this.value.length}, {
+                className: "to-replace",
+                replacedWith: htmlNode
+            });
+        };
+    }
+
 
     function makeParser() {
         let grammer = grammar_cm.getValue();
         var parser = peg.generate(grammer);
         let input = input_cm.getValue().trim();
+        console.log(input);
 
         // TODO: Check error checking?
         try {
