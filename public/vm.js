@@ -795,7 +795,14 @@ Q.prototype.step = function () {
                         let v2_div = this.stack.pop();
                         let v1_div = this.stack.pop();
 
-                        this.stack.push(Math.floor(v1_div / v2_div));
+                        // this.stack.push(Math.floor(v1_div / v2_div));
+                        this.stack.push((v1_div / v2_div));
+                        break;
+
+                    case "@floor":
+                        let v_floor = this.stack.pop();
+
+                        this.stack.push(Math.floor(v_floor));
                         break;
 
                     case "@+":
