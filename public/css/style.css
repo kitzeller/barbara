@@ -8,9 +8,9 @@ h1, h2 {
 }
 
 body {
-    margin-top: 1%;
     background-color: #222;
     color: white;
+    margin: 0;
 }
 
 code {
@@ -25,4 +25,152 @@ code {
 .column {
     /*flex: 50%;*/
     width: 50%;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 200;
+    top: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav h5:hover {
+    color: #7c7c7c;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
+}
+
+.fixed-header {
+    z-index: 200;
+    position: fixed;
+    transform: translateY(50%);
+    text-align: center;
+}
+
+.fixed-header h1 {
+    opacity: 0.8;
+    color: rgba(255, 255, 255, 1);
+    font-size: 18.5vw;
+    letter-spacing: 6.5px;
+    text-shadow: -0.5px -0.5px 10px #000,
+    0.5px -0.5px 10px #000,
+    -0.5px 0.5px 10px #000,
+    0.5px 0.5px 10px #000;
+}
+
+.fixed-header h3 {
+    text-shadow: -0.5px -0.5px 10px #000,
+    0.5px -0.5px 10px #000,
+    -0.5px 0.5px 10px #000,
+    0.5px 0.5px 10px #000;
+}
+
+
+#panel {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 25%;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/*Ghost Button*/
+.ghost-button {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+    padding: 8px;
+    color: white;
+    border: 3px solid white;
+    text-align: center;
+    outline: none;
+    text-decoration: none;
+    background-color: transparent;
+    transition: background-color 0.2s ease-out,
+    color 0.2s ease-out;
+}
+
+.ghost-button:hover,
+.ghost-button:active {
+    background-color: white;
+    color: #000;
+    transition: background-color 0.3s ease-in,
+    color 0.3s ease-in;
+}
+
+.ghost-active {
+    background-color: white;
+    color: #000;
+    transition: background-color 0.3s ease-in,
+    color 0.3s ease-in;
+}
+
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    z-index: 200;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.overlay {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.svg-container:hover .overlay {
+    opacity: 1;
+}
+
+.svg-container:hover svg {
+    opacity: 0.5;
+}
+
+.svg-container:hover button {
+    margin: 5px;
+    color: white;
+    font-size: 16px;
 }

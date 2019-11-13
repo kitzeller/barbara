@@ -11,12 +11,6 @@
     <link href="css/style.css" rel="stylesheet">
 
     <style>
-        body {
-            background-color: #222;
-            color: white;
-            margin: 0;
-        }
-
         svg {
             width: 100%;
             height: auto;
@@ -24,29 +18,16 @@
 
         .svg-container {
             position: relative;
-            width: 25%;
+            width: 20%;
             padding: 0;
             margin-bottom: -10px;
         }
 
-
         #bg {
             top: 0;
-            padding-left: 25% !important;
+            /*padding-left: 25% !important;*/
             flex-wrap: wrap;
             display: flex;
-        }
-
-        #panel {
-            position: fixed;
-            z-index: 100;
-            top: 0;
-            left: 0;
-            width: 25%;
-            height: 100%;
-            overflow: auto;
-            display: flex;
-            flex-direction: column;
         }
 
         h1 {
@@ -56,31 +37,17 @@
         button {
             flex-grow: 1;
             margin: 5px 10px 5px 10px;
-        }
-
-        .overlay {
-            transition: .5s ease;
-            opacity: 0;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%);
-            text-align: center;
-        }
-
-        .svg-container:hover .overlay {
-            opacity: 1;
-        }
-
-        .svg-container:hover svg {
-            opacity: 0.5;
-        }
-
-        .svg-container:hover button {
-            margin: 5px;
             color: white;
-            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+
+        button:hover,
+        button:active {
+            background-color: white;
+            color: #000;
+            transition: background-color 0.3s ease-in,
+            color 0.3s ease-in;
         }
 
         .text {
@@ -91,58 +58,24 @@
         input {
             color: black;
         }
-
-        .sidenav {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 200;
-            top: 0;
-            right: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-        }
-
-        .sidenav a {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 25px;
-            color: #818181;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .sidenav h5:hover {
-            color: #7c7c7c;
-        }
-
-        .sidenav .closebtn {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-        }
-
-        @media screen and (max-height: 450px) {
-            .sidenav {
-                padding-top: 15px;
-            }
-
-            .sidenav a {
-                font-size: 18px;
-            }
-        }
     </style>
     <title>Introduction</title>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+<div class="top-bar">
+    <button onclick="window.location.href='target_lang.html'">Target Lang</button>
+    <button onclick="window.location.href='tutorial.html'">Parsing</button>
+    <button onclick="window.location.href='quilting.html'">Quilting</button>
+    <button onclick="window.location.href='editor.html'">Editor</button>
+    <button onclick="openNav()">Account</button>
+</div>
 
-<button style="position: absolute; top: 0; right: 0; z-index: 150" onclick="openNav()">Account</button>
+<div class="fixed-header">
+    <h1>BARBARA</h1>
+    <h3>Live coding languages for quilters.</h3>
+</div>
 
 <div id="bg" style="padding: 0; margin: 0"></div>
 
@@ -168,19 +101,6 @@
             <button id="register">Register</button>
         </div>
     </div>
-</div>
-
-
-<div id="panel">
-    <h1>
-        Live Code a Graphics Language with Barbara
-    </h1>
-
-    <button class="button-primary" onclick="window.location.href='intro.html'">Introduction</button>
-    <button onclick="window.location.href='target_lang.html'">Target Lang</button>
-    <button onclick="window.location.href='tutorial.html'">Parsing</button>
-    <button onclick="window.location.href='quilting.html'">Quilting</button>
-    <button onclick="window.location.href='editor.html'">Editor</button>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>

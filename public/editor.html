@@ -25,54 +25,6 @@
         #output {
             color: black;
         }
-
-        .sidenav {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 200;
-            top: 0;
-            right: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-        }
-
-        .sidenav a {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 25px;
-            color: #818181;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .sidenav h5:hover {
-            color: #7c7c7c;
-        }
-
-        .sidenav .closebtn {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-        }
-
-        @media screen and (max-height: 450px) {
-            .sidenav {
-                padding-top: 15px;
-            }
-
-            .sidenav a {
-                font-size: 18px;
-            }
-        }
-
-        .to-replace {
-            color: red;
-        }
     </style>
 </head>
 <body>
@@ -88,10 +40,8 @@
         <button onclick="window.location.href='target_lang.html'">Target Lang</button>
         <button onclick="window.location.href='tutorial.html'">Parsing</button>
         <button onclick="window.location.href='quilting.html'">Quilting</button>
-        <button class="button-primary" onclick="window.location.href='index.html'">Editor</button>
+        <button class="button-primary" onclick="window.location.href='editor.html'">Editor</button>
         <button onclick="openNav()">Library</button>
-
-        <!--        <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>-->
     </div>
 </div>
 
@@ -202,11 +152,15 @@ duplicate 180 rotate random-color color
 all repeat
         </textarea>
 
-            <button onclick="makeParser()">Parse!</button>
-            <button onclick="start()">Start</button>
-            <button onclick="exportSVG()">Export</button>
-            <button id="loop" onclick="loopSVG()">Start Loop</button>
-            <button onclick="saveGrammar()">Save</button>
+            <div style="text-align: center">
+                <button onclick="makeParser()">Parse!</button>
+                <button onclick="start()">Start</button>
+                <button id="loop" onclick="loopSVG()">Start Loop</button>
+                <br>
+                <button onclick="saveGrammar()">Save Grammar</button>
+                <button onclick="exportSVG()">Export Pattern</button>
+                <button onclick="updateSVG()">Update Pattern</button>
+            </div>
 
             <h2>Output</h2>
             <textarea id="output" style="width: 700px; height: 100px"></textarea>
@@ -465,6 +419,10 @@ all repeat
                 });
             }
         });
+    }
+
+    function updateSVG() {
+        // TODO: Check if user is owner?
     }
 
     if (window.location.search) {
