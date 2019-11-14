@@ -1,6 +1,7 @@
 # graphics-virtual-machine
 WPI ISP creating a virtual machine for live coding visuals
 
+![NewBarbara](img/new_homepage.png)
 
 ![Barbara](img/home_page.png)
 

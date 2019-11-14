@@ -498,9 +498,8 @@
 
                 var clothTexture = new THREE.Texture(canvas);
                 clothTexture.needsUpdate = true;
-
-                // var clothTexture = loader.load( 'textures/patterns/circuit_pattern.png' );
-                // clothTexture.anisotropy = 16;
+                clothTexture.rotation = Math.PI;
+                clothTexture.center = new THREE.Vector2(0.5, 0.5);
 
                 var clothMaterial = new THREE.MeshLambertMaterial({
                     map: clothTexture,
