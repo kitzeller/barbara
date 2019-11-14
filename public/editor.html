@@ -25,6 +25,10 @@
         #output {
             color: black;
         }
+
+        input {
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -276,7 +280,7 @@ all repeat
         document.getElementById('markdown_render').innerHTML = marked(cm.getValue());
     });
 
-    var htmlNode;
+    var htmlNode, colorNode;
 
     function getCursor() {
         console.log(input_cm.getCursor());
@@ -287,55 +291,82 @@ all repeat
         var B1 = input_cm.findWordAt({line: A1, ch: A2}).anchor.ch;
         var B2 = input_cm.findWordAt({line: A1, ch: A2}).head.ch;
 
-        console.log(input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2}));
+        let range = input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2});
+        console.log(range);
 
-        // create a node
-        if (htmlNode) {
-            htmlNode.parentNode.removeChild(htmlNode);
+        // If it's a number
+        if (range.match(/^[0-9]+$/) != null) {
+            if (htmlNode) htmlNode.parentNode.removeChild(htmlNode);
+
+            var min = prompt("What is the min val?");
+            if (!min) return;
+            var max = prompt("What is the max val?", "0");
+            if (!max) return;
+
+            min = parseInt(min);
+            max = parseInt(max);
+
+            htmlNode = document.createElement("input");
+            htmlNode.id = "volume";
+            htmlNode.type = 'range';
+            htmlNode.min = min;
+            htmlNode.max = max;
+            htmlNode.value = 0;
+            htmlNode.step = 1;
+
+            input_cm.addWidget({ch: A2, line: A1}, htmlNode, true);
+            htmlNode.onchange = function () {
+                // Still pretty glitchy - works great if the value is on it's own line
+                input_cm.replaceRange(this.value, {line: A1, ch: B1}, {line: A1, ch: B2});
+
+                B2 = B1 + this.value.length;
+
+                makeParser(true);
+                start();
+            };
         }
+        // If it's a color
+        if (range.includes("#")) {
+            if (colorNode) colorNode.parentNode.removeChild(colorNode);
 
-        var min = prompt("What is the min val?");
-        if (!min) return;
-        var max = prompt("What is the max val?", "0");
-        if (!max) return;
+            colorNode = document.createElement("input");
+            colorNode.id = "color";
+            colorNode.type = 'color';
+            input_cm.addWidget({ch: A2, line: A1}, colorNode, true);
 
-        min = parseInt(min);
-        max = parseInt(max);
-
-        htmlNode = document.createElement("input");
-        htmlNode.id = "volume";
-        htmlNode.type = 'range';
-        htmlNode.min = min;
-        htmlNode.max = max;
-        htmlNode.value = 0;
-        htmlNode.step = 1;
-        // input_cm.addWidget({ch: A2, line: A1}, htmlNode, true);
-        input_cm.markText({line: A1, ch: B1}, {line: A1, ch: B2}, {
-            className: "to-replace",
-            replacedWith: htmlNode
-        });
-        htmlNode.onchange = function () {
-            // Still pretty glitchy - works great if the value is on it's own line
-            if (input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2}).includes(" ")) {
-                B2--;
-            } else if (parseInt(input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2 + 1}))) {
-                B2++;
+            while (!input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2 + 1}).includes(" ")) {
                 B2++;
             }
-            input_cm.replaceRange(this.value, {line: A1, ch: B1}, {line: A1, ch: B2});
-            console.log(B1, B2);
-            makeParser();
-            start();
 
-            input_cm.markText({line: A1, ch: B1}, {line: A1, ch: B1 + this.value.length}, {
-                className: "to-replace",
-                replacedWith: htmlNode
-            });
-        };
+            colorNode.onchange = function () {
+                //console.log(this.value)
+                input_cm.replaceRange(this.value, {line: A1, ch: B1}, {line: A1, ch: B2});
+                while (!input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2 + 1}).includes(" ")) {
+                    B2++;
+                }
+
+                makeParser(true);
+                start();
+            };
+        }
     }
 
 
-    function makeParser() {
+    function makeParser(del) {
+
+        console.log(del);
+        if (del !== true){
+            // not send from widgets
+            if (colorNode) {
+                colorNode.parentNode.removeChild(colorNode);
+                colorNode = undefined;
+            }
+            if (htmlNode) {
+                htmlNode.parentNode.removeChild(htmlNode);
+                htmlNode = undefined;
+            }
+        }
+
         let grammer = grammar_cm.getValue();
         var parser = peg.generate(grammer);
         let input = input_cm.getValue().trim();
@@ -363,6 +394,9 @@ all repeat
         window.seq.define("default", val, "#drawing");
     }
 
+    /**
+     * Loop the SVG
+     */
     function loopSVG() {
         if (looping) {
             looping = false;
@@ -378,6 +412,9 @@ all repeat
         }
     }
 
+    /**
+     * Parses the url query
+     */
     function parseQuery(queryString) {
         var query = {};
         var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
@@ -388,6 +425,9 @@ all repeat
         return query;
     }
 
+    /**
+     * Exports the SVG
+     */
     function exportSVG() {
         let response = prompt("What do you want to call this?.");
 

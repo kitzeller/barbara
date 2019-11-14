@@ -461,10 +461,15 @@ Q.prototype.step = function () {
                         break;
 
                     case "@rotate":
+                        let rot_y, rot_x;
+                        if (this.stack.length > 1){
+                            rot_y = this.stack.pop();
+                            rot_x = this.stack.pop();
+                        }
                         let degree = this.stack.pop();
                         let elem_rotate = this.vars.pop();
 
-                        elem_rotate.rotate(degree);
+                        elem_rotate.rotate(degree, rot_x, rot_y);
 
                         this.vars.push(elem_rotate);
                         break;
