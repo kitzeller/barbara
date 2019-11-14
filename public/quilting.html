@@ -351,6 +351,197 @@ triangle random-number random-number move random-color color repeat
 end-loop
 </textarea>
 
+### Getting and Setting
+
+We can define values that we can use again later. Using the `define` command, we can store things like shapes, patterns, and colors. We can then retrieve them
+again using the `get` command. When you use the `get` command, you can simply specify the name. However, when you are using a named variable elsewhere, like in
+`color`, you need to prepend `$` to the variable name. `$` is a shorthand way of calling `get` on a variable.
+
+```peg
+start "start" = term +
+term "term" = body:(word) _ { return body; }
+
+word "word" = circle / triangle / color / rotate / translate / scale / duplicate / all / move / repeat / size /
+random_number / random_color / loop / end_loop / define / get / $[^ \t\n\r]+
+
+circle = "circle" { return "@circle"; }
+triangle = "triangle" { return "@triangle"; }
+
+rotate = "rotate" { return "@rotate"; }
+translate = "translate" { return "@translate"; }
+scale = "scale" { return "@scale"; }
+move = "move" { return "@move"; }
+duplicate = "duplicate" { return "@duplicate"; }
+all = "all" { return "@all"; }
+repeat = "repeat" { return "@repeat"; }
+size = "size" { return "@size"; }
+
+color = "color" { return "@color"; }
+random_number = "random-number" { return "@random-number"; }
+random_color = "random-color" { return "@random-color"; }
+
+end_loop = "end-loop" { return "@end-loop"; }
+loop = "loop" { return "@loop"; }
+define = "define" { return "@define"; }
+get = "get" { return "@get"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">#5F9CD2 c1 define
+20 triangle 0 20 move $c1 color myrect define
+myrect get duplicate 20 0 move
+myrect get duplicate 20 20 move
+myrect get duplicate 20 40 move
+</textarea>
+
+### Gradients
+
+We can use gradients. In this language, anything inside a pair of square brackets `[...]` is treated like an entire sentence and not broken up.
+We can use this to define the strings necessary to create the gradient.
+
+```peg
+start "start" = term +
+term "term" = body:(word / sentence) _ { return body; }
+
+sentence = "[" expr:regular* "]" { return expr } / regular
+regular = [^\[\]]+ { return text(); }
+
+word "word" = circle / triangle / gradient / color / rotate / translate / scale / duplicate / all / move / repeat / size /
+random_number / random_color / loop / end_loop / define / get / $[^\[\] \t\n\r]+
+
+circle = "circle" { return "@circle"; }
+triangle = "triangle" { return "@triangle"; }
+gradient = "gradient" { return "@gradient"; }
+
+rotate = "rotate" { return "@rotate"; }
+translate = "translate" { return "@translate"; }
+scale = "scale" { return "@scale"; }
+move = "move" { return "@move"; }
+duplicate = "duplicate" { return "@duplicate"; }
+all = "all" { return "@all"; }
+repeat = "repeat" { return "@repeat"; }
+size = "size" { return "@size"; }
+
+color = "color" { return "@color"; }
+random_number = "random-number" { return "@random-number"; }
+random_color = "random-color" { return "@random-color"; }
+
+end_loop = "end-loop" { return "@end-loop"; }
+loop = "loop" { return "@loop"; }
+define = "define" { return "@define"; }
+get = "get" { return "@get"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">radial [0 #f06 1, 1 #0f9 1] gradient grad1 define
+0 0 50 circle $grad1 color
+radial [0 #AEA606 1, 1 #1517AA 1] gradient grad2 define
+50 50 50 circle $grad2 color
+</textarea>
+
+### Patterns
+
+We can use patterns too!
+
+```peg
+start "start" = term +
+term "term" = body:(word / sentence) _ { return body; }
+
+sentence = "[" expr:regular* "]" { return expr } / regular
+regular = [^\[\]]+ { return text(); }
+
+word "word" = rect / circle / triangle / gradient / pattern / color / rotate / translate / scale / duplicate / all / move / repeat / size / random_number / random_color / loop / end_loop / define / get / $[^\[\] \t\n\r]+
+
+rect = "rect" { return "@rect"; }
+circle = "circle" { return "@circle"; }
+triangle = "triangle" { return "@triangle"; }
+gradient = "gradient" { return "@gradient"; }
+pattern = "pattern" { return "@pattern"; }
+
+rotate = "rotate" { return "@rotate"; }
+translate = "translate" { return "@translate"; }
+scale = "scale" { return "@scale"; }
+move = "move" { return "@move"; }
+duplicate = "duplicate" { return "@duplicate"; }
+all = "all" { return "@all"; }
+repeat = "repeat" { return "@repeat"; }
+size = "size" { return "@size"; }
+
+color = "color" { return "@color"; }
+random_number = "random-number" { return "@random-number"; }
+random_color = "random-color" { return "@random-color"; }
+
+end_loop = "end-loop" { return "@end-loop"; }
+loop = "loop" { return "@loop"; }
+define = "define" { return "@define"; }
+get = "get" { return "@get"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">rect red color
+rect 50 50 move green color
+rect 0 50 move blue color
+rect 50 0 move white color
+all 800 800 pattern mypat define
+0 0 100 circle $mypat color
+</textarea>
+
+### Grouping
+
+Grouping is an important feature!
+
+```peg
+start "start" = term +
+term "term" = body:(word / sentence) _ { return body; }
+
+sentence = "[" expr:regular* "]" { return expr } / regular
+regular = [^\[\]]+ { return text(); }
+
+word "word" = rect / circle / triangle / gradient / pattern / color / rotate / translate / scale / duplicate / all / group / move / repeat / size / random_number / random_color / loop / end_loop / define / get / $[^\[\] \t\n\r]+
+
+rect = "rect" { return "@rect"; }
+circle = "circle" { return "@circle"; }
+triangle = "triangle" { return "@triangle"; }
+gradient = "gradient" { return "@gradient"; }
+pattern = "pattern" { return "@pattern"; }
+
+rotate = "rotate" { return "@rotate"; }
+translate = "translate" { return "@translate"; }
+scale = "scale" { return "@scale"; }
+move = "move" { return "@move"; }
+duplicate = "duplicate" { return "@duplicate"; }
+all = "all" { return "@all"; }
+repeat = "repeat" { return "@repeat"; }
+size = "size" { return "@size"; }
+
+color = "color" { return "@color"; }
+random_number = "random-number" { return "@random-number"; }
+random_color = "random-color" { return "@random-color"; }
+
+end_loop = "end-loop" { return "@end-loop"; }
+loop = "loop" { return "@loop"; }
+define = "define" { return "@define"; }
+get = "get" { return "@get"; }
+group = "group" { return "@group"; }
+
+_ "whitespace" = [ \t\n\r]*
+```
+
+<textarea class="input">0 0 50 50 rect first-def define
+first-def get blue color
+0 50 50 50 rect sec-def define
+sec-def get red color
+50 0 50 50 rect thir-def define
+thir-def get yellow color
+50 50 50 50 rect four-def define
+four-def get green color
+first-def sec-def thir-def four-def group five-def define
+five-def get 50 50 scale 45 rotate
+</textarea>
+
 ### Looping with Index
 
 ```peg
