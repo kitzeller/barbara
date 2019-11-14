@@ -118,6 +118,7 @@
                 '    <div class="text">' + d.name + '</div>\n' +
                 '<button onclick="openPatch(\'' + d._id + '\')">Open</button>' +
                 '<button onclick="savePatch(\'' + d._id + '\')">Add</button>' +
+                '<button onclick="open3D(\'' + d._id + '\')">3D</button>' +
                 '  </div>' +
                 '</div>')
         }
@@ -206,6 +207,10 @@
 
     function openPatch(id) {
         window.location = "editor.html?id=" + id;
+    }
+
+    function open3D(id) {
+        window.location = "3d/threejs.html?id=" + id;
     }
 </script>
 </body>

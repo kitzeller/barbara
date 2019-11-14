@@ -220,6 +220,7 @@ a + b							| ```a, b, "@add"``` or ```a, b, "@+"```
 a - b							| ```a, b, "@sub"``` or ```a, b, "@-"```
 a * b							| ```a, b, "@mul"``` or ```a, b, "@*"```
 a / b							| ```a, b, "@div"``` or ```a, b, "@/"```
+a % b							| ```a, b, "@mod"``` or ```a, b, "@%"```
 
 
 Transformations		 			| Format
@@ -230,13 +231,14 @@ Opacity							| ```alpha, @opacity```
 Radius							| ```pixels, @radius```
 Flip							| ```offset, axis, @flip```
 Diagonal Flip					| ```offset, @diag```
-Rotate							| ```degrees, @rotate```
+Rotate							| ```degrees, @rotate``` or ```degrees, cx, cy @rotate```
 Repeat							| ```@repeat```
 Size							| ```width, height, @size```
 Scale							| ```width-factor, height-factor, @scale```
 Translate						| ```x-factor, y-factor, @translate```
 Move							| ```x, y, @move```
 Center							| ```x, y, @center```
+Skew							| ```x, y, @skew```
 Order							| ```placement, @order``` where placement is one of ```back, backward, front, forward```
 Polar							| ```r, theta, @polar```
 
