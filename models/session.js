@@ -9,5 +9,7 @@ module.exports = mongoose.model('Session',{
     grammar: String,
     markdown: String,
     originalUrl: String,
-    private: {type: Boolean, default: false}
+    private: {type: Boolean, default: false},
+    height: Number,
+    width: Number
 });

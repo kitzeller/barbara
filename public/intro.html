@@ -20,7 +20,9 @@
             position: relative;
             width: 20%;
             padding: 0;
-            margin-bottom: -10px;
+            margin-bottom: -1px;
+            display: flex;
+            align-items: center;
         }
 
         #bg {
@@ -110,9 +112,8 @@
         console.log(data);
         data = shuffle(data);
         for (let d of data) {
-            // TODO: Make this less laggy, also not sure svg definition is the best
             $('#bg').append('<div class="svg-container" id="' + d._id + '">' +
-                '<svg width="800" height="800" viewBox="0 0 800 800">' + d.svg + '</svg>' +
+                '<svg viewBox="0 0 800 800">' + d.svg + '</svg>' +
                 '  <div class="overlay">\n' +
                 '    <div class="text">' + d.name + '</div>\n' +
                 '<button onclick="openPatch(\'' + d._id + '\')">Open</button>' +

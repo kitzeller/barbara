@@ -679,8 +679,9 @@ Q.prototype.step = function () {
 
                     case "@diag":
                         let elem_flip_diag = this.vars.pop();
-                        let diag_offset = this.stack.pop();
-                        elem_flip_diag.flip(diag_offset);
+                        let diag_offset = this.stack.pop() / 100 * WIDTH;
+                        elem_flip_diag.flip('both', diag_offset);
+                        this.vars.push(elem_flip_diag);
                         break;
 
                     case "@copy":
@@ -755,9 +756,9 @@ Q.prototype.step = function () {
                         let the_uid = uid();
                         console.log(the_uid);
                         $("#sliders").append("<h3>" + var_name + " - " + slider_type + "</h3>")
-                        $("#sliders").append("<input type = \"range\" min=\""+min_val+"\" max=\""+ max_val+"\" value=\"0\" step=\"1\" id=\""+the_uid+"\"/>")
+                        $("#sliders").append("<input type = \"range\" min=\"" + min_val + "\" max=\"" + max_val + "\" value=\"0\" step=\"1\" id=\"" + the_uid + "\"/>")
                         const that = this;
-                        $("#" + the_uid).on("input",function(){
+                        $("#" + the_uid).on("input", function () {
                             switch (slider_type) {
                                 case "rotation":
                                     let current_rotation = that.context[var_name].transform().rotate;
@@ -765,7 +766,7 @@ Q.prototype.step = function () {
                                     break;
                                 case "sizingxy":
                                     console.log($(this).val());
-                                    that.context[var_name].size($(this).val()/100 * WIDTH, $(this).val()/100 * HEIGHT);
+                                    that.context[var_name].size($(this).val() / 100 * WIDTH, $(this).val() / 100 * HEIGHT);
                                     break;
                             }
                         });
