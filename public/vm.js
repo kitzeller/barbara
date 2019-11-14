@@ -730,9 +730,16 @@ Q.prototype.step = function () {
                         break;
 
                     case "@define":
-                        let ds = this.stack.pop();
-                        let vs = this.vars.pop();
-                        this.context[ds] = vs;
+                        // define a string
+                        if (this.stack.length > 1){
+                            let ds = this.stack.pop();
+                            let todefine = this.stack.pop();
+                            this.context[ds] = todefine;
+                        } else {
+                            let ds = this.stack.pop();
+                            let vs = this.vars.pop();
+                            this.context[ds] = vs;
+                        }
                         break;
 
                     case "@get":
