@@ -6,6 +6,9 @@
     <link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <link rel="stylesheet" href="css/darcula.css">
+    <link rel="stylesheet" href="lib/colorpicker/codemirror-colorpicker.css">
     <link href="css/normalize.css" rel="stylesheet">
     <link href="css/skeleton.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -25,6 +28,17 @@
             max-width: 100%;
         }
 
+        code {
+            height: auto;
+            min-height: 100px;
+        }
+
+        .language-peg {
+            min-height: 100px;
+            height: auto;
+            background-color: white;
+        }
+
         .input {
             color: black;
             min-height: 100px;
@@ -33,6 +47,12 @@
             font-family: monospace;
             word-wrap: break-word;
             border:solid 2px orange;
+        }
+
+        .CodeMirror {
+            border:solid 2px orange;
+            height: auto;
+            min-height: 100px;
         }
 
         h1, h2, h3, h4, h5, h6, pre {
@@ -59,6 +79,8 @@
 
     <title>Quilting</title>
 
+    <script src="lib/codemirror.js"></script>
+    <script src="lib/colorpicker/codemirror-colorpicker.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
@@ -662,19 +684,38 @@ Kit Zellerbach & Prof. Charlie Roberts
     document.getElementById('toc').innerHTML = marked(toc.join("\n"));
 
     $(".input").each(function() {
-        $(this).keyup(function() { changed_value(this); });
-        $(this).focus(function() { changed_value(this); });
-        $(this).after('<div class="res"></div>');
+        let editor = CodeMirror.fromTextArea(this, {
+            mode: "pegjs",
+            // theme: "darcula",
+            colorpicker : {
+                mode : 'edit'
+            },
+            lineWrapping: true,
+            lineNumbers: true,
+            styleActiveLine: true,
+            matchBrackets: true
+        });
+        // $(this).keyup(function() { changed_value(this); });
+        // $(this).focus(function() { changed_value(this); });
+        let that = this;
+        editor.on('change', function () {
+            changed_value(that, false, editor);
+        });
+        editor.on('focus', function () {
+            changed_value(that, false, editor);
+        });
+        $(this).next('.CodeMirror').after('<div class="res"></div>');
         $(this).after('<code class="result"></code>');
-        changed_value(this, true);
+        changed_value(this, true, editor);
     });
 
     $(".res").each(function () {
         $(this).uniqueId();
     });
 
-    function changed_value(element, noplay) {
-        var input = $(element)[0].value;
+    function changed_value(element, noplay, cm) {
+        var input = cm.getValue();
+        console.log(input);
         var grammar;
         // find previous grammar:
         try{
@@ -693,8 +734,8 @@ Kit Zellerbach & Prof. Charlie Roberts
             if (!noplay && Array.isArray(output)) {
                 // console.log(window.seq.define, output);
                 // window.seq.clear();
-                console.log($(element).next().next()[0]);
-                let id = "#" + $(element).next().next()[0].id;
+                console.log($(element).next().next().next()[0]);
+                let id = "#" + $(element).next().next().next()[0].id;
                 window.seq.define("default", output, id);
             }
         } catch(ex) {
