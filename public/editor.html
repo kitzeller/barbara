@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="lib/colorpicker/codemirror-colorpicker.css">
+
     <link href="css/normalize.css" rel="stylesheet">
     <link href="css/skeleton.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -198,6 +200,7 @@ all repeat
 
 <!-- Create a simple CodeMirror instance -->
 <script src="lib/codemirror.js"></script>
+<script src="lib/colorpicker/codemirror-colorpicker.js"></script>
 <script src="lib/mode/overlay.js"></script>
 <script src="lib/mode/markdown.js"></script>
 <script src="lib/mode/pegjs.js"></script>
@@ -258,12 +261,18 @@ all repeat
         lineWrapping: true,
         //Darkmode
         theme: "darcula",
+        colorpicker : {
+            mode : 'edit'
+        },
         extraKeys: {
             "Ctrl-Enter": makeParser,
             "Cmd-Enter": makeParser,
             "Shift-Enter": start,
             "Alt-Enter": exportSVG,
-            "Alt-LeftClick": getCursor
+            "Alt-LeftClick": getCursor,
+            'Ctrl-K' : function (cm, event) {
+                cm.state.colorpicker.popup_color_picker();
+            }
         }
     });
 
@@ -280,7 +289,8 @@ all repeat
         document.getElementById('markdown_render').innerHTML = marked(cm.getValue());
     });
 
-    var htmlNode, colorNode;
+    var htmlNode;
+    // var colorNode;
 
     function getCursor() {
         console.log(input_cm.getCursor());
@@ -326,41 +336,40 @@ all repeat
             };
         }
         // If it's a color
-        if (range.includes("#")) {
-            if (colorNode) colorNode.parentNode.removeChild(colorNode);
-
-            colorNode = document.createElement("input");
-            colorNode.id = "color";
-            colorNode.type = 'color';
-            input_cm.addWidget({ch: A2, line: A1}, colorNode, true);
-
-            while (!input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2 + 1}).includes(" ")) {
-                B2++;
-            }
-
-            colorNode.onchange = function () {
-                //console.log(this.value)
-                input_cm.replaceRange(this.value, {line: A1, ch: B1}, {line: A1, ch: B2});
-                while (!input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2 + 1}).includes(" ")) {
-                    B2++;
-                }
-
-                makeParser(true);
-                start();
-            };
-        }
+        // if (range.includes("#")) {
+        //     if (colorNode) colorNode.parentNode.removeChild(colorNode);
+        //
+        //     colorNode = document.createElement("input");
+        //     colorNode.id = "color";
+        //     colorNode.type = 'color';
+        //     input_cm.addWidget({ch: A2, line: A1}, colorNode, true);
+        //
+        //     while (!input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2 + 1}).includes(" ")) {
+        //         B2++;
+        //     }
+        //
+        //     colorNode.onchange = function () {
+        //         //console.log(this.value)
+        //         input_cm.replaceRange(this.value, {line: A1, ch: B1}, {line: A1, ch: B2});
+        //         while (!input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2 + 1}).includes(" ")) {
+        //             B2++;
+        //         }
+        //
+        //         makeParser(true);
+        //         start();
+        //     };
+        // }
     }
 
 
     function makeParser(del) {
 
-        console.log(del);
         if (del !== true){
             // not send from widgets
-            if (colorNode) {
-                colorNode.parentNode.removeChild(colorNode);
-                colorNode = undefined;
-            }
+            // if (colorNode) {
+            //     colorNode.parentNode.removeChild(colorNode);
+            //     colorNode = undefined;
+            // }
             if (htmlNode) {
                 htmlNode.parentNode.removeChild(htmlNode);
                 htmlNode = undefined;

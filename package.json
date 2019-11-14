@@ -22,6 +22,7 @@
     "@svgdotjs/svg.js": "^3.0.14",
     "babel-eslint": "^10.0.3",
     "bcryptjs": "^2.4.3",
+    "codemirror-colorpicker": "^1.9.52",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.2.0",
