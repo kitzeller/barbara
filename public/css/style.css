@@ -72,6 +72,7 @@ code {
 }
 
 .fixed-header {
+    pointer-events: none;
     z-index: 200;
     position: fixed;
     transform: translateY(50%);

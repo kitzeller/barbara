@@ -421,7 +421,7 @@ Q.prototype.step = function () {
                                     this.fill({color: color})
                                 }, true)
                             } else {
-                                elem.fill(color);
+                                elem.fill({color: color});
                             }
                         } catch {
                             elem.fill("#000000");
@@ -457,6 +457,15 @@ Q.prototype.step = function () {
                         let rad_elem = this.vars.pop();
                         rad_elem.radius(r_val);
                         this.vars.push(rad_elem);
+
+                        break;
+
+                    case "@skew":
+                        let y_skew = parseInt(this.stack.pop())/ 100 * HEIGHT;
+                        let x_skew = parseInt(this.stack.pop())/ 100 * WIDTH;
+                        let skew_elem = this.vars.pop();
+                        skew_elem.skew(x_skew, y_skew);
+                        this.vars.push(skew_elem);
 
                         break;
 
