@@ -401,6 +401,107 @@ Q.prototype.step = function () {
                         this.vars.push(img);
                         break;
 
+                    case "@animate-filter":
+                        let filter_ani_elem = this.vars.pop();
+                        let filter_ani_type = this.stack.pop();
+
+                        // default animation
+                        // todo: merge with filter function to stop code duplication
+
+                        var hueRotate;
+
+                        filter_ani_elem.filterWith(function(add) {
+                            hueRotate = add.colorMatrix('hueRotate', 0)
+                        });
+
+                        hueRotate.animate(3000).attr('values', 360);
+
+                        break;
+
+                    case "@filter":
+                        // https://github.com/svgdotjs/svg.filter.js
+
+                        let filter_elem = this.vars.pop();
+                        let filter_type = this.stack.pop();
+
+                        switch (filter_type) {
+                            case 'gaussian':
+                                filter_elem.filterWith(function (add) {
+                                    add.gaussianBlur(30);
+                                });
+                                break;
+                            case 'horizontal':
+                                filter_elem.filterWith(function (add) {
+                                    add.gaussianBlur(30, 0)
+                                });
+                                break;
+                            case 'desaturate':
+                                filter_elem.filterWith(function(add) {
+                                    add.colorMatrix('saturate', 0)
+                                });
+                                break;
+                            case 'darken':
+                                filter_elem.filterWith(function(add) {
+                                    add.componentTransfer({
+                                        type: 'linear',
+                                        slope: 0.2
+                                    })
+                                });
+                                break;
+                            case 'lighten':
+                                filter_elem.filterWith(function(add) {
+                                    add.componentTransfer({
+                                        type: 'linear',
+                                        slope: 1.5,
+                                        intercept: 0.2
+                                    })
+                                });
+                                break;
+                            case 'invert':
+                                filter_elem.filterWith(function(add) {
+                                    add.componentTransfer({
+                                        type: 'table',
+                                        tableValues: [1, 0]
+                                    })
+                                });
+                                break;
+                            case 'colorize':
+                                filter_elem.filterWith(function(add) {
+                                    add.colorMatrix('matrix', [ 1.0, 0,   0,   0,   0
+                                        , 0,   0.2, 0,   0,   0
+                                        , 0,   0,   0.2, 0,   0
+                                        , 0,   0,   0,   1.0, 0 ])
+                                });
+                                break;
+                            case 'posterize':
+                                filter_elem.filterWith(function(add) {
+                                    add.componentTransfer({
+                                        type: 'discrete',
+                                        tableValues: [0, 0.2, 0.4, 0.6, 0.8, 1]
+                                    })
+                                });
+                                break;
+                            case 'contrast':
+                                filter_elem.filterWith(function(add) {
+                                    var amount = 1.5;
+
+                                    add.componentTransfer({
+                                        type: 'linear',
+                                        slope: amount,
+                                        intercept: -(0.3 * amount) + 0.3
+                                    })
+                                });
+                                break;
+                            case 'turbulence':
+                                filter_elem.filterWith(function(add) {
+                                    add.turbulence(0.1, 2, 0, "stitch", "turbulence");
+                                });
+                        }
+
+
+                        this.vars.push(filter_elem);
+                        break;
+
                     case "@color":
                         let elem = this.vars.pop();
                         let color = this.stack.pop();
@@ -421,7 +522,7 @@ Q.prototype.step = function () {
                         if (color.includes('url')) {
                             let id = color.match(/url\(#(.*)\)/i)[1];
                             // If the pattern hasn't been used yet
-                            if (!draw.defs().node.innerHTML.includes(id)){
+                            if (!draw.defs().node.innerHTML.includes(id)) {
                                 draw.defs().add("<pattern id=\"" + id + "\" patternUnits=\"userSpaceOnUse\" width=\"10\" height=\"10\">\n" +
                                     "            <image xlink:href=\"" + patterns[id] + "\"\n" +
                                     "                   x=\"0\" y=\"0\" width=\"10\" height=\"10\">\n" +
@@ -911,6 +1012,9 @@ window.requestAnimationFrame(step);
 // Patterns from https://philiprogers.com/svgpatterns/
 // Patterns from https://iros.github.io/patternfills/sample_svg.html
 var patterns = {
+    "crosshatch": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4JyBoZWlnaHQ9JzgnPgogIDxyZWN0IHdpZHRoPSc4JyBoZWlnaHQ9JzgnIGZpbGw9JyNmZmYnLz4KICA8cGF0aCBkPSdNMCAwTDggOFpNOCAwTDAgOFonIHN0cm9rZS13aWR0aD0nMC41JyBzdHJva2U9JyNhYWEnLz4KPC9zdmc+Cg==",
+    "whitecarbon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHhtbG5zOnhsaW5rPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rJyB3aWR0aD0nNicgaGVpZ2h0PSc2Jz4KICA8cmVjdCB3aWR0aD0nNicgaGVpZ2h0PSc2JyBmaWxsPScjZWVlZWVlJy8+CiAgPGcgaWQ9J2MnPgogICAgPHJlY3Qgd2lkdGg9JzMnIGhlaWdodD0nMycgZmlsbD0nI2U2ZTZlNicvPgogICAgPHJlY3QgeT0nMScgd2lkdGg9JzMnIGhlaWdodD0nMicgZmlsbD0nI2Q4ZDhkOCcvPgogIDwvZz4KICA8dXNlIHhsaW5rOmhyZWY9JyNjJyB4PSczJyB5PSczJy8+Cjwvc3ZnPg==",
+    "honeycomb": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSIxMDAiPgo8cmVjdCB3aWR0aD0iNTYiIGhlaWdodD0iMTAwIiBmaWxsPSIjZjhkMjAzIj48L3JlY3Q+CjxwYXRoIGQ9Ik0yOCA2NkwwIDUwTDAgMTZMMjggMEw1NiAxNkw1NiA1MEwyOCA2NkwyOCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZjYyOSIgc3Ryb2tlLXdpZHRoPSIyIj48L3BhdGg+CjxwYXRoIGQ9Ik0yOCAwTDI4IDM0TDAgNTBMMCA4NEwyOCAxMDBMNTYgODRMNTYgNTBMMjggMzQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZTUwMyIgc3Ryb2tlLXdpZHRoPSIyIj48L3BhdGg+Cjwvc3ZnPg==",
     "blueprint": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiMyNjkiPjwvcmVjdD4KPGcgZmlsbD0iIzY0OTRiNyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMSIgeT0iMjAiPjwvcmVjdD4KPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxIiB5PSI0MCI+PC9yZWN0Pgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEiIHk9IjYwIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMSIgeT0iODAiPjwvcmVjdD4KPHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMTAwIiB4PSIyMCI+PC9yZWN0Pgo8cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxMDAiIHg9IjQwIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEwMCIgeD0iNjAiPjwvcmVjdD4KPHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMTAwIiB4PSI4MCI+PC9yZWN0Pgo8L2c+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZT0iI2ZmZiI+PC9yZWN0Pgo8L3N2Zz4=",
     "pink-circles-2": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMS41JyBjeT0nMS41JyByPScxLjUnIGZpbGw9JyNmZjAwNDgnLz4KPC9zdmc+Cg==",
     "pink-circles-1": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSJoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCkiIC8+CiAgPGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiNmYjVkNjciLz4KPC9zdmc+",

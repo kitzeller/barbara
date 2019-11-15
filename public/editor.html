@@ -74,14 +74,13 @@
             <h2>Grammar</h2>
             <textarea id="grammar">
 start "start" = term +
-term "term" = body:(Text / list / word) _ { return body; }
+term "term" = body:(word / sentence) _ { return body; }
 list "list" = "[" _ body:term* "]" { return body; }
 
-Text = "*" values:TextUntilTerminator "**" { return values.join(""); }
-TextUntilTerminator = x:(&HaveTerminatorAhead .)* { return x.map(y => y[1]) }
-HaveTerminatorAhead = . (!"**" .)* "**"
+sentence = "[" expr:regular* "]" { return expr.join("") } / regular
+regular = [^\[\]]+ { return text(); }
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / add / mult / subtract / divide / modulo / floor / $[^\[\] \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / animate_filter / add / mult / subtract / divide / modulo / floor / $[^\[\] \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -98,6 +97,7 @@ pattern = "pattern" { return "@pattern"; }
 gradient = "gradient" { return "@gradient"; }
 image = "image" { return "@image"; }
 
+filter = "filter" { return "@filter"; }
 color = "color" { return "@color"; }
 opacity = "opacity" { return "@opacity"; }
 radius = "radius" { return "@radius"; }
@@ -133,6 +133,7 @@ export = "export" { return "@export"; }
 animate_rotate = "animate-rotate" { return "@animate-rotate"; }
 animate_move = "animate-move" { return "@animate-move"; }
 animate_color = "animate-color" { return "@animate-color"; }
+animate_filter = "animate-filter" { return "@animate-filter"; }
 
 floor = "floor" { return "@floor"; }
 add = " + " { return "@+"; }
@@ -194,7 +195,11 @@ all repeat
 
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="peg-0.10.0.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
+<!--<script src="lib/svg.js"></script>-->
+<script src="lib/svg.filter.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="vm.js"></script>
 
