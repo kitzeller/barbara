@@ -51,7 +51,6 @@
     </div>
 </div>
 
-
 <!--Sidebar-->
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -263,8 +262,8 @@ all repeat
         lineWrapping: true,
         //Darkmode
         theme: "darcula",
-        colorpicker : {
-            mode : 'edit'
+        colorpicker: {
+            mode: 'edit'
         },
         extraKeys: {
             "Ctrl-Enter": makeParser,
@@ -272,7 +271,7 @@ all repeat
             "Shift-Enter": start,
             "Alt-Enter": exportSVG,
             "Alt-LeftClick": getCursor,
-            'Ctrl-K' : function (cm, event) {
+            'Ctrl-K': function (cm, event) {
                 cm.state.colorpicker.popup_color_picker();
             }
         }
@@ -292,6 +291,7 @@ all repeat
     });
 
     var htmlNode;
+
     // var colorNode;
 
     function getCursor() {
@@ -366,7 +366,7 @@ all repeat
 
     function makeParser(del) {
 
-        if (del !== true){
+        if (del !== true) {
             // not send from widgets
             // if (colorNode) {
             //     colorNode.parentNode.removeChild(colorNode);

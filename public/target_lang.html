@@ -186,6 +186,14 @@ Polar coords
 "@all","50","50","@center","50","50","@scale"]
 ```
 
+Sliders
+
+```javascript
+["@triangle","@random-color","@color",
+"mybaby","@define",
+"mybaby","rotation","-10","10","@slider"]
+```
+
 ---
 
 ## Reference
@@ -215,6 +223,7 @@ Gradient					    | ```type, string, @gradient```
 Math/Random			            | Format
 :--- 							| :---
 random color                    | ```"@random-color"```
+random color from a the,e       | ```"vibrant @random-theme"``` or any one of ```vibrant, sine, pastel, dark, rgb, lab, grey```
 random integer from 0 to 100	| ```"@random-number"```
 a + b							| ```a, b, "@add"``` or ```a, b, "@+"```
 a - b							| ```a, b, "@sub"``` or ```a, b, "@-"```
@@ -261,6 +270,11 @@ Group				    		| ```...names, @group```
 Begin Loop		          		| ```@loop```
 End Loop		          		| ```@end-loop```
 Loop Index	          	    	| ```@index```
+
+Experimental		            | Format
+:--- 							| :---
+Export							| ```export```
+Slider							| ```var_name, type, min, max, @slider```
 
 ---
 
