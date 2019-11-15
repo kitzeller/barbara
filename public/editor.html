@@ -80,7 +80,7 @@ list "list" = "[" _ body:term* "]" { return body; }
 sentence = "[" expr:regular* "]" { return expr.join("") } / regular
 regular = [^\[\]]+ { return text(); }
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / animate_filter / add / mult / subtract / divide / modulo / floor / $[^\[\] \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / style / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / animate_filter / add / mult / subtract / divide / modulo / floor / $[^\[\] \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -97,6 +97,7 @@ pattern = "pattern" { return "@pattern"; }
 gradient = "gradient" { return "@gradient"; }
 image = "image" { return "@image"; }
 
+style = "style" { return "@style"; }
 filter = "filter" { return "@filter"; }
 color = "color" { return "@color"; }
 opacity = "opacity" { return "@opacity"; }
@@ -494,7 +495,7 @@ all repeat
             start();
         });
     } else if (window.localStorage.getItem('barbara-vm-grammar')) {
-        grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
+        // grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
     }
 </script>
 

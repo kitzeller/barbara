@@ -347,6 +347,18 @@ Q.prototype.step = function () {
 
                         break;
 
+                    case "@style":
+                        let style_elem = this.vars.pop();
+                        while (this.stack.length > 0){
+                            let s1 = this.stack.pop();
+                            let s2 = this.stack.pop();
+                            style_elem.css(s2, s1);
+                        }
+
+                        this.vars.push(style_elem);
+
+                        break;
+
                     case "@pattern":
                         // var pattern = draw.pattern(20, 20, function (add) {
                         //     add.rect(20, 20).fill('#f06');
@@ -402,6 +414,8 @@ Q.prototype.step = function () {
                         break;
 
                     case "@animate-filter":
+                        // https://github.com/svgdotjs/svg.filter.js#animating-filter-values
+
                         let filter_ani_elem = this.vars.pop();
                         let filter_ani_type = this.stack.pop();
 
@@ -410,7 +424,7 @@ Q.prototype.step = function () {
 
                         var hueRotate;
 
-                        filter_ani_elem.filterWith(function(add) {
+                        filter_ani_elem.filterWith(function (add) {
                             hueRotate = add.colorMatrix('hueRotate', 0)
                         });
 
@@ -427,7 +441,7 @@ Q.prototype.step = function () {
                         switch (filter_type) {
                             case 'gaussian':
                                 filter_elem.filterWith(function (add) {
-                                    add.gaussianBlur(30);
+                                    add.gaussianBlur(5);
                                 });
                                 break;
                             case 'horizontal':
@@ -436,12 +450,12 @@ Q.prototype.step = function () {
                                 });
                                 break;
                             case 'desaturate':
-                                filter_elem.filterWith(function(add) {
+                                filter_elem.filterWith(function (add) {
                                     add.colorMatrix('saturate', 0)
                                 });
                                 break;
                             case 'darken':
-                                filter_elem.filterWith(function(add) {
+                                filter_elem.filterWith(function (add) {
                                     add.componentTransfer({
                                         type: 'linear',
                                         slope: 0.2
@@ -449,7 +463,7 @@ Q.prototype.step = function () {
                                 });
                                 break;
                             case 'lighten':
-                                filter_elem.filterWith(function(add) {
+                                filter_elem.filterWith(function (add) {
                                     add.componentTransfer({
                                         type: 'linear',
                                         slope: 1.5,
@@ -458,7 +472,7 @@ Q.prototype.step = function () {
                                 });
                                 break;
                             case 'invert':
-                                filter_elem.filterWith(function(add) {
+                                filter_elem.filterWith(function (add) {
                                     add.componentTransfer({
                                         type: 'table',
                                         tableValues: [1, 0]
@@ -466,15 +480,15 @@ Q.prototype.step = function () {
                                 });
                                 break;
                             case 'colorize':
-                                filter_elem.filterWith(function(add) {
-                                    add.colorMatrix('matrix', [ 1.0, 0,   0,   0,   0
-                                        , 0,   0.2, 0,   0,   0
-                                        , 0,   0,   0.2, 0,   0
-                                        , 0,   0,   0,   1.0, 0 ])
+                                filter_elem.filterWith(function (add) {
+                                    add.colorMatrix('matrix', [1.0, 0, 0, 0, 0
+                                        , 0, 0.2, 0, 0, 0
+                                        , 0, 0, 0.2, 0, 0
+                                        , 0, 0, 0, 1.0, 0])
                                 });
                                 break;
                             case 'posterize':
-                                filter_elem.filterWith(function(add) {
+                                filter_elem.filterWith(function (add) {
                                     add.componentTransfer({
                                         type: 'discrete',
                                         tableValues: [0, 0.2, 0.4, 0.6, 0.8, 1]
@@ -482,7 +496,7 @@ Q.prototype.step = function () {
                                 });
                                 break;
                             case 'contrast':
-                                filter_elem.filterWith(function(add) {
+                                filter_elem.filterWith(function (add) {
                                     var amount = 1.5;
 
                                     add.componentTransfer({
@@ -493,7 +507,7 @@ Q.prototype.step = function () {
                                 });
                                 break;
                             case 'turbulence':
-                                filter_elem.filterWith(function(add) {
+                                filter_elem.filterWith(function (add) {
                                     add.turbulence(0.1, 2, 0, "stitch", "turbulence");
                                 });
                         }
