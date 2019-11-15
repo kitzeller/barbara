@@ -528,12 +528,11 @@ Q.prototype.step = function () {
                         }
 
                         if (color.includes('$')) {
+                            // Stored color
                             let result = color.split('$')[1];
                             color = this.context[result]
-                        }
-
-                        // Patterns!
-                        if (color.includes('url')) {
+                        } else if (color.includes('url')) {
+                            // Patterns
                             let id = color.match(/url\(#(.*)\)/i)[1];
                             // If the pattern hasn't been used yet
                             if (!draw.defs().node.innerHTML.includes(id)) {
