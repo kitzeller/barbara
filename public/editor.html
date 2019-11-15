@@ -14,6 +14,7 @@
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="lib/codemirror.css">
     <link rel="stylesheet" href="css/darcula.css">
+    <link rel="stylesheet" href="lib/mode/show-hint.css">
 
     <style>
         html {
@@ -211,6 +212,7 @@ all repeat
 <script src="lib/mode/markdown.js"></script>
 <script src="lib/mode/pegjs.js"></script>
 <script src="lib/mode/gfm.js"></script>
+<script src="lib/mode/show-hint.js"></script>
 
 <script>
 
@@ -279,9 +281,25 @@ all repeat
             "Alt-LeftClick": getCursor,
             'Ctrl-K': function (cm, event) {
                 cm.state.colorpicker.popup_color_picker();
-            }
+            },
+            'Cmd-E': function () {
+                // Hinting
+                var options = {
+                    hint: function () {
+                        return {
+                            from: input_cm.getDoc().getCursor(),
+                            to: input_cm.getDoc().getCursor(),
+                            list: ['url(#crosshatch)', 'url(#pink-circles-7)']
+                        }
+                    }
+                };
+                input_cm.showHint(options);
+            },
         }
     });
+
+
+    // Snippets
 
 
     var markdown_cm = CodeMirror.fromTextArea(document.getElementById("markdown"), {
@@ -334,50 +352,18 @@ all repeat
 
             input_cm.addWidget({ch: A2, line: A1}, htmlNode, true);
             htmlNode.onchange = function () {
-                // Still pretty glitchy - works great if the value is on it's own line
                 input_cm.replaceRange(this.value, {line: A1, ch: B1}, {line: A1, ch: B2});
-
                 B2 = B1 + this.value.length;
-
                 makeParser(true);
                 start();
             };
         }
-        // If it's a color
-        // if (range.includes("#")) {
-        //     if (colorNode) colorNode.parentNode.removeChild(colorNode);
-        //
-        //     colorNode = document.createElement("input");
-        //     colorNode.id = "color";
-        //     colorNode.type = 'color';
-        //     input_cm.addWidget({ch: A2, line: A1}, colorNode, true);
-        //
-        //     while (!input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2 + 1}).includes(" ")) {
-        //         B2++;
-        //     }
-        //
-        //     colorNode.onchange = function () {
-        //         //console.log(this.value)
-        //         input_cm.replaceRange(this.value, {line: A1, ch: B1}, {line: A1, ch: B2});
-        //         while (!input_cm.getRange({line: A1, ch: B2}, {line: A1, ch: B2 + 1}).includes(" ")) {
-        //             B2++;
-        //         }
-        //
-        //         makeParser(true);
-        //         start();
-        //     };
-        // }
     }
 
 
     function makeParser(del) {
 
         if (del !== true) {
-            // not send from widgets
-            // if (colorNode) {
-            //     colorNode.parentNode.removeChild(colorNode);
-            //     colorNode = undefined;
-            // }
             if (htmlNode) {
                 htmlNode.parentNode.removeChild(htmlNode);
                 htmlNode = undefined;
