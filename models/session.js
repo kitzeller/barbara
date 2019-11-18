@@ -11,5 +11,7 @@ module.exports = mongoose.model('Session',{
     originalUrl: String,
     private: {type: Boolean, default: false},
     height: Number,
-    width: Number
+    width: Number,
+    parent: {type: mongoose.Schema.Types.ObjectId, ref: 'Session'},
+    children: [{type: mongoose.Schema.Types.ObjectId, ref: 'Session'}]
 });

@@ -138,11 +138,11 @@ animate_color = "animate-color" { return "@animate-color"; }
 animate_filter = "animate-filter" { return "@animate-filter"; }
 
 floor = "floor" { return "@floor"; }
-add = " + " { return "@+"; }
-mult = " * " { return "@*"; }
-subtract = " - " { return "@-"; }
-divide = " / " { return "@/"; }
-modulo = " % " { return "@%"; }
+add = "+" { return "@+"; }
+mult = "*" { return "@*"; }
+subtract = "-" { return "@-"; }
+divide = "/" { return "@/"; }
+modulo = "%" { return "@%"; }
 
 _ "whitespace" = [ \t\n\r]*
         </textarea>
@@ -165,6 +165,7 @@ all repeat
                 <button onclick="makeParser()">Parse!</button>
                 <button onclick="start()">Start</button>
                 <button id="loop" onclick="loopSVG()">Start Loop</button>
+                <button onclick="liveCodeMode()">Live Code</button>
                 <br>
                 <button onclick="saveGrammar()">Save Grammar</button>
                 <button onclick="exportSVG()">Export Pattern</button>
@@ -289,7 +290,7 @@ all repeat
                         return {
                             from: input_cm.getDoc().getCursor(),
                             to: input_cm.getDoc().getCursor(),
-                            list: ['url(#crosshatch)', 'url(#pink-circles-7)']
+                            list: Object.keys(window.patterns)
                         }
                     }
                 };
@@ -298,6 +299,28 @@ all repeat
         }
     });
 
+    function liveCodeMode() {
+        $("#drawing").css({
+            "position": "absolute", "top": "50%", "left": "50%", "transform": "translate(-50%, -50%)", "z-index": "149"
+        });
+
+        $('body > :not(#drawing)').hide(); //hide all nodes directly under the body
+        $('#drawing').appendTo('body');
+
+        console.log(window.getComputedStyle(input_cm.getWrapperElement()).left);
+
+        $(input_cm.getWrapperElement()).css({
+            "position": "absolute",
+            "top": "25%",
+            "left": "500px",
+            // "left": window.getComputedStyle($("#drawing")[0]).left,
+            // "transform": "translate(-75%,0)",
+            "z-index": "150",
+            "background": "rgba(0,0,0,0)"
+        }).show().appendTo('body');
+
+        input_cm.setOption("lineNumbers", false);
+    }
 
     // Snippets
 

@@ -417,9 +417,10 @@ Q.prototype.step = function () {
                         // https://github.com/svgdotjs/svg.filter.js#animating-filter-values
 
                         let filter_ani_elem = this.vars.pop();
+                        let filter_ani_loop = this.stack.pop();
                         let filter_ani_type = this.stack.pop();
+                        let filter_ani_dur = parseInt(this.stack.pop());
 
-                        // default animation
                         // todo: merge with filter function to stop code duplication
 
                         var hueRotate;
@@ -428,7 +429,11 @@ Q.prototype.step = function () {
                             hueRotate = add.colorMatrix('hueRotate', 0)
                         });
 
-                        hueRotate.animate(3000).attr('values', 360);
+                        if (filter_ani_loop === "true") {
+                            hueRotate.animate(filter_ani_dur).attr('values', 360).loop();
+                        } else {
+                            hueRotate.animate(filter_ani_dur).attr('values', 360);
+                        }
 
                         break;
 
@@ -1057,3 +1062,5 @@ var patterns = {
     "br-orange-circles-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMicgY3k9JzInIHI9JzInIGZpbGw9JyNmODAnLz4KPC9zdmc+",
     "br-orange-stripe-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPHJlY3QgeD0nMCcgeT0nMCcgd2lkdGg9JzMnIGhlaWdodD0nMTAnIGZpbGw9JyNmODAnIC8+Cjwvc3ZnPg=="
 };
+
+window.patterns = patterns;
