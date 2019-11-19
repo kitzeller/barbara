@@ -32,6 +32,24 @@
         input {
             z-index: 1000;
         }
+
+        .live-code-I {
+            position: absolute;
+            top: 50%;
+            left: 65%;
+            transform: translate(-50%, -50%);
+            z-index: 149;
+
+        }
+
+        .live-code-II {
+            position: absolute;
+            top: 10%;
+            left: 5%;
+            z-index: 150;
+            background: rgba(0, 0, 0, 0) !important;
+            height: 80%;
+        }
     </style>
 </head>
 <body>
@@ -158,9 +176,7 @@ triangle random-color color 0 25 translate
 triangle random-color color
 duplicate 25 25 translate random-color color
 duplicate 180 rotate random-color color
-all repeat
-        </textarea>
-
+all repeat</textarea>
             <div style="text-align: center">
                 <button onclick="makeParser()">Parse!</button>
                 <button onclick="start()">Start</button>
@@ -176,7 +192,7 @@ all repeat
             <textarea id="output" style="width: 700px; height: 100px"></textarea>
 
         </div>
-        <div class="column">
+        <div id="drawing-container" class="column">
             <h2>SVG Result</h2>
             <div id="drawing"></div>
         </div>
@@ -300,30 +316,20 @@ all repeat
     });
 
     function liveCodeMode() {
-        $("#drawing").css({
-            "position": "absolute", "top": "50%", "left": "50%", "transform": "translate(-50%, -50%)", "z-index": "149"
-        });
-
+        $("#drawing").toggleClass("live-code-I");
         $('body > :not(#drawing)').hide(); //hide all nodes directly under the body
         $('#drawing').appendTo('body');
-
-        console.log(window.getComputedStyle(input_cm.getWrapperElement()).left);
-
-        $(input_cm.getWrapperElement()).css({
-            "position": "absolute",
-            "top": "25%",
-            "left": "500px",
-            // "left": window.getComputedStyle($("#drawing")[0]).left,
-            // "transform": "translate(-75%,0)",
-            "z-index": "150",
-            "background": "rgba(0,0,0,0)"
-        }).show().appendTo('body');
-
-        input_cm.setOption("lineNumbers", false);
+        $(input_cm.getWrapperElement()).toggleClass("live-code-II").show().appendTo('body');
+        // input_cm.setOption("lineNumbers", false);
+        $('body').append("<button id='exitLiveCode'>X</button>");
+        $("#exitLiveCode").click(function () {
+            $("#drawing").toggleClass("live-code-I").appendTo("#drawing-container");
+            $(input_cm.getWrapperElement()).toggleClass("live-code-II").insertAfter("#input");
+            // input_cm.setOption("lineNumbers", true);
+            $('body > :not(script)').show(); //hide all nodes directly under the body
+            $("#exitLiveCode").remove();
+        })
     }
-
-    // Snippets
-
 
     var markdown_cm = CodeMirror.fromTextArea(document.getElementById("markdown"), {
         mode: "gfm",
