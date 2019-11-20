@@ -299,7 +299,7 @@ all repeat</textarea>
                 cm.state.colorpicker.popup_color_picker();
             },
             'Cmd-E': function () {
-                // Hinting
+                // Hinting for patterns
                 var options = {
                     hint: function () {
                         return {
@@ -311,6 +311,34 @@ all repeat</textarea>
                 };
                 input_cm.showHint(options);
             },
+            'Cmd-I': function () {
+                // Hinting for mix-blend-mode options
+                var options = {
+                    hint: function () {
+                        return {
+                            from: input_cm.getDoc().getCursor(),
+                            to: input_cm.getDoc().getCursor(),
+                            list: ["normal",
+                                "multiply",
+                                "screen",
+                                "overlay",
+                                "darken",
+                                "lighten",
+                                "color-dodge",
+                                "color-burn",
+                                "hard-light",
+                                "soft-light",
+                                "difference",
+                                "exclusion",
+                                "hue",
+                                "saturation",
+                                "color",
+                                "luminosity"]
+                        }
+                    }
+                };
+                input_cm.showHint(options);
+            }
         }
     });
 
@@ -496,7 +524,7 @@ all repeat</textarea>
                     svg: window.svg,
                     name: response,
                     markdown: markdown_cm.getValue(),
-                    parent:  parentId
+                    parent: parentId
                 });
             }
         });

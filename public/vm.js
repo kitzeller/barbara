@@ -348,6 +348,7 @@ Q.prototype.step = function () {
                         break;
 
                     case "@style":
+                        // https://developer.mozilla.org/en-US/docs/Web/CSS/mix-blend-mode
                         let style_elem = this.vars.pop();
                         while (this.stack.length > 0) {
                             let s1 = this.stack.pop();
