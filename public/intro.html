@@ -70,7 +70,7 @@
     <button onclick="window.location.href='target_lang.html'">Target Lang</button>
     <button onclick="window.location.href='tutorial.html'">Parsing</button>
     <button onclick="window.location.href='quilting.html'">Quilting</button>
-    <button onclick="window.location.href='editor.html'">Editor</button>
+    <button onclick="window.location.href='editor'">Editor</button>
     <button onclick="openNav()">Account</button>
 </div>
 
@@ -119,6 +119,7 @@
                 '<button onclick="openPatch(\'' + d._id + '\')">Open</button>' +
                 '<button onclick="savePatch(\'' + d._id + '\')">Add</button>' +
                 '<button onclick="open3D(\'' + d._id + '\')">3D</button>' +
+                '<button onclick="openVariants(\'' + d._id + '\')">Variants</button>' +
                 '  </div>' +
                 '</div>')
         }
@@ -206,11 +207,15 @@
     }
 
     function openPatch(id) {
-        window.location = "editor.html?id=" + id;
+        window.location = "editor?id=" + id;
     }
 
     function open3D(id) {
         window.location = "3d/threejs.html?id=" + id;
+    }
+
+    function openVariants(id) {
+        window.location = "variants.html?id=" + id;
     }
 </script>
 </body>

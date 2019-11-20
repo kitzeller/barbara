@@ -16,6 +16,9 @@ dotenv.config();
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI);
 
+// CHANGE from 1.x: need to pass in mongoose instance
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
+
 var User = require('./models/user');
 var Session = require('./models/session');
 
@@ -148,17 +151,11 @@ app.get('/',
         res.sendFile(path.join(__dirname + '/public/intro.html'));
     });
 
-// app.get('/main',
-//     loggedIn,
-//     function (req, res) {
-//         res.sendFile(path.join(__dirname + '/public/index.html'));
-//     });
-
-// app.get('/me',
-//     loggedIn,
-//     function (req, res) {
-//         res.sendFile(path.join(__dirname + '/public/profile.html'));
-//     });
+app.get('/editor',
+    // loggedIn,
+    function (req, res) {
+        res.sendFile(path.join(__dirname + '/public/editor.html'));
+    });
 
 /**
  * Login & Sign-up
@@ -194,10 +191,20 @@ app.get('/logout',
 app.post('/savesession',
     function (req, res) {
         var session = new Session(req.body);
+        if (req.body.parent) {
+            Session.findOne({_id: req.body.parent}, function (err, data) {
+                session.parent = data;
+                data.children.push(session);
+                data.save(function (err) {
+                        //....
+                    }
+                )
+            });
+        }
+
         session.save(function (err) {
             if (err) return handleError(err);
             console.log("saved session");
-
             if (req.body.user) {
                 User.findOne({_id: req.body.user}, function (err, data) {
                     data.sessions.push(session._id);
@@ -242,12 +249,13 @@ app.post('/savesession',
  */
 app.get('/sessions',
     function (req, res) {
-
         Session.find({}, {svg: 1, _id: 1, name: 1}, function (err, data) {
+            // TODO: Stop children being sent too
             res.send(data);
         })
     });
 
+// Session by session id
 app.get('/sessions/:id',
     function (req, res) {
         Session.findOne({_id: req.params.id}, function (err, data) {
@@ -255,12 +263,17 @@ app.get('/sessions/:id',
         });
     });
 
-// TODO: Populate user sessions
-app.get('/sessions/user/:id',
+
+
+// User sessions by user id
+app.get('/sessions/children/:id',
     function (req, res) {
-        User.findOne({_id: req.params.id}, {sessions: 1}).populate('sessions').exec(function (err, data) {
-            if (err) return handleError(err);
+        Session.findOne({_id: req.params.id}, function (err, data) {
             res.send(data);
+            // data.deepPopulate('children', function (err, _data) {
+            //     // console.log(_data);
+            //     res.send(_data)
+            // });
         });
     });
 

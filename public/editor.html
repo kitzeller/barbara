@@ -65,7 +65,7 @@
         <button onclick="window.location.href='target_lang.html'">Target Lang</button>
         <button onclick="window.location.href='tutorial.html'">Parsing</button>
         <button onclick="window.location.href='quilting.html'">Quilting</button>
-        <button class="button-primary" onclick="window.location.href='editor.html'">Editor</button>
+        <button class="button-primary" onclick="window.location.href='editor'">Editor</button>
         <button onclick="openNav()">Library</button>
     </div>
 </div>
@@ -461,6 +461,14 @@ all repeat</textarea>
      * Exports the SVG
      */
     function exportSVG() {
+
+        let parentId;
+        if (window.location.search) {
+            let res = parseQuery(window.location.search);
+            console.log(res.id);
+            parentId = res.id;
+        }
+
         let response = prompt("What do you want to call this?.");
 
         if (response == "" || response == null) {
@@ -478,7 +486,8 @@ all repeat</textarea>
                     svg: window.svg,
                     name: response,
                     user: data.username._id,
-                    markdown: markdown_cm.getValue()
+                    markdown: markdown_cm.getValue(),
+                    parentId: parentId
                 });
             } else {
                 $.post("savesession", {
@@ -487,7 +496,8 @@ all repeat</textarea>
                     output: $("#output").val(),
                     svg: window.svg,
                     name: response,
-                    markdown: markdown_cm.getValue()
+                    markdown: markdown_cm.getValue(),
+                    parent:  parentId
                 });
             }
         });

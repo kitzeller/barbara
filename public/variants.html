@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Variants</title>
+    <link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        #svg-tree {
+            margin: auto;
+            width: 50%;
+            /*border: 3px solid green;*/
+            padding: 10px;
+            text-align: center;
+        }
+
+        .node text {
+            font: 24px sans-serif;
+            fill: white;
+            stroke: #000000;
+            stroke-width: 1px;
+            stroke-linecap: butt;
+            stroke-linejoin: miter;
+        }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<h1 style="text-align: center">Variant Tree</h1>
+
+<div id="svg-tree">
+
+</div>
+</body>
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+    /**
+     * Parses the url query
+     */
+    function parseQuery(queryString) {
+        var query = {};
+        var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+        for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].split('=');
+            query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+        }
+        return query;
+    }
+
+    if (window.location.search) {
+        let res = parseQuery(window.location.search);
+        console.log(res.id);
+
+        $.getJSON("sessions/children/" + res.id, function (data) {
+            console.log(data);
+            // $('#svg-tree').append('<div class="svg-container" id="' + data._id + '">' +
+            //     '<svg viewBox="0 0 800 800" width="200px" height="200px">' + data.svg + '</svg>' +
+            //     '</div>')
+            // showRecursively(data);
+            generateTree(data);
+        });
+    }
+
+    function showRecursively(data) {
+        for (let d of data.children) {
+            $('#svg-tree').append('<div class="svg-container" id="' + d._id + '">' +
+                '<svg viewBox="0 0 800 800" width="200px" height="200px">' + d.svg + '</svg>' +
+                '</div>')
+            showRecursively(d);
+        }
+    }
+
+    function generateTree(treeData) {
+        // ************** Generate the tree diagram	 *****************
+        var margin = {top: 100, right: 120, bottom: 20, left: 120},
+            width = window.innerWidth - margin.right - margin.left,
+            height = window.innerHeight - margin.top - margin.bottom;
+
+        var i = 0;
+
+        var tree = d3.layout.tree()
+            .size([height, width]);
+
+        var diagonal = d3.svg.diagonal()
+            .projection(function (d) {
+                return [d.x, d.y];
+            });
+
+        var svg = d3.select("#svg-tree").append("svg")
+            .attr("width", width + margin.right + margin.left)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top  + ")");
+
+        root = treeData;
+        update(root);
+
+        function update() {
+
+            // Compute the new tree layout.
+            var nodes = tree.nodes(root).reverse(),
+                links = tree.links(nodes);
+
+            // Normalize for fixed-depth.
+            nodes.forEach(function (d) {
+                d.y = d.depth * 250;
+            });
+
+            // Declare the nodes…
+            var node = svg.selectAll("g.node")
+                .data(nodes, function (d) {
+                    return d.id || (d.id = ++i);
+                });
+
+            // Enter the nodes.
+            var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function (d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+
+            nodeEnter.append("g")
+                .attr("class", "node")
+                .attr("transform", function (d) {
+                    return "translate(" + -100 + "," + -100 + ")";
+                }).append('svg').html(function (d) {
+                console.log(d);
+                return '<svg viewBox="0 0 800 800" width="200px" height="200px">' + d.svg + '</svg>';
+            })
+
+
+            nodeEnter.append("text")
+                .attr("y", 0)
+                .attr("dy", ".35em")
+                .attr("text-anchor", "middle")
+                .text(function (d) {
+                    return d.name;
+                })
+                .style("fill-opacity", 1);
+
+            // Declare the links…
+            var link = svg.selectAll("path.link")
+                .data(links, function (d) {
+                    return d.target.id;
+                });
+
+            // Enter the links.
+            link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", diagonal);
+
+        }
+    }
+</script>
+</html>

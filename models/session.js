@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
-module.exports = mongoose.model('Session',{
+const sessionSchema = new mongoose.Schema({
     name: String,
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     svg: String,
@@ -15,3 +16,20 @@ module.exports = mongoose.model('Session',{
     parent: {type: mongoose.Schema.Types.ObjectId, ref: 'Session'},
     children: [{type: mongoose.Schema.Types.ObjectId, ref: 'Session'}]
 });
+
+var autoPopulateChildren = function(next) {
+    this.populate('children');
+    next();
+};
+
+sessionSchema
+    .pre('findOne', autoPopulateChildren)
+    .pre('find', autoPopulateChildren);
+
+sessionSchema.plugin(deepPopulate, {
+    whitelist: [
+        'children',
+    ]
+});
+
+module.exports = mongoose.model('Session',sessionSchema);
