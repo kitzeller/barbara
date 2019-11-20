@@ -8,39 +8,26 @@
     <link href="css/style.css" rel="stylesheet">
 
     <style>
-        #svg-tree {
-            height: 100% !important;
-            width: 100% !important;
-            overflow: scroll !important;
-        }
-
-        .node text {
-            font: 24px sans-serif;
+        text {
+            font: 18px sans-serif;
             fill: white;
             stroke: #000000;
             stroke-width: 1px;
             stroke-linecap: butt;
             stroke-linejoin: miter;
         }
-
-        .link {
-            fill: none;
-            stroke: #ccc;
-            stroke-width: 2px;
-        }
-
     </style>
 </head>
 <body>
 
 <h1 style="text-align: center">Variant Tree</h1>
 
-<div id="svg-tree">
+<div id="my_dataviz"></div>
 
 </div>
 </body>
 
-<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
@@ -67,93 +54,65 @@
         });
     }
 
-    function generateTree(treeData) {
-        // ************** Generate the tree diagram	 *****************
-        console.log(window.innerWidth)
-        var margin = {top: 100, right: 120, bottom: 20, left: 120},
-            width = window.innerWidth - margin.right - margin.left,
-            height = window.innerHeight - margin.top - margin.bottom;
+    function generateTree(data) {
+        var width = window.innerWidth;
+        var height = window.innerHeight;
 
-        var i = 0;
-
-        var tree = d3.layout.tree()
-            .size([height, width]);
-
-        let maxDepth = Math.max.apply(Math, tree.nodes(treeData).map(function (o) {
-            return o.depth;
-        }))
-
-        console.log(maxDepth);
-        var diagonal = d3.svg.diagonal()
-            .projection(function (d) {
-                return [d.x, d.y];
-            });
-
-        var svg = d3.select("#svg-tree").append("svg")
-            .attr("width", width + margin.right + margin.left)
-            .attr("height", (height + margin.top + margin.bottom) + (150 * maxDepth))
+        var svg = d3.select("#my_dataviz")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
             .append("g")
-            .attr("transform", "translate(" + width / 4 + "," + margin.top + ")");
+            .attr("transform", "translate(100,0)");
 
-        root = treeData;
-        update(root);
+        var cluster = d3.cluster()
+            .size([height, width - 300]);
 
-        function update() {
+        var root = d3.hierarchy(data, function (d) {
+            return d.children;
+        });
+        cluster(root);
 
-            // Compute the new tree layout.
-            var nodes = tree.nodes(root).reverse(),
-                links = tree.links(nodes);
-
-            // Normalize for fixed-depth.
-            nodes.forEach(function (d) {
-                d.y = d.depth * 250;
-                // d.x += width/4;
-            });
-
-            // Declare the nodes…
-            var node = svg.selectAll("g.node")
-                .data(nodes, function (d) {
-                    return d.id || (d.id = ++i);
-                });
-
-            // Enter the nodes.
-            var nodeEnter = node.enter().append("g")
-                .attr("class", "node")
-                .attr("transform", function (d) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
-
-            nodeEnter.append("g")
-                .attr("class", "node")
-                .attr("transform", function (d) {
-                    return "translate(" + -100 + "," + -100 + ")";
-                }).append('svg').html(function (d) {
-                console.log(d);
-                return '<svg viewBox="0 0 800 800" width="200px" height="200px">' + d.svg + '</svg>';
+        svg.selectAll('path')
+            .data(root.descendants().slice(1))
+            .enter()
+            .append('path')
+            .attr("d", function (d) {
+                return "M" + d.y + "," + d.x
+                    + "C" + (d.parent.y + 50) + "," + d.x
+                    + " " + (d.parent.y + 150) + "," + d.parent.x // 50 and 150 are coordinates of inflexion, play with it to change links shape
+                    + " " + d.parent.y + "," + d.parent.x;
             })
+            .style("fill", 'none')
+            .attr("stroke", '#ccc')
 
 
-            nodeEnter.append("text")
-                .attr("y", 0)
-                .attr("dy", ".35em")
-                .attr("text-anchor", "middle")
-                .text(function (d) {
-                    return d.name;
-                })
-                .style("fill-opacity", 1);
+        // Add a circle for each node.
+        svg.selectAll("g")
+            .data(root.descendants())
+            .enter()
+            .append("g")
+            .attr("transform", function (d) {
+                return "translate(" + d.y + "," + d.x + ")"
+            })
+            .append("g")
+            .attr("class", "mysvg")
+            .attr("transform", function (d) {
+                return "translate(" + -50 + "," + -50 + ")";
+            })
+            .append('svg').html(function (d) {
+            console.log(d);
+            return '<svg viewBox="0 0 800 800" width="150px" height="150px">' + d.data.svg + '</svg>';
+        });
 
-            // Declare the links…
-            var link = svg.selectAll("path.link")
-                .data(links, function (d) {
-                    return d.target.id;
-                });
-
-            // Enter the links.
-            link.enter().insert("path", "g")
-                .attr("class", "link")
-                .attr("d", diagonal);
-
-        }
+        svg.selectAll(".mysvg")
+            .append("text")
+            .text(function (d) {
+                return d.data.name;
+            })
+            .attr("transform", function (d) {
+                return "translate(" + -5 + "," + 0 + ")"
+            });
     }
 </script>
 </html>
