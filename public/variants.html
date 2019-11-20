@@ -9,11 +9,9 @@
 
     <style>
         #svg-tree {
-            margin: auto;
-            width: 50%;
-            /*border: 3px solid green;*/
-            padding: 10px;
-            text-align: center;
+            height: 100% !important;
+            width: 100% !important;
+            overflow: scroll !important;
         }
 
         .node text {
@@ -30,6 +28,7 @@
             stroke: #ccc;
             stroke-width: 2px;
         }
+
     </style>
 </head>
 <body>
@@ -64,26 +63,13 @@
         console.log(res.id);
 
         $.getJSON("sessions/children/" + res.id, function (data) {
-            console.log(data);
-            // $('#svg-tree').append('<div class="svg-container" id="' + data._id + '">' +
-            //     '<svg viewBox="0 0 800 800" width="200px" height="200px">' + data.svg + '</svg>' +
-            //     '</div>')
-            // showRecursively(data);
             generateTree(data);
         });
     }
 
-    function showRecursively(data) {
-        for (let d of data.children) {
-            $('#svg-tree').append('<div class="svg-container" id="' + d._id + '">' +
-                '<svg viewBox="0 0 800 800" width="200px" height="200px">' + d.svg + '</svg>' +
-                '</div>')
-            showRecursively(d);
-        }
-    }
-
     function generateTree(treeData) {
         // ************** Generate the tree diagram	 *****************
+        console.log(window.innerWidth)
         var margin = {top: 100, right: 120, bottom: 20, left: 120},
             width = window.innerWidth - margin.right - margin.left,
             height = window.innerHeight - margin.top - margin.bottom;
@@ -93,6 +79,11 @@
         var tree = d3.layout.tree()
             .size([height, width]);
 
+        let maxDepth = Math.max.apply(Math, tree.nodes(treeData).map(function (o) {
+            return o.depth;
+        }))
+
+        console.log(maxDepth);
         var diagonal = d3.svg.diagonal()
             .projection(function (d) {
                 return [d.x, d.y];
@@ -100,9 +91,9 @@
 
         var svg = d3.select("#svg-tree").append("svg")
             .attr("width", width + margin.right + margin.left)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("height", (height + margin.top + margin.bottom) + (150 * maxDepth))
             .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top  + ")");
+            .attr("transform", "translate(" + width / 4 + "," + margin.top + ")");
 
         root = treeData;
         update(root);
@@ -116,6 +107,7 @@
             // Normalize for fixed-depth.
             nodes.forEach(function (d) {
                 d.y = d.depth * 250;
+                // d.x += width/4;
             });
 
             // Declare the nodes…
