@@ -349,7 +349,7 @@ Q.prototype.step = function () {
 
                     case "@style":
                         let style_elem = this.vars.pop();
-                        while (this.stack.length > 0){
+                        while (this.stack.length > 0) {
                             let s1 = this.stack.pop();
                             let s2 = this.stack.pop();
                             style_elem.css(s2, s1);
@@ -423,18 +423,35 @@ Q.prototype.step = function () {
 
                         // todo: merge with filter function to stop code duplication
 
-                        var hueRotate;
+                        switch (filter_ani_type) {
+                            case 'hue':
+                                var hueRotate;
+                                filter_ani_elem.filterWith(function (add) {
+                                    hueRotate = add.colorMatrix('hueRotate', 0)
+                                });
+                                if (filter_ani_loop === "true") {
+                                    hueRotate.animate(filter_ani_dur).attr('values', 360).loop();
+                                } else {
+                                    hueRotate.animate(filter_ani_dur).attr('values', 360);
+                                }
+                                break;
 
-                        filter_ani_elem.filterWith(function (add) {
-                            hueRotate = add.colorMatrix('hueRotate', 0)
-                        });
+                            case 'watery':
+                                let s1, s2;
+                                filter_ani_elem.filterWith(function (add) {
+                                    s1 = add.turbulence(0.01, 2, 0, "stitch", "turbulence");
+                                    s2 = add.displacementMap(add.$source, s1, 20, "R", "R");
+                                });
 
-                        if (filter_ani_loop === "true") {
-                            hueRotate.animate(filter_ani_dur).attr('values', 360).loop();
-                        } else {
-                            hueRotate.animate(filter_ani_dur).attr('values', 360);
+                                if (filter_ani_loop === "true") {
+                                    s1.animate(filter_ani_dur).attr('baseFrequency', 0.1).loop();
+                                } else {
+                                    s1.animate(filter_ani_dur).attr('baseFrequency', 0.1);
+                                }
+                                break;
                         }
 
+                        this.vars.push(filter_ani_elem);
                         break;
 
                     case "@filter":
@@ -444,7 +461,7 @@ Q.prototype.step = function () {
                         let filter_type = this.stack.pop();
 
                         switch (filter_type) {
-                            case 'gaussian':
+                            case 'blur':
                                 filter_elem.filterWith(function (add) {
                                     add.gaussianBlur(5);
                                 });
@@ -484,37 +501,40 @@ Q.prototype.step = function () {
                                     })
                                 });
                                 break;
-                            case 'colorize':
+                            // case 'colorize':
+                            //     filter_elem.filterWith(function (add) {
+                            //         add.colorMatrix('matrix',
+                            //             [0.33, 0.33, 0.33, 0, 0
+                            //                 , 0.33, 0.33, 0.33, 0, 0
+                            //                 , 0.33, 0.33, 0.33, 0, 0
+                            //                 , 0, 0, 0, 1.0, 0])
+                            //     });
+                            //     break;
+                            // case 'posterize':
+                            //     filter_elem.filterWith(function (add) {
+                            //         add.componentTransfer({
+                            //             type: 'discrete',
+                            //             tableValues: [0, 0.2, 0.4, 0.6, 0.8, 1]
+                            //         })
+                            //     });
+                            //     break;
+                            // case 'contrast':
+                            //     filter_elem.filterWith(function (add) {
+                            //         var amount = 1.5;
+                            //
+                            //         add.componentTransfer({
+                            //             type: 'linear',
+                            //             slope: amount,
+                            //             intercept: -(0.3 * amount) + 0.3
+                            //         })
+                            //     });
+                            //     break;
+                            case 'watery':
                                 filter_elem.filterWith(function (add) {
-                                    add.colorMatrix('matrix', [1.0, 0, 0, 0, 0
-                                        , 0, 0.2, 0, 0, 0
-                                        , 0, 0, 0.2, 0, 0
-                                        , 0, 0, 0, 1.0, 0])
+                                    let s1 = add.turbulence(0.01, 2, 0, "stitch", "turbulence");
+                                    add.displacementMap(add.$source, s1, 20, "R", "R");
                                 });
                                 break;
-                            case 'posterize':
-                                filter_elem.filterWith(function (add) {
-                                    add.componentTransfer({
-                                        type: 'discrete',
-                                        tableValues: [0, 0.2, 0.4, 0.6, 0.8, 1]
-                                    })
-                                });
-                                break;
-                            case 'contrast':
-                                filter_elem.filterWith(function (add) {
-                                    var amount = 1.5;
-
-                                    add.componentTransfer({
-                                        type: 'linear',
-                                        slope: amount,
-                                        intercept: -(0.3 * amount) + 0.3
-                                    })
-                                });
-                                break;
-                            case 'turbulence':
-                                filter_elem.filterWith(function (add) {
-                                    add.turbulence(0.1, 2, 0, "stitch", "turbulence");
-                                });
                         }
 
 
@@ -657,7 +677,7 @@ Q.prototype.step = function () {
 
                         for (let i = 1; i < loop_num; i++) {
                             this.todo.splice(end_loop_ind, 0, ...original_todo);
-                            console.log("todo ", this.todo);
+                            // console.log("todo ", this.todo);
 
                             let ind = this.todo.lastIndexOf("@index")
                             while (this.todo.includes("@index") && ind > end_loop_ind) {
@@ -707,6 +727,15 @@ Q.prototype.step = function () {
                         this.vars.push(elem_order);
                         break;
 
+                    // case "@animate-transform":
+                    //     let elem_ani = this.vars.pop(); // element
+                    //
+                    //     let ani_loop_r = this.stack.pop(); // loop boolean
+                    //     let ani_time_r = this.stack.pop(); // animation time
+                    //     ani_time_r = parseInt(ani_time_r);
+                    //     break;
+
+
                     case "@animate-rotate":
                         let elem_ani = this.vars.pop(); // element
 
@@ -730,10 +759,10 @@ Q.prototype.step = function () {
                         let elem_ani_move = this.vars.pop(); // element
 
                         let ani_loop_m = this.stack.pop(); // loop boolean
-                        let ani_time_m = this.stack.pop(); // animation time
+                        let ani_time_m = parseInt(this.stack.pop()); // animation time
 
-                        let ani_y = this.stack.pop() / 100 * HEIGHT;
-                        let ani_x = this.stack.pop() / 100 * WIDTH;
+                        let ani_y = parseInt(this.stack.pop()) / 100 * HEIGHT;
+                        let ani_x = parseInt(this.stack.pop()) / 100 * WIDTH;
 
                         if (ani_loop_m === "true") {
                             elem_ani_move.animate(ani_time_m).move(ani_x, ani_y).loop();
@@ -760,6 +789,38 @@ Q.prototype.step = function () {
                         }
 
                         this.vars.push(elem_ani_color);
+                        break;
+
+                    case "@animate":
+                        let elem_animate = this.vars.pop(); // element
+
+                        let ani_loop = this.stack.pop(); // loop boolean
+                        let a_delay = parseInt(this.stack.pop()); // loop boolean
+                        let a_duration = parseInt(this.stack.pop()); // loop boolean
+
+                        // TODO: Hmm....
+                        // var a_style = elem_animate.transform();
+                        var a_style = {};
+                        while (this.stack.length > 1) {
+                            let a_val = this.stack.pop(); // loop boolean
+                            let a_key = this.stack.pop(); // loop boolean
+                            a_style[a_key] = a_val;
+                        }
+
+                        // console.log(elem_animate.transform())
+
+                        console.log(a_style);
+                        if (ani_loop === "true") {
+                            elem_animate.animate(a_duration, a_delay, 'now').transform(a_style).loop();
+                        } else {
+                            elem_animate.animate(a_duration, a_delay, 'now').transform(a_style);
+                        }
+
+                        // elem_animate.animate(a_duration, a_delay, 'now').attr(a_style);
+                        // elem_animate.animate(a_duration, a_delay, 'now').transform(a_style);
+
+                        this.vars.push(elem_animate);
+
                         break;
 
                     case "@move":
@@ -891,6 +952,10 @@ Q.prototype.step = function () {
                         this.vars.push(tp);
                         break;
 
+                    case "@clear":
+                        draw.clear();
+                        break;
+
                     case "@group":
                         var st = draw.group();
                         let s = this.stack.pop();
@@ -939,9 +1004,6 @@ Q.prototype.step = function () {
                     case "@mod":
                         let v2_mod = this.stack.pop();
                         let v1_mod = this.stack.pop();
-
-                        console.log(v1_mod % v2_mod);
-
                         this.stack.push(v1_mod % v2_mod);
                         break;
 
@@ -992,6 +1054,16 @@ Q.prototype.step = function () {
                         break;
                 }
             } else {
+                try {
+                    if (item.charAt(0) === '^') {
+                        item = item.substr(1);
+                        item = item.split(",")
+                    }
+                } catch (err) {
+
+                }
+
+
                 this.stack.push(item);
             }
         } else {

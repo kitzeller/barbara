@@ -250,7 +250,10 @@ app.post('/savesession',
 app.get('/sessions',
     function (req, res) {
         Session.find({}, {svg: 1, _id: 1, name: 1}, function (err, data) {
-            // TODO: Stop children being sent too
+            data.map(function(item) {
+                item.children = undefined;
+                return item;
+            });
             res.send(data);
         })
     });
@@ -262,7 +265,6 @@ app.get('/sessions/:id',
             res.send(data);
         });
     });
-
 
 
 // User sessions by user id

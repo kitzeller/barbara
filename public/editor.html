@@ -94,12 +94,11 @@
             <textarea id="grammar">
 start "start" = term +
 term "term" = body:(word / sentence) _ { return body; }
-list "list" = "[" _ body:term* "]" { return body; }
 
-sentence = "[" expr:regular* "]" { return expr.join("") } / regular
-regular = [^\[\]]+ { return text(); }
+sentence = "{" expr:regular* "}" { return expr.join("") } / regular
+regular = [^{}]+ { return text(); }
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / style / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_rotate / animate_move / animate_color / animate_filter / add / mult / subtract / divide / modulo / floor / $[^\[\] \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / style / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / order / define / get / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_color / animate_filter / animate / add / mult / subtract / divide / modulo / floor / clear / $[^{} \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -142,6 +141,7 @@ copy = "copy" { return "@copy"; }
 duplicate = "duplicate" { return "@duplicate"; }
 link = "link" { return "@link"; }
 slider = "slider" { return "@slider"; }
+clear = "clear" { return "@clear"; }
 
 random_number = "random-number" { return "@random-number"; }
 random_color = "random-color" { return "@random-color"; }
@@ -150,8 +150,7 @@ define = "define" { return "@define"; }
 get = "get" { return "@get"; }
 export = "export" { return "@export"; }
 
-animate_rotate = "animate-rotate" { return "@animate-rotate"; }
-animate_move = "animate-move" { return "@animate-move"; }
+animate = "animate" { return "@animate"; }
 animate_color = "animate-color" { return "@animate-color"; }
 animate_filter = "animate-filter" { return "@animate-filter"; }
 
