@@ -50,6 +50,51 @@
             background: rgba(0, 0, 0, 0) !important;
             height: 80%;
         }
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 200; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: rgba(0,0,0,0.8);
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #myBtn {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +112,8 @@
         <button onclick="window.location.href='quilting.html'">Quilting</button>
         <button class="button-primary" onclick="window.location.href='editor'">Editor</button>
         <button onclick="openNav()">Library</button>
+        <!-- Trigger/Open The Modal -->
+        <button id="myBtn">?</button>
     </div>
 </div>
 
@@ -211,6 +258,22 @@ all repeat</textarea>
     </div>
 </div>
 
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1>Help</h1>
+        <p>You can use <code>Cmd + Enter</code> to parse</p>
+        <p>You can use <code>Shift + Enter</code> to run</p>
+        <p>You can use <code>Alt + Enter</code> to export your drawing</p>
+        <p>You can use <code>Cmd + E</code> to look at pattern suggestions</p>
+        <p>You can use <code>Cmd + I</code> to look at filter suggestions</p>
+    </div>
+
+</div>
+
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="peg-0.10.0.js"></script>
 
@@ -231,6 +294,21 @@ all repeat</textarea>
 <script src="lib/mode/show-hint.js"></script>
 
 <script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("myBtn");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+        modal.style.display = "block";
+    };
+    span.onclick = function() {
+        modal.style.display = "none";
+    };
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
 
     //Marked
     var renderer = new marked.Renderer();
