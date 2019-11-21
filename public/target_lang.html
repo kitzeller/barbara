@@ -41,6 +41,7 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="peg-0.10.0.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
+<script src="lib/svg.filter.js"></script>
 <script src="vm.js"></script>
 
 <script type="bogus" id="sourcetext">
@@ -86,6 +87,10 @@ Now we can add color to our shapes.
 
 ```javascript
 ["0","0","50","50","@rect","red","@color"]
+```
+
+```javascript
+["@rect","url(#pink-circles-5)","@color"]
 ```
 
 Or perhaps a gradient.
@@ -147,6 +152,12 @@ Now we can animate our shape.
 ["10","10","50","50","@rect","360","3000","true","@animate-rotate"]
 ```
 
+Animate Filter
+
+```javascript
+["0","0","100","100","@rect","url(#pink-circles-9)","@color","500","hue","true","@animate-filter"]
+```
+
 
 ## Getting & Setting
 
@@ -194,6 +205,13 @@ Sliders
 "mybaby","rotation","-10","10","@slider"]
 ```
 
+Filters
+
+```javascript
+["0","0","100","100","@rect","url(#prisonbars)","@color","watery","@filter"]
+```
+
+
 ---
 
 ## Reference
@@ -234,7 +252,7 @@ a % b							| ```a, b, "@mod"``` or ```a, b, "@%"```
 
 Transformations		 			| Format
 :--- 							| :---
-Color							| ```color, @color```
+Color							| ```color, @color``` where color is an rgb value, hex value, color name, or pattern id
 Outline							| ```color, line-width, @outline```
 Opacity							| ```alpha, @opacity```
 Radius							| ```pixels, @radius```
@@ -252,15 +270,12 @@ Order							| ```placement, @order``` where placement is one of ```back, backwar
 Polar							| ```r, theta, @polar```
 Style							| ```attr-name, attr-value, @style```
 
-Filters		 			| Format
-:--- 							| :---
-Filter                          | ```filter-type, @filter```
-
 Animations		                | Format
 :--- 							| :---
 Color							| ```color, time, loop?, @animate-color```
 Rotate							| ```degrees, time, loop?, @animate-rotate```
 Move							| ```x, y, time, loop?, @animate-move```
+Transform                       | ```transformation, value, duration, delay, loop?, @animate``` where transformation is one of `translate, rotate, scale, skew, flip, origin, relative, position`
 Filter							| ```filter-type, time, loop?, @animate-filter```
 
 Getters, Setters and Misc       | Format
@@ -280,6 +295,7 @@ Experimental		            | Format
 :--- 							| :---
 Export							| ```export```
 Slider							| ```var_name, type, min, max, @slider```
+Filter                          | ```name, @filter``` or ```url(#filter_id), @filter```
 
 ---
 

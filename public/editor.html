@@ -287,7 +287,12 @@ all repeat</textarea>
         //Darkmode
         theme: "darcula",
         colorpicker: {
-            mode: 'edit'
+            mode: 'edit',
+            colorSets: [
+                { name : 'My Colors', colors : [ 'red', 'blue', 'white' ] },
+                { name : 'Scale Colors', scale: ['red', 'yellow', 'black'], count : 5  },
+                { name : 'Input Colors', edit: true  },
+            ]
         },
         extraKeys: {
             "Ctrl-Enter": makeParser,

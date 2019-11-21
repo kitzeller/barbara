@@ -375,7 +375,7 @@ end-loop
 
 ### Getting and Setting
 
-We can define values that we can use again later. Using the `define` command, we can store things like shapes, patterns, and colors. We can then retrieve them
+We can define values that we can use again later. Using the `define` command, we can store things like shapes, patterns, numbers, and colors. We can then retrieve them
 again using the `get` command. When you use the `get` command, you can simply specify the name. However, when you are using a named variable elsewhere, like in
 `color`, you need to prepend `$` to the variable name. `$` is a shorthand way of calling `get` on a variable.
 
@@ -411,8 +411,9 @@ _ "whitespace" = [ \t\n\r]*
 ```
 
 <textarea class="input">#5F9CD2 c1 define
+random-number n1 define
 20 triangle 0 20 move $c1 color myrect define
-myrect get duplicate 20 0 move
+myrect get duplicate 20 0 move $n1 $n1 size
 myrect get duplicate 20 20 move
 myrect get duplicate 20 40 move
 </textarea>
@@ -701,6 +702,7 @@ Kit Zellerbach & Prof. Charlie Roberts
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="peg-0.10.0.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
+<script src="lib/svg.filter.js"></script>
 <script src="vm.js"></script>
 
 <script>

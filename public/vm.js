@@ -379,8 +379,8 @@ Q.prototype.step = function () {
 
 
                         // define a pattern
-                        let pattern_h = this.stack.pop();
-                        let pattern_w = this.stack.pop();
+                        let pattern_h = this.stack.pop()/ 100 * HEIGHT;
+                        let pattern_w = this.stack.pop()/ 100 * WIDTH;
 
                         let next_item = this.vars.pop();
 
@@ -460,6 +460,14 @@ Q.prototype.step = function () {
 
                         let filter_elem = this.vars.pop();
                         let filter_type = this.stack.pop();
+
+                        if (filter_type.includes('url')) {
+                            // ....
+                            console.log("woooo")
+                            filter_elem.attr("filter",filter_type);
+                            this.vars.push(filter_elem);
+                            break;
+                        }
 
                         switch (filter_type) {
                             case 'blur':
@@ -553,20 +561,23 @@ Q.prototype.step = function () {
                             }, true)
                         }
 
-                        if (color.includes('$')) {
-                            // Stored color
-                            let result = color.split('$')[1];
-                            color = this.context[result]
-                        } else if (color.includes('url')) {
-                            // Patterns
-                            let id = color.match(/url\(#(.*)\)/i)[1];
-                            // If the pattern hasn't been used yet
-                            if (!draw.defs().node.innerHTML.includes(id)) {
-                                draw.defs().add("<pattern id=\"" + id + "\" patternUnits=\"userSpaceOnUse\" width=\"10\" height=\"10\">\n" +
-                                    "            <image xlink:href=\"" + patterns[id] + "\"\n" +
-                                    "                   x=\"0\" y=\"0\" width=\"10\" height=\"10\">\n" +
-                                    "            </image>\n" +
-                                    "        </pattern>");
+                        // if (color.includes('$')) {
+                        //     // Stored color
+                        //     let result = color.split('$')[1];
+                        //     color = this.context[result]
+                        // } else
+                        if (typeof color === "string"){
+                            if (color.includes('url')) {
+                                // Patterns
+                                let id = color.match(/url\(#(.*)\)/i)[1];
+                                // If the pattern hasn't been used yet
+                                if (!draw.defs().node.innerHTML.includes(id)) {
+                                    draw.defs().add("<pattern id=\"" + id + "\" patternUnits=\"userSpaceOnUse\" width=\"10\" height=\"10\">\n" +
+                                        "            <image xlink:href=\"" + patterns[id] + "\"\n" +
+                                        "                   x=\"0\" y=\"0\" width=\"10\" height=\"10\">\n" +
+                                        "            </image>\n" +
+                                        "        </pattern>");
+                                }
                             }
                         }
 
@@ -627,8 +638,8 @@ Q.prototype.step = function () {
                     case "@rotate":
                         let rot_y, rot_x;
                         if (this.stack.length > 1) {
-                            rot_y = this.stack.pop();
-                            rot_x = this.stack.pop();
+                            rot_y = this.stack.pop() / 100 * HEIGHT;
+                            rot_x = this.stack.pop() / 100 * WIDTH;
                         }
                         let degree = this.stack.pop();
                         let elem_rotate = this.vars.pop();
@@ -1057,9 +1068,15 @@ Q.prototype.step = function () {
             } else {
                 try {
                     if (item.charAt(0) === '^') {
+                        // Cast to array
                         item = item.substr(1);
                         item = item.split(",")
+                    } else if (item.charAt(0) === '$') {
+                        // Get variable
+                        let result = item.split('$')[1];
+                        item = this.context[result]
                     }
+
                 } catch (err) {
 
                 }
@@ -1103,6 +1120,8 @@ window.requestAnimationFrame(step);
 // Patterns from https://philiprogers.com/svgpatterns/
 // Patterns from https://iros.github.io/patternfills/sample_svg.html
 var patterns = {
+    "anchors": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' width='80' height='80'%3E%3Cpath fill='%239C92AC' fill-opacity='0.4' d='M14 16H9v-2h5V9.87a4 4 0 1 1 2 0V14h5v2h-5v15.95A10 10 0 0 0 23.66 27l-3.46-2 8.2-2.2-2.9 5a12 12 0 0 1-21 0l-2.89-5 8.2 2.2-3.47 2A10 10 0 0 0 14 31.95V16zm40 40h-5v-2h5v-4.13a4 4 0 1 1 2 0V54h5v2h-5v15.95A10 10 0 0 0 63.66 67l-3.47-2 8.2-2.2-2.88 5a12 12 0 0 1-21.02 0l-2.88-5 8.2 2.2-3.47 2A10 10 0 0 0 54 71.95V56zm-39 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm40-40a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM15 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm40 40a2 2 0 1 0 0-4 2 2 0 0 0 0 4z'%3E%3C/path%3E%3C/svg%3E",
+    "prisonbars": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSd3aGl0ZScgLz4KICA8cmVjdCB4PScwJyB5PScwJyB3aWR0aD0nNicgaGVpZ2h0PScxMCcgZmlsbD0nYmxhY2snIC8+Cjwvc3ZnPg==",
     "crosshatch": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4JyBoZWlnaHQ9JzgnPgogIDxyZWN0IHdpZHRoPSc4JyBoZWlnaHQ9JzgnIGZpbGw9JyNmZmYnLz4KICA8cGF0aCBkPSdNMCAwTDggOFpNOCAwTDAgOFonIHN0cm9rZS13aWR0aD0nMC41JyBzdHJva2U9JyNhYWEnLz4KPC9zdmc+Cg==",
     "whitecarbon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHhtbG5zOnhsaW5rPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rJyB3aWR0aD0nNicgaGVpZ2h0PSc2Jz4KICA8cmVjdCB3aWR0aD0nNicgaGVpZ2h0PSc2JyBmaWxsPScjZWVlZWVlJy8+CiAgPGcgaWQ9J2MnPgogICAgPHJlY3Qgd2lkdGg9JzMnIGhlaWdodD0nMycgZmlsbD0nI2U2ZTZlNicvPgogICAgPHJlY3QgeT0nMScgd2lkdGg9JzMnIGhlaWdodD0nMicgZmlsbD0nI2Q4ZDhkOCcvPgogIDwvZz4KICA8dXNlIHhsaW5rOmhyZWY9JyNjJyB4PSczJyB5PSczJy8+Cjwvc3ZnPg==",
     "honeycomb": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSIxMDAiPgo8cmVjdCB3aWR0aD0iNTYiIGhlaWdodD0iMTAwIiBmaWxsPSIjZjhkMjAzIj48L3JlY3Q+CjxwYXRoIGQ9Ik0yOCA2NkwwIDUwTDAgMTZMMjggMEw1NiAxNkw1NiA1MEwyOCA2NkwyOCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZjYyOSIgc3Ryb2tlLXdpZHRoPSIyIj48L3BhdGg+CjxwYXRoIGQ9Ik0yOCAwTDI4IDM0TDAgNTBMMCA4NEwyOCAxMDBMNTYgODRMNTYgNTBMMjggMzQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZTUwMyIgc3Ryb2tlLXdpZHRoPSIyIj48L3BhdGg+Cjwvc3ZnPg==",
