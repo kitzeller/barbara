@@ -1,6 +1,8 @@
-//////////////////////////////////////////////////////////////////////////////////////////
-// VM: Barbara?
-//////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * BARBARA VM
+ * @author Kit Zellerbach
+ */
+
 // Exported
 window.seq = {
     commands: {},
@@ -379,8 +381,8 @@ Q.prototype.step = function () {
 
 
                         // define a pattern
-                        let pattern_h = this.stack.pop()/ 100 * HEIGHT;
-                        let pattern_w = this.stack.pop()/ 100 * WIDTH;
+                        let pattern_h = this.stack.pop() / 100 * HEIGHT;
+                        let pattern_w = this.stack.pop() / 100 * WIDTH;
 
                         let next_item = this.vars.pop();
 
@@ -464,7 +466,7 @@ Q.prototype.step = function () {
                         if (filter_type.includes('url')) {
                             // ....
                             console.log("woooo")
-                            filter_elem.attr("filter",filter_type);
+                            filter_elem.attr("filter", filter_type);
                             this.vars.push(filter_elem);
                             break;
                         }
@@ -510,42 +512,24 @@ Q.prototype.step = function () {
                                     })
                                 });
                                 break;
-                            // case 'colorize':
-                            //     filter_elem.filterWith(function (add) {
-                            //         add.colorMatrix('matrix',
-                            //             [0.33, 0.33, 0.33, 0, 0
-                            //                 , 0.33, 0.33, 0.33, 0, 0
-                            //                 , 0.33, 0.33, 0.33, 0, 0
-                            //                 , 0, 0, 0, 1.0, 0])
-                            //     });
-                            //     break;
-                            // case 'posterize':
-                            //     filter_elem.filterWith(function (add) {
-                            //         add.componentTransfer({
-                            //             type: 'discrete',
-                            //             tableValues: [0, 0.2, 0.4, 0.6, 0.8, 1]
-                            //         })
-                            //     });
-                            //     break;
-                            // case 'contrast':
-                            //     filter_elem.filterWith(function (add) {
-                            //         var amount = 1.5;
-                            //
-                            //         add.componentTransfer({
-                            //             type: 'linear',
-                            //             slope: amount,
-                            //             intercept: -(0.3 * amount) + 0.3
-                            //         })
-                            //     });
-                            //     break;
                             case 'watery':
                                 filter_elem.filterWith(function (add) {
                                     let s1 = add.turbulence(0.01, 2, 0, "stitch", "turbulence");
                                     add.displacementMap(add.$source, s1, 20, "R", "R");
                                 });
                                 break;
+                            case 'roughpaper':
+                                if (!draw.defs().node.innerHTML.includes("roughpaper")) {
+                                    draw.defs().add("<filter id='roughpaper' x='0%' y='0%' width='100%' height=\"100%\">\n" +
+                                        "<feTurbulence type=\"noise\" baseFrequency='0.1' result='noise' numOctaves=\"1\" />\n" +
+                                        "        <feDiffuseLighting in='noise' lighting-color='white' surfaceScale='2'>\n" +
+                                        "            <feDistantLight azimuth='45' elevation='60' />\n" +
+                                        "</feDiffuseLighting>\n" +
+                                        "</filter>");
+                                }
+                                filter_elem.attr("filter", "url(#roughpaper)");
+                                break;
                         }
-
 
                         this.vars.push(filter_elem);
                         break;
@@ -557,16 +541,11 @@ Q.prototype.step = function () {
                         if (elem.type === "g") {
                             // group
                             elem.each(function (i, children) {
-                                this.fill({color: '#f06'})
+                                this.fill({color: color})
                             }, true)
                         }
 
-                        // if (color.includes('$')) {
-                        //     // Stored color
-                        //     let result = color.split('$')[1];
-                        //     color = this.context[result]
-                        // } else
-                        if (typeof color === "string"){
+                        if (typeof color === "string") {
                             if (color.includes('url')) {
                                 // Patterns
                                 let id = color.match(/url\(#(.*)\)/i)[1];
@@ -602,12 +581,23 @@ Q.prototype.step = function () {
                         let out_color = this.stack.pop();
                         let out_elem = this.vars.pop();
 
-                        // TODO: For groups
-                        try {
-                            out_elem.stroke({width: out_width, color: out_color});
-                        } catch {
-                            out_elem.stroke({width: out_width, color: "#000000"});
+                        // For groups
+                        if (out_elem.type === "g") {
+                            out_elem.each(function (i, children) {
+                                try {
+                                    this.stroke({width: out_width, color: out_color});
+                                } catch {
+                                    this.stroke({width: out_width, color: "#000000"});
+                                }
+                            }, true)
+                        } else {
+                            try {
+                                out_elem.stroke({width: out_width, color: out_color});
+                            } catch {
+                                out_elem.stroke({width: out_width, color: "#000000"});
+                            }
                         }
+
                         this.vars.push(out_elem);
 
                         break;
