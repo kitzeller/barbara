@@ -425,6 +425,7 @@ Q.prototype.step = function () {
                         let filter_ani_dur = parseInt(this.stack.pop());
 
                         // todo: merge with filter function to stop code duplication
+                        // todo: multiple filter animations
 
                         switch (filter_ani_type) {
                             case 'hue':
@@ -464,8 +465,15 @@ Q.prototype.step = function () {
                         let filter_type = this.stack.pop();
 
                         if (filter_type.includes('url')) {
-                            // ....
-                            console.log("woooo")
+                            // Filters
+                            let id = filter_type.match(/url\(#(.*)\)/i)[1];
+                            // If the filter hasn't been used yet
+                            if (!draw.defs().node.innerHTML.includes(id)) {
+                                console.log(filters);
+                                if (filters.hasOwnProperty(id)) {
+                                    draw.defs().add(filters[id]);
+                                }
+                            }
                             filter_elem.attr("filter", filter_type);
                             this.vars.push(filter_elem);
                             break;
@@ -518,16 +526,28 @@ Q.prototype.step = function () {
                                     add.displacementMap(add.$source, s1, 20, "R", "R");
                                 });
                                 break;
-                            case 'roughpaper':
-                                if (!draw.defs().node.innerHTML.includes("roughpaper")) {
-                                    draw.defs().add("<filter id='roughpaper' x='0%' y='0%' width='100%' height=\"100%\">\n" +
-                                        "<feTurbulence type=\"noise\" baseFrequency='0.1' result='noise' numOctaves=\"1\" />\n" +
-                                        "        <feDiffuseLighting in='noise' lighting-color='white' surfaceScale='2'>\n" +
-                                        "            <feDistantLight azimuth='45' elevation='60' />\n" +
-                                        "</feDiffuseLighting>\n" +
-                                        "</filter>");
-                                }
-                                filter_elem.attr("filter", "url(#roughpaper)");
+                            case 'transfer':
+                                // move filters to another file?
+                                filter_elem.filterWith(function (add) {
+                                    add.componentTransfer(function (add) {
+                                        add.funcA({
+                                            type: 'table',
+                                            tableValues: [0, 1]
+                                        });
+                                        add.funcB({
+                                            type: 'table',
+                                            tableValues: [1, 0, 1]
+                                        });
+                                        add.funcG({
+                                            type: 'table',
+                                            tableValues: [0, 1, 0]
+                                        });
+                                        add.funcR({
+                                            type: 'table',
+                                            tableValues: [1, 0, 1]
+                                        });
+                                    })
+                                });
                                 break;
                         }
 
@@ -1107,44 +1127,3 @@ function step(timestamp) {
 }
 
 window.requestAnimationFrame(step);
-
-
-// Patterns from https://philiprogers.com/svgpatterns/
-// Patterns from https://iros.github.io/patternfills/sample_svg.html
-var patterns = {
-    "anchors": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' width='80' height='80'%3E%3Cpath fill='%239C92AC' fill-opacity='0.4' d='M14 16H9v-2h5V9.87a4 4 0 1 1 2 0V14h5v2h-5v15.95A10 10 0 0 0 23.66 27l-3.46-2 8.2-2.2-2.9 5a12 12 0 0 1-21 0l-2.89-5 8.2 2.2-3.47 2A10 10 0 0 0 14 31.95V16zm40 40h-5v-2h5v-4.13a4 4 0 1 1 2 0V54h5v2h-5v15.95A10 10 0 0 0 63.66 67l-3.47-2 8.2-2.2-2.88 5a12 12 0 0 1-21.02 0l-2.88-5 8.2 2.2-3.47 2A10 10 0 0 0 54 71.95V56zm-39 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm40-40a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM15 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm40 40a2 2 0 1 0 0-4 2 2 0 0 0 0 4z'%3E%3C/path%3E%3C/svg%3E",
-    "prisonbars": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSd3aGl0ZScgLz4KICA8cmVjdCB4PScwJyB5PScwJyB3aWR0aD0nNicgaGVpZ2h0PScxMCcgZmlsbD0nYmxhY2snIC8+Cjwvc3ZnPg==",
-    "crosshatch": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4JyBoZWlnaHQ9JzgnPgogIDxyZWN0IHdpZHRoPSc4JyBoZWlnaHQ9JzgnIGZpbGw9JyNmZmYnLz4KICA8cGF0aCBkPSdNMCAwTDggOFpNOCAwTDAgOFonIHN0cm9rZS13aWR0aD0nMC41JyBzdHJva2U9JyNhYWEnLz4KPC9zdmc+Cg==",
-    "whitecarbon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHhtbG5zOnhsaW5rPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rJyB3aWR0aD0nNicgaGVpZ2h0PSc2Jz4KICA8cmVjdCB3aWR0aD0nNicgaGVpZ2h0PSc2JyBmaWxsPScjZWVlZWVlJy8+CiAgPGcgaWQ9J2MnPgogICAgPHJlY3Qgd2lkdGg9JzMnIGhlaWdodD0nMycgZmlsbD0nI2U2ZTZlNicvPgogICAgPHJlY3QgeT0nMScgd2lkdGg9JzMnIGhlaWdodD0nMicgZmlsbD0nI2Q4ZDhkOCcvPgogIDwvZz4KICA8dXNlIHhsaW5rOmhyZWY9JyNjJyB4PSczJyB5PSczJy8+Cjwvc3ZnPg==",
-    "honeycomb": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSIxMDAiPgo8cmVjdCB3aWR0aD0iNTYiIGhlaWdodD0iMTAwIiBmaWxsPSIjZjhkMjAzIj48L3JlY3Q+CjxwYXRoIGQ9Ik0yOCA2NkwwIDUwTDAgMTZMMjggMEw1NiAxNkw1NiA1MEwyOCA2NkwyOCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZjYyOSIgc3Ryb2tlLXdpZHRoPSIyIj48L3BhdGg+CjxwYXRoIGQ9Ik0yOCAwTDI4IDM0TDAgNTBMMCA4NEwyOCAxMDBMNTYgODRMNTYgNTBMMjggMzQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZTUwMyIgc3Ryb2tlLXdpZHRoPSIyIj48L3BhdGg+Cjwvc3ZnPg==",
-    "blueprint": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiMyNjkiPjwvcmVjdD4KPGcgZmlsbD0iIzY0OTRiNyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMSIgeT0iMjAiPjwvcmVjdD4KPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxIiB5PSI0MCI+PC9yZWN0Pgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEiIHk9IjYwIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMSIgeT0iODAiPjwvcmVjdD4KPHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMTAwIiB4PSIyMCI+PC9yZWN0Pgo8cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxMDAiIHg9IjQwIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEwMCIgeD0iNjAiPjwvcmVjdD4KPHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMTAwIiB4PSI4MCI+PC9yZWN0Pgo8L2c+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZT0iI2ZmZiI+PC9yZWN0Pgo8L3N2Zz4=",
-    "pink-circles-2": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMS41JyBjeT0nMS41JyByPScxLjUnIGZpbGw9JyNmZjAwNDgnLz4KPC9zdmc+Cg==",
-    "pink-circles-1": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSJoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCkiIC8+CiAgPGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiNmYjVkNjciLz4KPC9zdmc+",
-    "pink-circles-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMicgY3k9JzInIHI9JzInIGZpbGw9JyNmYjVkNjcnLz4KPC9zdmc+",
-    "pink-circles-5": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMycgY3k9JzMnIHI9JzMnIGZpbGw9JyNmYjVkNjcnLz4KPC9zdmc+Cg==",
-    "pink-circles-7": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nNCcgY3k9JzQnIHI9JzQnIGZpbGw9JyNmYjVkNjcnLz4KPC9zdmc+",
-    "pink-circles-9": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nNC41JyBjeT0nNC41JyByPSc0LjUnIGZpbGw9JyNmYjVkNjcnLz4KPC9zdmc+",
-    "pink-stripe-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPHJlY3QgeD0nMCcgeT0nMCcgd2lkdGg9JzEwJyBoZWlnaHQ9JzMnIGZpbGw9JyNmZjAwNDgnIC8+Cjwvc3ZnPg==",
-    "blue-circles-4": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMi41JyBjeT0nMi41JyByPScyLjUnIGZpbGw9JyMwMDU0YTgnLz4KPC9zdmc+",
-    "blue-stripe-4": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPHJlY3QgeD0nMCcgeT0nMCcgd2lkdGg9JzEwJyBoZWlnaHQ9JzQnIGZpbGw9JyMwMDU0YTgnIC8+Cjwvc3ZnPg==",
-    "navy-stripe-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdyZ2JhKDI1NSwgMjU1LCAyNTUsIDApJyAvPgogIDxyZWN0IHg9JzAnIHk9JzAnIHdpZHRoPScxMCcgaGVpZ2h0PSczJyBmaWxsPScjMDAxNzUyJyAvPgo8L3N2Zz4=",
-    "navy-circles-4": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdyZ2JhKDI1NSwgMjU1LCAyNTUsIDApJyAvPgogIDxjaXJjbGUgY3g9JzIuNScgY3k9JzIuNScgcj0nMi41JyBmaWxsPScjMDAxNzUyJy8+Cjwvc3ZnPg==",
-    "yellow-circles-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMicgY3k9JzInIHI9JzInIGZpbGw9JyNmZmY3MGYnLz4KPC9zdmc+",
-    "yellow-stripe-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPHJlY3QgeD0nMCcgeT0nMCcgd2lkdGg9JzEwJyBoZWlnaHQ9JzMnIGZpbGw9JyNmZmY3MGYnIC8+Cjwvc3ZnPg==",
-    "gray-circles-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMicgY3k9JzInIHI9JzInIGZpbGw9JyM0YTRmNTQnLz4KPC9zdmc+",
-    "gray-circles-7": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nNCcgY3k9JzQnIHI9JzQnIGZpbGw9JyM0YTRmNTQnLz4KPC9zdmc+",
-    "gray-stripe-4": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPHJlY3QgeD0nMCcgeT0nMCcgd2lkdGg9JzEwJyBoZWlnaHQ9JzQnIGZpbGw9JyM0YTRmNTQnIC8+Cjwvc3ZnPg==",
-    "gray-subtle-patch": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc1JyBoZWlnaHQ9JzUnPgogIDxyZWN0IHdpZHRoPSc1JyBoZWlnaHQ9JzUnIGZpbGw9J2hzbGEoMzYwLCAxMDAlLCAxMDAlLCAwKScgLz4KICA8cmVjdCB4PScyJyB5PScyJyB3aWR0aD0nMScgaGVpZ2h0PScxJyBmaWxsPScjNGE0ZjU0JyAvPgo8L3N2Zz4=",
-    "gray-circles-9": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nNScgY3k9JzUnIHI9JzUnIGZpbGw9JyM0YTRmNTQnLz4KPC9zdmc+",
-    "white-circles-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDI0MCwgNiUsIDkwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMicgY3k9JzInIHI9JzInIGZpbGw9J2hzbGEoMjQwLCA2JSwgOTAlLCAxKScvPgo8L3N2Zz4=",
-    "white-circles-9": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDI0MCwgNiUsIDkwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nNScgY3k9JzUnIHI9JzUnIGZpbGw9J2hzbGEoMjQwLCA2JSwgOTAlLCAxKScvPgo8L3N2Zz4=",
-    "white-stripe-4": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDI0MCwgNiUsIDkwJSwgMCknIC8+CiAgPHJlY3QgeD0nMCcgeT0nMCcgd2lkdGg9JzQnIGhlaWdodD0nMTAnIGZpbGw9J2hzbGEoMjQwLCA2JSwgOTAlLCAxKScgLz4KPC9zdmc+",
-    "mint-circles-4": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMi41JyBjeT0nMi41JyByPScyLjUnIGZpbGw9JyMwMGJhYTknLz4KPC9zdmc+",
-    "mint-stripe-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPHJlY3QgeD0nMCcgeT0nMCcgd2lkdGg9JzEwJyBoZWlnaHQ9JzMnIGZpbGw9JyMwMGJhYTknIC8+Cjwvc3ZnPg==",
-    "orange-circles-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMicgY3k9JzInIHI9JzInIGZpbGw9JyNmZmFhMzcnLz4KPC9zdmc+",
-    "orange-stripe-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPHJlY3QgeD0nMCcgeT0nMCcgd2lkdGg9JzEwJyBoZWlnaHQ9JzMnIGZpbGw9JyNmZmFhMzcnIC8+Cjwvc3ZnPg==",
-    "br-orange-circles-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPGNpcmNsZSBjeD0nMicgY3k9JzInIHI9JzInIGZpbGw9JyNmODAnLz4KPC9zdmc+",
-    "br-orange-stripe-3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSdoc2xhKDM2MCwgMTAwJSwgMTAwJSwgMCknIC8+CiAgPHJlY3QgeD0nMCcgeT0nMCcgd2lkdGg9JzMnIGhlaWdodD0nMTAnIGZpbGw9JyNmODAnIC8+Cjwvc3ZnPg=="
-};
-
-window.patterns = patterns;

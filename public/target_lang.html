@@ -42,6 +42,8 @@
 <script src="peg-0.10.0.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js"></script>
 <script src="lib/svg.filter.js"></script>
+<script src="patterns.js"></script>
+<script src="filters.js"></script>
 <script src="vm.js"></script>
 
 <script type="bogus" id="sourcetext">
@@ -211,6 +213,14 @@ Filters
 ["0","0","100","100","@rect","url(#prisonbars)","@color","watery","@filter"]
 ```
 
+```javascript
+["0","0","100","100","@rect","url(#shrooms)","@filter"]
+```
+
+```javascript
+["0","0","100","100","@rect","url(#layerednet)","@filter",
+"0","0","100","100","@rect","red","@color","mix-blend-mode","difference","@style"]
+```
 
 ---
 
