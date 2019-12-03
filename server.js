@@ -279,6 +279,17 @@ app.get('/sessions/children/:id',
         });
     });
 
+// User sessions by user id
+// app.get('/sessions/parents/:id',
+//     function (req, res) {
+//         Session.findOne({_id: req.params.id}, function (err, data) {
+//             // res.send(data);
+//             data.deepPopulate('parent', function (err, _data) {
+//                 // console.log(_data);
+//                 res.send(_data)
+//             });
+//         });
+//     });
 
 app.get('/loggeduser', function (req, res) {
     if (req.user === undefined) {

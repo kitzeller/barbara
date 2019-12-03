@@ -64,8 +64,14 @@
         console.log(res.id);
 
         $.getJSON("sessions/children/" + res.id, function (data) {
+            console.log(data);
             generateTree(data);
         });
+
+        // $.getJSON("sessions/parents/" + res.id, function (data) {
+        //     console.log(data);
+        //     // generateTree(data);
+        // });
     }
 
     function generateTree(data) {

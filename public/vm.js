@@ -601,6 +601,8 @@ Q.prototype.step = function () {
                         let out_width = this.stack.pop();
                         let out_color = this.stack.pop();
                         let out_elem = this.vars.pop();
+
+                        // TODO: For groups
                         try {
                             out_elem.stroke({width: out_width, color: out_color});
                         } catch {

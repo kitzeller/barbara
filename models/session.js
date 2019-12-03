@@ -22,13 +22,19 @@ var autoPopulateChildren = function(next) {
     next();
 };
 
+var autoPopulateParent = function(next) {
+    this.populate('parent');
+    next();
+};
+
 sessionSchema
     .pre('findOne', autoPopulateChildren)
     .pre('find', autoPopulateChildren);
 
 sessionSchema.plugin(deepPopulate, {
     whitelist: [
-        'children',
+        // 'children',
+        // 'parent'
     ]
 });
 

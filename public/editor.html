@@ -36,7 +36,7 @@
         .live-code-I {
             position: absolute;
             top: 50%;
-            left: 65%;
+            left: 70%;
             transform: translate(-50%, -50%);
             z-index: 149;
 
@@ -49,6 +49,7 @@
             z-index: 150;
             background: rgba(0, 0, 0, 0) !important;
             height: 80%;
+            max-width: 40%;
         }
 
         /* The Modal (background) */
@@ -94,6 +95,7 @@
             position: fixed;
             bottom: 0;
             right: 0;
+            margin: 5px;
         }
     </style>
 </head>
@@ -231,7 +233,7 @@ all repeat</textarea>
                 <br>
                 <button onclick="saveGrammar()">Save Grammar</button>
                 <button onclick="exportSVG()">Export Pattern</button>
-                <button onclick="updateSVG()">Update Pattern</button>
+<!--                <button onclick="updateSVG()">Update Pattern</button>-->
             </div>
 
             <h2>Output</h2>
@@ -270,6 +272,8 @@ all repeat</textarea>
         <p>You can use <code>Alt + Enter</code> to export your drawing</p>
         <p>You can use <code>Cmd + E</code> to look at pattern suggestions</p>
         <p>You can use <code>Cmd + I</code> to look at filter suggestions</p>
+        <p>You can click on the <button>Live Code</button> button to toggle Live-Code mode.</p>
+        <p>You can click on the <button>Start Loop</button> button to re-draw every second.</p>
     </div>
 
 </div>
@@ -431,7 +435,7 @@ all repeat</textarea>
         $('#drawing').appendTo('body');
         $(input_cm.getWrapperElement()).toggleClass("live-code-II").show().appendTo('body');
         // input_cm.setOption("lineNumbers", false);
-        $('body').append("<button id='exitLiveCode'>X</button>");
+        $('body').append("<button id='exitLiveCode' style='margin: 5px;'>X</button>");
         $("#exitLiveCode").click(function () {
             $("#drawing").toggleClass("live-code-I").appendTo("#drawing-container");
             $(input_cm.getWrapperElement()).toggleClass("live-code-II").insertAfter("#input");
