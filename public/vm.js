@@ -363,24 +363,8 @@ Q.prototype.step = function () {
                         break;
 
                     case "@pattern":
-                        // var pattern = draw.pattern(20, 20, function (add) {
-                        //     add.rect(20, 20).fill('#f06');
-                        //     add.rect(10, 10);
-                        //     add.rect(10, 10).move(10, 10);
-                        // });
-
-                        // let svg_pattern_string = this.stack.pop();
-                        //
-                        // if (svg_pattern_string.includes('$')) {
-                        //     let result = svg_pattern_string.split('$')[1];
-                        //     svg_pattern_string = window.savedSessions[result].svg;
-                        // }
-
-                        //let svg_pattern_group = draw.group();
-                        //svg_pattern_group.svg(svg_string);
-
-
                         // define a pattern
+                        // TODO: Maybe have name be a parameter and force use through url(#name) instead?
                         let pattern_h = this.stack.pop() / 100 * HEIGHT;
                         let pattern_w = this.stack.pop() / 100 * WIDTH;
 
@@ -950,7 +934,7 @@ Q.prototype.step = function () {
                         break;
 
                     case "@merge":
-                        // TODO
+                        // TODO: finish this -- although maybe not necessary because of @group
                         var box1 = draw.rect(100, 100).move(50, 50).bbox();
                         var box2 = draw.rect(100, 100).move(200, 200).bbox();
                         var box3 = box1.merge(box2);
@@ -974,6 +958,27 @@ Q.prototype.step = function () {
                         let cn = this.stack.pop();
                         let tp = this.context[cn];
                         this.vars.push(tp);
+                        break;
+
+                    case "@parent":
+                        // TODO: Test this
+                        let child = this.vars.pop();
+                        this.vars.push(child.parent());
+                        break;
+
+                    case "@attr":
+                        // TODO: Test this, and figure out how to work for all element types...
+                        let e_attr = this.vars.pop();
+                        let t_attr = this.stack.pop();
+
+                        switch (t_attr) {
+                            case 'width':
+                                this.stack.push(e_attr.attr(t_attr) / WIDTH * 100);
+                                break;
+                            default:
+                                break;
+                        }
+                        this.vars.push(e_attr);
                         break;
 
                     case "@clear":
