@@ -63,13 +63,13 @@
             width: 100%; /* Full width */
             height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            background-color: rgb(0, 0, 0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
         }
 
         /* Modal Content */
         .modal-content {
-            background-color: rgba(0,0,0,0.8);
+            background-color: rgba(0, 0, 0, 0.8);
             margin: auto;
             padding: 20px;
             border: 1px solid #888;
@@ -235,7 +235,7 @@ all repeat</textarea>
                 <br>
                 <button onclick="saveGrammar()">Save Grammar</button>
                 <button onclick="exportSVG()">Export Pattern</button>
-<!--                <button onclick="updateSVG()">Update Pattern</button>-->
+                <!--                <button onclick="updateSVG()">Update Pattern</button>-->
             </div>
 
             <h2>Output</h2>
@@ -274,8 +274,14 @@ all repeat</textarea>
         <p>You can use <code>Alt + Enter</code> to export your drawing</p>
         <p>You can use <code>Cmd + E</code> to look at pattern suggestions</p>
         <p>You can use <code>Cmd + I</code> to look at filter suggestions</p>
-        <p>You can click on the <button>Live Code</button> button to toggle Live-Code mode.</p>
-        <p>You can click on the <button>Start Loop</button> button to re-draw every second.</p>
+        <p>You can click on the
+            <button>Live Code</button>
+            button to toggle Live-Code mode.
+        </p>
+        <p>You can click on the
+            <button>Start Loop</button>
+            button to re-draw every second.
+        </p>
     </div>
 
 </div>
@@ -292,33 +298,37 @@ all repeat</textarea>
 <script src="filters.js"></script>
 <script src="vm.js"></script>
 
-<!-- Create a simple CodeMirror instance -->
+<!-- CodeMirror Modes and Addons -->
 <script src="lib/codemirror.js"></script>
 <script src="lib/colorpicker/codemirror-colorpicker.js"></script>
 <script src="lib/mode/overlay.js"></script>
 <script src="lib/mode/markdown.js"></script>
+<script src="lib/mode/javascript.js"></script>
 <script src="lib/mode/pegjs.js"></script>
 <script src="lib/mode/gfm.js"></script>
 <script src="lib/mode/show-hint.js"></script>
+<script src="lib/mode/active-line.js"></script>
+<script src="lib/mode/comment.js"></script>
+<script src="lib/mode/continuecomment.js"></script>
 
 <script>
     // Get the modal
     var modal = document.getElementById("myModal");
     var btn = document.getElementById("myBtn");
     var span = document.getElementsByClassName("close")[0];
-    btn.onclick = function() {
+    btn.onclick = function () {
         modal.style.display = "block";
     };
-    span.onclick = function() {
+    span.onclick = function () {
         modal.style.display = "none";
     };
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
     };
 
-    //Marked
+    // Marked
     var renderer = new marked.Renderer();
     marked.setOptions({
         renderer: renderer,
@@ -356,28 +366,43 @@ all repeat</textarea>
         document.getElementById("mySidenav").style.width = "0";
     }
 
+    /**
+     * Code Mirror Setup
+     */
+
     var grammar_cm = CodeMirror.fromTextArea(document.getElementById("grammar"), {
         mode: "pegjs",
-        //Darkmode
+        // Darkmode
         theme: "darcula",
         lineWrapping: true,
         lineNumbers: true,
         styleActiveLine: true,
-        matchBrackets: true
+        matchBrackets: true,
+        styleActiveSelected: true,
+        continueLineComment: true,
+        continueComments: "Enter",
+        extraKeys: {
+            "Ctrl-/": "toggleComment",
+            "Cmd-/": "toggleComment"
+        }
+
     });
 
     var input_cm = CodeMirror.fromTextArea(document.getElementById("input"), {
         mode: "pegjs",
         lineNumbers: true,
         lineWrapping: true,
-        //Darkmode
+        styleActiveLine: true,
+        matchBrackets: true,
+        styleActiveSelected: true,
+        // Darkmode
         theme: "darcula",
         colorpicker: {
             mode: 'edit',
             colorSets: [
-                { name : 'My Colors', colors : [ 'red', 'blue', 'white' ] },
-                { name : 'Scale Colors', scale: ['red', 'yellow', 'black'], count : 5  },
-                { name : 'Input Colors', edit: true  },
+                {name: 'My Colors', colors: ['red', 'blue', 'white']},
+                {name: 'Scale Colors', scale: ['red', 'yellow', 'black'], count: 5},
+                {name: 'Input Colors', edit: true},
             ]
         },
         extraKeys: {
@@ -433,6 +458,9 @@ all repeat</textarea>
         }
     });
 
+    /**
+     * Live Code Mode
+     */
     function liveCodeMode() {
         $("#drawing").toggleClass("live-code-I");
         $('body > :not(#drawing)').hide(); //hide all nodes directly under the body
@@ -449,6 +477,9 @@ all repeat</textarea>
         })
     }
 
+    /**
+     * Markdown Editor
+     */
     var markdown_cm = CodeMirror.fromTextArea(document.getElementById("markdown"), {
         mode: "gfm",
         lineNumbers: true,
@@ -461,10 +492,10 @@ all repeat</textarea>
         document.getElementById('markdown_render').innerHTML = marked(cm.getValue());
     });
 
+    /**
+     * Slider setup
+     */
     var htmlNode;
-
-    // var colorNode;
-
     function getCursor() {
         console.log(input_cm.getCursor());
 
@@ -508,8 +539,10 @@ all repeat</textarea>
     }
 
 
+    /**
+     * PEG
+     */
     function makeParser(del) {
-
         if (del !== true) {
             if (htmlNode) {
                 htmlNode.parentNode.removeChild(htmlNode);
