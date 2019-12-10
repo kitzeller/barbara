@@ -147,7 +147,7 @@ term "term" = body:(word / sentence) _ { return body; }
 sentence = "{" expr:regular* "}" { return expr.join("") } / regular
 regular = [^{}]+ { return text(); }
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / style / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / attr / order / define / get / parent / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_color / animate_filter / animate / add / mult / subtract / divide / modulo / floor / clear / $[^{} \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / style / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / attr / order / define / get / parent / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_color / animate_filter / animate / add / mult / subtract / divide / modulo / floor / clear / pulse / now / sine / $[^{} \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -205,6 +205,10 @@ animate = "animate" { return "@animate"; }
 animate_color = "animate-color" { return "@animate-color"; }
 animate_filter = "animate-filter" { return "@animate-filter"; }
 
+pulse = "pulse" {return "@pulse"}
+now = "now" {return Date.now()}
+sine = "sine" {return Math.sin(Date.now())}
+
 floor = "floor" { return "@floor"; }
 add = "+" { return "@+"; }
 mult = "*" { return "@*"; }
@@ -247,6 +251,8 @@ all repeat</textarea>
             <div id="drawing"></div>
         </div>
     </div>
+
+    <hr>
 
     <h2>Information</h2>
     <div class="row">
@@ -553,12 +559,12 @@ all repeat</textarea>
         let grammer = grammar_cm.getValue();
         var parser = peg.generate(grammer);
         let input = input_cm.getValue().trim();
-        console.log(input);
+        // console.log(input);
 
         // TODO: Check error checking?
         try {
             let res = parser.parse(input);
-            console.log(res);
+            // console.log(res);
             $("#output").val(JSON.stringify(res));
         } catch (ex) {
             console.log(ex.message);
@@ -568,6 +574,10 @@ all repeat</textarea>
 
     function start() {
         let val = $("#output").val();
+
+        if (val === "Expected start but end of input found."){
+            return;
+        }
 
         if (!val) {
             alert("Please parse first!");

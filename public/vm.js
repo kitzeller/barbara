@@ -13,6 +13,8 @@ var WIDTH = 800;
 var HEIGHT = 800;
 var draw;
 
+var pulser;
+
 // this is where the externally triggered events are buffered to synchronize them to beats
 var cq = {
     cmds: []
@@ -56,7 +58,7 @@ window.seq.define = function (name, score, dom_id) {
     draw.viewbox(0, 0, 800, 800);
     $("#sliders").empty();
 
-    console.log("Creating " + typeof name + " " + Array.isArray(score));
+    // console.log("Creating " + typeof name + " " + Array.isArray(score));
 
     // Clear the SVG
     draw.clear();
@@ -80,13 +82,15 @@ function PQ(score, name) {
     if (score) {
         this.fork(score, this);
     }
+
+    instances[this.name] = this; // auto-connect()?
 };
 
 var svgInstances = [];
-
+var instances = {};
 
 PQ.prototype.connect = function () {
-    console.log("connecting...");
+    // console.log("connecting...");
     svgInstances.push(this);
     return this;
 };
@@ -101,8 +105,10 @@ PQ.prototype.tick = function () {
 };
 
 PQ.prototype.fork = function (score, parentQ) {
+    // console.log("Forking")
     var q = new Q(score, this.name, parentQ);
     this.push(q);
+    // svgInstances.push(this);
 };
 
 // PQ is always sorted on insertion
@@ -125,11 +131,8 @@ PQ.prototype.at = function () {
 
 // how to play the pq in a sample callback:
 PQ.prototype.resume = function (t) {
-    console.log("RESUME!");
-
+    // console.log("RESUME PQ");
     var q = this.heap.pop();
-    console.log(q);
-    //console.log("PQ.tick", q, this.t, q.at);
     if (q.resume(t)) {
         this.push(q);	// re-schedule it
     }
@@ -453,7 +456,7 @@ Q.prototype.step = function () {
                             let id = filter_type.match(/url\(#(.*)\)/i)[1];
                             // If the filter hasn't been used yet
                             if (!draw.defs().node.innerHTML.includes(id)) {
-                                console.log(filters);
+                                // console.log(filters);
                                 if (filters.hasOwnProperty(id)) {
                                     draw.defs().add(filters[id]);
                                 }
@@ -639,7 +642,6 @@ Q.prototype.step = function () {
                         }
                         let degree = this.stack.pop();
                         let elem_rotate = this.vars.pop();
-
                         elem_rotate.rotate(degree, rot_x, rot_y);
 
                         this.vars.push(elem_rotate);
@@ -652,7 +654,7 @@ Q.prototype.step = function () {
                         const x = r * Math.cos(theta);
                         const y = r * Math.sin(theta);
 
-                        console.log(x, y);
+                        // console.log(x, y);
 
                         this.stack.push(x);
                         this.stack.push(y);
@@ -816,8 +818,7 @@ Q.prototype.step = function () {
                         }
 
                         // console.log(elem_animate.transform())
-
-                        console.log(a_style);
+                        // console.log(a_style);
                         if (ani_loop === "true") {
                             elem_animate.animate(a_duration, a_delay, 'now').transform(a_style).loop();
                         } else {
@@ -921,7 +922,7 @@ Q.prototype.step = function () {
 
                     case "@duplicate":
                         let to_clone = this.vars.pop();
-                        console.log(to_clone);
+                        // console.log(to_clone);
                         let clone_v = to_clone.clone();
                         draw.add(clone_v);
                         this.vars.push(clone_v);
@@ -1002,7 +1003,7 @@ Q.prototype.step = function () {
                         let var_name = this.stack.pop();
 
                         let the_uid = uid();
-                        console.log(the_uid);
+                        // console.log(the_uid);
                         $("#sliders").append("<h3>" + var_name + " - " + slider_type + "</h3>")
                         $("#sliders").append("<input type = \"range\" min=\"" + min_val + "\" max=\"" + max_val + "\" value=\"0\" step=\"1\" id=\"" + the_uid + "\"/>")
                         const that = this;
@@ -1013,7 +1014,7 @@ Q.prototype.step = function () {
                                     that.context[var_name].rotate($(this).val() - current_rotation);
                                     break;
                                 case "sizingxy":
-                                    console.log($(this).val());
+                                    // console.log($(this).val());
                                     that.context[var_name].size($(this).val() / 100 * WIDTH, $(this).val() / 100 * HEIGHT);
                                     break;
                             }
@@ -1067,6 +1068,34 @@ Q.prototype.step = function () {
                         this.stack.push(v1_minus - v2_minus);
                         break;
 
+                    case "@pulse":
+                        let pulse_time = this.stack.pop();
+                        // console.log(this)
+                        // var sq = instances[this.pq];
+                        // if (sq) {
+                        //     sq.fork(this.todo, this.t, this);
+                        // }
+                        // const _that = this;
+                        if (pulser) {
+                            clearInterval(pulser);
+                        }
+                        pulser = setInterval(function () {
+                            // instances[_that.pq].fork(_that.score,_that.parentQ);
+                            // _that.push(todoleft);
+                            // console.log(_that);
+                            // instances[_that.pq].push(_that);
+                            // console.log(instances[_that.pq]);
+                            // svgInstances.push(instances[_that.pq]);
+                            makeParser();
+                            start();
+                        }, parseInt(pulse_time));
+                        break;
+
+                    case "@time":
+                        // todo: maybe not necessary if grammar can use Date.now()?
+                        this.stack.push(Date.now());
+                        break;
+
                     default:
                         // look up a dynamic rule?
                         var cmd = window.seq.commands[op];
@@ -1112,6 +1141,12 @@ Q.prototype.step = function () {
 };
 
 Q.prototype.resume = function (t) {
+    // console.log("Q RESUME")
+    // console.log(this.todo);
+    if (pulser) {
+        clearInterval(pulser);
+    }
+
     while (this.todo.length) {
         this.step();
     }
@@ -1120,12 +1155,15 @@ Q.prototype.resume = function (t) {
 };
 
 
-// Basic Scheduler!!!!
+/**
+ * Basic scheduler
+ * @param timestamp
+ */
 function step(timestamp) {
     let nextEvent = svgInstances.pop();
     if (nextEvent !== undefined) {
-        console.log("Stepping!");
-        console.log(nextEvent);
+        // console.log("Stepping!");
+        // console.log(nextEvent);
         nextEvent.tick()
     }
     window.requestAnimationFrame(step);
