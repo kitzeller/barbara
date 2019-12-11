@@ -147,7 +147,7 @@ term "term" = body:(word / sentence) _ { return body; }
 sentence = "{" expr:regular* "}" { return expr.join("") } / regular
 regular = [^{}]+ { return text(); }
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / style / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / attr / order / define / get / parent / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / translate / animate_color / animate_filter / animate / add / mult / subtract / divide / modulo / floor / clear / pulse / now / sine / $[^{} \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / style / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / attr / order / define / get / parent / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / stack / translate / animate_color / animate_filter / animate / add / mult / subtract / divide / modulo / floor / clear / pulse / now / sine / $[^{} \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -182,6 +182,7 @@ size = "size" { return "@size"; }
 scale = "scale" { return "@scale"; }
 skew = "skew" { return "@skew"; }
 attr = "attr" { return "@attr"; }
+stack = "stack" { return "@stack";}
 
 end_loop = "end-loop" { return "@end-loop"; }
 loop = "loop" { return "@loop"; }

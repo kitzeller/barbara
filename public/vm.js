@@ -446,6 +446,7 @@ Q.prototype.step = function () {
                         break;
 
                     case "@filter":
+                        // todo: optional mix-blend-mode param?
                         // https://github.com/svgdotjs/svg.filter.js
 
                         let filter_elem = this.vars.pop();
@@ -718,6 +719,40 @@ Q.prototype.step = function () {
 
                         this.vars.push(group);
 
+                        break;
+
+                    case "@stack":
+                        var elem_stack = this.vars.pop();
+                        let dir_stack = this.stack.pop();
+
+                        let stack_group = draw.group();
+                        stack_group.add(elem_stack);
+                        let totalSize = elem_stack.x() + elem_stack.width();
+
+                        if (dir_stack === 'v'){
+                            // vertical stack
+                            while (totalSize <= 800){
+                                totalSize += elem_stack.height();
+                                elem_stack = elem_stack.clone().translate(0,elem_stack.height());
+                                stack_group.add(elem_stack);
+                            }
+                        } else if (dir_stack === 'h') {
+                            // horizontal stack
+                            while (totalSize <= 800){
+                                totalSize += elem_stack.width();
+                                elem_stack = elem_stack.clone().translate(elem_stack.width(),0);
+                                stack_group.add(elem_stack);
+                            }
+                        } else if (dir_stack === 'd') {
+                            while (totalSize <= 1131.3708499){
+                                // Pythagorium
+                                totalSize += Math.sqrt((elem_stack.width() * elem_stack.width()) + (elem_stack.height() * elem_stack.height()))
+                                elem_stack = elem_stack.clone().translate(elem_stack.width(),elem_stack.height());
+                                stack_group.add(elem_stack);
+                            }
+                        }
+
+                        this.vars.push(stack_group);
                         break;
 
                     case "@order":
