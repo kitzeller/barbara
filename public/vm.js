@@ -716,9 +716,9 @@ Q.prototype.step = function () {
                             this.todo.splice(end_loop_ind, 0, ...original_todo);
                             // console.log("todo ", this.todo);
 
-                            let ind = this.todo.lastIndexOf("@index")
+                            let ind = this.todo.lastIndexOf("@index");
                             while (this.todo.includes("@index") && ind > end_loop_ind) {
-                                ind = this.todo.lastIndexOf("@index")
+                                ind = this.todo.lastIndexOf("@index");
                                 if (ind < end_loop_ind) {
                                     break;
                                 }
@@ -1156,6 +1156,11 @@ Q.prototype.step = function () {
                                 }
                             }
                         }, parseInt(pulse_time));
+                        break;
+
+                    case "@ignore":
+                        this.stack = [];
+                        this.todo = [];
                         break;
 
                     case "@time":
