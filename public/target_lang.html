@@ -229,6 +229,24 @@ Filters
 "0","0","100","100","@rect","red","@color","mix-blend-mode","difference","@style"]
 ```
 
+## Generative Art
+
+Pixels!
+```javascript
+["10","false","@pulse","0","0","5","5","@rect","@random-theme","@color","@random-number",
+"20","@%","5","@*","@random-number","20","@%","5","@*","@move"]
+```
+
+Sine Wave
+```javascript
+["100","true","@pulse",
+"20","@loop","0","45","5","@circle",
+"@index","5","@*","@index","3","@/","@time","1000","@/","@+","@sin","9","@*","@move",
+"white","@color","@end-loop",
+"@all","50","50","@center",
+"0","0","100","100","@rect","back","@order"]
+```
+
 ---
 
 ## Reference
@@ -366,7 +384,8 @@ Kit Zellerbach & Prof. Charlie Roberts
 
     $(".btn-clear").each(function() {
         $(this).click(function() {
-            $(this).next().next( ".res" ).empty()
+            window.seq.clear_element_text(this);
+            // $(this).next().next( ".res" ).empty()
         });
     });
 

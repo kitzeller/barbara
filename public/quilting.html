@@ -789,7 +789,7 @@ Kit Zellerbach & Prof. Charlie Roberts
                 // window.seq.clear();
                 console.log($(element).next().next().next()[0]);
                 let id = "#" + $(element).next().next().next()[0].id;
-                window.seq.define("default", output, id);
+                window.seq.define("default", output, id, true);
             }
         } catch(ex) {
             //console.log(ex.message);

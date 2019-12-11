@@ -573,7 +573,8 @@ all repeat</textarea>
         }
     }
 
-    function start() {
+    function start(clear) {
+        if (clear === undefined) clear = true;
         let val = $("#output").val();
 
         if (val === "Expected start but end of input found."){
@@ -585,7 +586,7 @@ all repeat</textarea>
             return;
         }
         val = eval(val);
-        window.seq.define("default", val, "#drawing");
+        window.seq.define("default", val, "#drawing", clear);
     }
 
     /**

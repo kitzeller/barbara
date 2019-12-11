@@ -31,7 +31,15 @@ uid = (function () {
 
 window.seq.play_element_text = function (element) {
     let id = "#" + $(element).parent().next(".res")[0].id;
-    window.seq.define(uid(), JSON.parse(element.innerText), id);
+    window.seq.define(uid(), JSON.parse(element.innerText), id, true);
+};
+
+window.seq.clear_element_text = function (element) {
+    $(element).next().next( ".res" ).empty()
+    // todo: make pulser PQ specific?
+    if (pulser) {
+        clearInterval(pulser);
+    }
 };
 
 cq.tick = function (t) {
@@ -52,32 +60,40 @@ window.seq.addCommand = function (name, impl) {
 
 // define a svg instance.
 // if name didn't exist, create a new one.
-window.seq.define = function (name, score, dom_id) {
-    $(dom_id).empty();
-    draw = SVG().addTo(dom_id).size(WIDTH, HEIGHT);
-    draw.viewbox(0, 0, 800, 800);
-    $("#sliders").empty();
+window.seq.define = function (name, score, dom_id, clear) {
+    if (clear) {
+        $(dom_id).empty();
+        draw = SVG().addTo(dom_id).size(WIDTH, HEIGHT);
+        draw.viewbox(0, 0, 800, 800);
+        $("#sliders").empty();
+    }
+
+    // todo: check
+    if (pulser) {
+        clearInterval(pulser);
+    }
 
     // console.log("Creating " + typeof name + " " + Array.isArray(score));
 
     // Clear the SVG
-    draw.clear();
+    if (clear) draw.clear();
 
     // sync this:
     cq.cmds.push(function () {
         // create it:
-        return new PQ(score, name).connect();
+        return new PQ(score, name, dom_id).connect();
     });
 
-    return new PQ(score, name).connect();
+    return new PQ(score, name, dom_id).connect();
 };
 
 // we could also call this an agent, or player, or scheduler, etc.
 // it can contain multiple command queues (type Q), and executes them in an interleaved way
 // to ensure proper timing -- a bit like coroutines.
-function PQ(score, name) {
+function PQ(score, name, dom) {
     this.heap = []; // the list of active command queues (next to resume is at the top)
     this.name = name || "default";
+    this.dom = dom;
 
     if (score) {
         this.fork(score, this);
@@ -296,6 +312,16 @@ Q.prototype.step = function () {
                         let polygon = this.stack.pop();
                         var p = draw.polygon(polygon);
                         this.vars.push(p);
+
+                        break;
+
+                    case "@polyline":
+                        let poly_lines = [];
+                        while (this.stack.length > 0){
+                            poly_lines.unshift(this.stack.pop()/100 * WIDTH)
+                        }
+                        var pline = draw.polyline(poly_lines).fill('none');
+                        this.vars.push(pline);
 
                         break;
 
@@ -729,25 +755,25 @@ Q.prototype.step = function () {
                         stack_group.add(elem_stack);
                         let totalSize = elem_stack.x() + elem_stack.width();
 
-                        if (dir_stack === 'v'){
+                        if (dir_stack === 'v') {
                             // vertical stack
-                            while (totalSize <= 800){
+                            while (totalSize <= 800) {
                                 totalSize += elem_stack.height();
-                                elem_stack = elem_stack.clone().translate(0,elem_stack.height());
+                                elem_stack = elem_stack.clone().translate(0, elem_stack.height());
                                 stack_group.add(elem_stack);
                             }
                         } else if (dir_stack === 'h') {
                             // horizontal stack
-                            while (totalSize <= 800){
+                            while (totalSize <= 800) {
                                 totalSize += elem_stack.width();
-                                elem_stack = elem_stack.clone().translate(elem_stack.width(),0);
+                                elem_stack = elem_stack.clone().translate(elem_stack.width(), 0);
                                 stack_group.add(elem_stack);
                             }
                         } else if (dir_stack === 'd') {
-                            while (totalSize <= 1131.3708499){
+                            while (totalSize <= 1131.3708499) {
                                 // Pythagorium
                                 totalSize += Math.sqrt((elem_stack.width() * elem_stack.width()) + (elem_stack.height() * elem_stack.height()))
-                                elem_stack = elem_stack.clone().translate(elem_stack.width(),elem_stack.height());
+                                elem_stack = elem_stack.clone().translate(elem_stack.width(), elem_stack.height());
                                 stack_group.add(elem_stack);
                             }
                         }
@@ -1103,26 +1129,32 @@ Q.prototype.step = function () {
                         this.stack.push(v1_minus - v2_minus);
                         break;
 
+                    case "@sin":
+                        this.stack.push(Math.sin(this.stack.pop()));
+                        break;
+
                     case "@pulse":
+                        let pulse_clear = this.stack.pop();
                         let pulse_time = this.stack.pop();
-                        // console.log(this)
-                        // var sq = instances[this.pq];
-                        // if (sq) {
-                        //     sq.fork(this.todo, this.t, this);
-                        // }
-                        // const _that = this;
+                        const _that = this;
                         if (pulser) {
                             clearInterval(pulser);
                         }
                         pulser = setInterval(function () {
-                            // instances[_that.pq].fork(_that.score,_that.parentQ);
-                            // _that.push(todoleft);
-                            // console.log(_that);
-                            // instances[_that.pq].push(_that);
-                            // console.log(instances[_that.pq]);
-                            // svgInstances.push(instances[_that.pq]);
-                            makeParser();
-                            start();
+                            if (typeof makeParser != "undefined"){
+                                makeParser();
+                                if (pulse_clear === "false"){
+                                    start(false);
+                                } else {
+                                    start();
+                                }
+                            } else {
+                                if (pulse_clear === "false"){
+                                    window.seq.define(_that.parentQ.name, _that.score, _that.parentQ.dom, false);
+                                } else {
+                                    window.seq.define(_that.parentQ.name, _that.score, _that.parentQ.dom, true);
+                                }
+                            }
                         }, parseInt(pulse_time));
                         break;
 
@@ -1185,7 +1217,7 @@ Q.prototype.resume = function (t) {
     while (this.todo.length) {
         this.step();
     }
-    window.svg = draw.svg(false);
+    window.svg = draw.svg();
     return this.todo.length > 0; // returns false if Q has no more events
 };
 

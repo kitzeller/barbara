@@ -45,7 +45,14 @@ var filters = {
         "        <feDiffuseLighting in='noise' lighting-color='white' surfaceScale='2'>\n" +
         "            <feDistantLight azimuth='45' elevation='60' />\n" +
         "</feDiffuseLighting>\n" +
+        "</filter>",
+    "neon_glow": "<filter id=\"neon_glow\" x=\"-50%\" y=\"-50%\" width=\"200%\" height=\"200%\" filterUnits=\"userSpaceOnUse\">\n" +
+        "      <feGaussianBlur in=\"SourceGraphic\" stdDeviation=\"10\" />\n" +
+        "    </filter>",
+    "neon_blur": "<filter id=\"neon_blur\" x=\"-50%\" y=\"-50%\" width=\"200%\" height=\"200%\" filterUnits=\"userSpaceOnUse\">\n" +
+        "<feGaussianBlur in=\"SourceGraphic\" stdDeviation=\"1\" />\n" +
         "</filter>"
 };
 
 window.filters = filters;
+
