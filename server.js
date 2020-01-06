@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const responseTime = require('response-time');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
+var bcrypt = require('bcrypt');
 dotenv.config();
 
 // Mongo
@@ -67,12 +68,12 @@ passport.use('login', new LocalStrategy(
                     return done(null, false, {message: 'No user found'});
                 }
 
-                if (password !== user.password) {
-                    return done(null, false, {message: 'Invalid username & password.'});
-                }
-
-                // User and password both match, return user from done method
-                return done(null, user);
+                user.comparePassword(password, (error, isMatch) => {
+                    if (!isMatch) {
+                        return done(null, false, {message: 'Invalid username & password.'});
+                    }
+                    return done(null, user);
+                });
             }
         );
     }
