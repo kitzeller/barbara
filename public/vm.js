@@ -676,15 +676,21 @@ Q.prototype.step = function () {
 
                     case "@polar":
                         let theta = parseInt(this.stack.pop());
-                        let r = parseInt(this.stack.pop()) / 100 * WIDTH / 2;
+                        // let r = parseInt(this.stack.pop()) / 100 * WIDTH / 2;
+                        let r = parseInt(this.stack.pop());
 
+                        theta = (theta * Math.PI)/180;
                         const x = r * Math.cos(theta);
                         const y = r * Math.sin(theta);
 
-                        // console.log(x, y);
-
                         this.stack.push(x);
                         this.stack.push(y);
+
+                        break;
+
+                    case "@radians":
+                        let degrees = this.stack.pop();
+                        this.stack.push((degrees * Math.PI)/180);
 
                         break;
 
