@@ -1,9 +1,12 @@
-# graphics-virtual-machine
-WPI ISP creating a virtual machine for live coding visuals
+# Barbara
+
+Barbara was created for a WPI Independent Study Project. It is a virtual machine that can be used to create languages for live coding visuals.
+
+Barbara can also be used to digitally recreate quilts.
 
 ![NewBarbara](img/new_homepage.png)
 
-![Barbara](img/home_page.png)
+![Editor](img/editor.png)
 
 ## Resources
 
