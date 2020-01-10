@@ -250,13 +250,14 @@ app.post('/savesession',
  */
 app.get('/sessions',
     function (req, res) {
-        Session.find({}, {svg: 1, _id: 1, name: 1}, function (err, data) {
-            data.map(function(item) {
+        Session.find({}, {_id: 1, svg: 1, name: 1}, function (err, data) {
+            data.map(function (item) {
                 item.children = undefined;
                 return item;
             });
             res.send(data);
-        })
+            // 15 most recent
+        }).sort({_id: -1}).limit(15);
     });
 
 // Session by session id

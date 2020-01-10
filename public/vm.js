@@ -73,8 +73,6 @@ window.seq.define = function (name, score, dom_id, clear) {
         clearInterval(pulser);
     }
 
-    // console.log("Creating " + typeof name + " " + Array.isArray(score));
-
     // Clear the SVG
     if (clear) draw.clear();
 
@@ -106,7 +104,7 @@ var svgInstances = [];
 var instances = {};
 
 PQ.prototype.connect = function () {
-    // console.log("connecting...");
+    console.log("connecting...");
     svgInstances.push(this);
     return this;
 };
@@ -121,7 +119,7 @@ PQ.prototype.tick = function () {
 };
 
 PQ.prototype.fork = function (score, parentQ) {
-    // console.log("Forking")
+    console.log("forking...")
     var q = new Q(score, this.name, parentQ);
     this.push(q);
     // svgInstances.push(this);
@@ -147,7 +145,6 @@ PQ.prototype.at = function () {
 
 // how to play the pq in a sample callback:
 PQ.prototype.resume = function (t) {
-    // console.log("RESUME PQ");
     var q = this.heap.pop();
     if (q.resume(t)) {
         this.push(q);	// re-schedule it
@@ -215,8 +212,6 @@ Q.prototype.step = function () {
                         if (svg_string.includes('$')) {
                             let result = svg_string.split('$')[1];
                             svg_string = window.savedSessions[result].svg;
-                            // console.log(result)
-                            // console.log(svg_string);
                         }
 
                         let svg_group = draw.group();
@@ -276,7 +271,6 @@ Q.prototype.step = function () {
                         break;
 
                     case "@circle":  // [x, y, r, @circle]
-                        //let cc = this.stack.pop();
 
                         // TODO: Abstract "default" values
                         if (this.stack.length < 1) {
@@ -483,7 +477,6 @@ Q.prototype.step = function () {
                             let id = filter_type.match(/url\(#(.*)\)/i)[1];
                             // If the filter hasn't been used yet
                             if (!draw.defs().node.innerHTML.includes(id)) {
-                                // console.log(filters);
                                 if (filters.hasOwnProperty(id)) {
                                     draw.defs().add(filters[id]);
                                 }
@@ -720,7 +713,6 @@ Q.prototype.step = function () {
 
                         for (let i = 1; i < loop_num; i++) {
                             this.todo.splice(end_loop_ind, 0, ...original_todo);
-                            // console.log("todo ", this.todo);
 
                             let ind = this.todo.lastIndexOf("@index");
                             while (this.todo.includes("@index") && ind > end_loop_ind) {
@@ -819,7 +811,6 @@ Q.prototype.step = function () {
                         let ani_loop_r = this.stack.pop(); // loop boolean
                         let ani_time_r = this.stack.pop(); // animation time
                         ani_time_r = parseInt(ani_time_r);
-                        //console.log(parseInt((ani_time_r)))
 
                         let ani_degree = this.stack.pop(); // rotation degree
 
@@ -884,8 +875,6 @@ Q.prototype.step = function () {
                             a_style[a_key] = a_val;
                         }
 
-                        // console.log(elem_animate.transform())
-                        // console.log(a_style);
                         if (ani_loop === "true") {
                             elem_animate.animate(a_duration, a_delay, 'now').transform(a_style).loop();
                         } else {
@@ -989,7 +978,6 @@ Q.prototype.step = function () {
 
                     case "@duplicate":
                         let to_clone = this.vars.pop();
-                        // console.log(to_clone);
                         let clone_v = to_clone.clone();
                         draw.add(clone_v);
                         this.vars.push(clone_v);
@@ -1054,8 +1042,6 @@ Q.prototype.step = function () {
                         let elem_set_val = this.stack.pop();
                         let elem_set_key = this.stack.pop();
 
-                        console.log(elem_set_key, elem_set_val);
-
                         elem_set.attr(elem_set_key, elem_set_val);
                         this.vars.push(elem_set);
                         break;
@@ -1086,7 +1072,6 @@ Q.prototype.step = function () {
                         let var_name = this.stack.pop();
 
                         let the_uid = uid();
-                        // console.log(the_uid);
                         $("#sliders").append("<h3>" + var_name + " - " + slider_type + "</h3>")
                         $("#sliders").append("<input type = \"range\" min=\"" + min_val + "\" max=\"" + max_val + "\" value=\"0\" step=\"1\" id=\"" + the_uid + "\"/>")
                         const that = this;
@@ -1097,7 +1082,6 @@ Q.prototype.step = function () {
                                     that.context[var_name].rotate($(this).val() - current_rotation);
                                     break;
                                 case "sizingxy":
-                                    // console.log($(this).val());
                                     that.context[var_name].size($(this).val() / 100 * WIDTH, $(this).val() / 100 * HEIGHT);
                                     break;
                             }
@@ -1193,7 +1177,6 @@ Q.prototype.step = function () {
                     default:
                         // look up a dynamic rule?
                         var cmd = window.seq.commands[op];
-                        //console.log("cmd", op, cmd);
                         if (cmd && typeof (cmd) == "function") {
                             try {
                                 cmd(this);
@@ -1235,8 +1218,6 @@ Q.prototype.step = function () {
 };
 
 Q.prototype.resume = function (t) {
-    // console.log("Q RESUME")
-    // console.log(this.todo);
     if (pulser) {
         clearInterval(pulser);
     }
@@ -1256,8 +1237,6 @@ Q.prototype.resume = function (t) {
 function step(timestamp) {
     let nextEvent = svgInstances.pop();
     if (nextEvent !== undefined) {
-        // console.log("Stepping!");
-        // console.log(nextEvent);
         nextEvent.tick()
     }
     window.requestAnimationFrame(step);
