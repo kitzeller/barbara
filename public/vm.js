@@ -35,7 +35,7 @@ window.seq.play_element_text = function (element) {
 };
 
 window.seq.clear_element_text = function (element) {
-    $(element).next().next( ".res" ).empty()
+    $(element).next().next(".res").empty()
     // todo: make pulser PQ specific?
     if (pulser) {
         clearInterval(pulser);
@@ -317,8 +317,8 @@ Q.prototype.step = function () {
 
                     case "@polyline":
                         let poly_lines = [];
-                        while (this.stack.length > 0){
-                            poly_lines.unshift(this.stack.pop()/100 * WIDTH)
+                        while (this.stack.length > 0) {
+                            poly_lines.unshift(this.stack.pop() / 100 * WIDTH)
                         }
                         var pline = draw.polyline(poly_lines).fill('none');
                         this.vars.push(pline);
@@ -679,7 +679,7 @@ Q.prototype.step = function () {
                         // let r = parseInt(this.stack.pop()) / 100 * WIDTH / 2;
                         let r = parseInt(this.stack.pop());
 
-                        theta = (theta * Math.PI)/180;
+                        theta = (theta * Math.PI) / 180;
                         const x = r * Math.cos(theta);
                         const y = r * Math.sin(theta);
 
@@ -690,7 +690,7 @@ Q.prototype.step = function () {
 
                     case "@radians":
                         let degrees = this.stack.pop();
-                        this.stack.push((degrees * Math.PI)/180);
+                        this.stack.push((degrees * Math.PI) / 180);
 
                         break;
 
@@ -1029,13 +1029,13 @@ Q.prototype.step = function () {
                         break;
 
                     case "@parent":
-                        // TODO: Test this
                         let child = this.vars.pop();
                         this.vars.push(child.parent());
                         break;
 
                     case "@attr":
                         // TODO: Test this, and figure out how to work for all element types...
+                        // TODO: Replace this
                         let e_attr = this.vars.pop();
                         let t_attr = this.stack.pop();
 
@@ -1047,6 +1047,22 @@ Q.prototype.step = function () {
                                 break;
                         }
                         this.vars.push(e_attr);
+                        break;
+
+                    case "@set-attr":
+                        let elem_set = this.vars.pop();
+                        let elem_set_val = this.stack.pop();
+                        let elem_set_key = this.stack.pop();
+
+                        console.log(elem_set_key, elem_set_val);
+
+                        elem_set.attr(elem_set_key, elem_set_val);
+                        this.vars.push(elem_set);
+                        break;
+
+                    case "@get-attr":
+                        // TODO
+
                         break;
 
                     case "@clear":
@@ -1147,15 +1163,15 @@ Q.prototype.step = function () {
                             clearInterval(pulser);
                         }
                         pulser = setInterval(function () {
-                            if (typeof makeParser != "undefined"){
+                            if (typeof makeParser != "undefined") {
                                 makeParser();
-                                if (pulse_clear === "false"){
+                                if (pulse_clear === "false") {
                                     start(false);
                                 } else {
                                     start();
                                 }
                             } else {
-                                if (pulse_clear === "false"){
+                                if (pulse_clear === "false") {
                                     window.seq.define(_that.parentQ.name, _that.score, _that.parentQ.dom, false);
                                 } else {
                                     window.seq.define(_that.parentQ.name, _that.score, _that.parentQ.dom, true);
