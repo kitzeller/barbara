@@ -11,7 +11,15 @@ const responseTime = require('response-time');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
 var bcrypt = require('bcrypt');
+var Twitter = require('twitter');
 dotenv.config();
+
+var client = new Twitter({
+    consumer_key: process.env.CONSUMER_KEY,
+    consumer_secret: process.env.CONSUMER_SECRET,
+    access_token_key: process.env.ACCESS_KEY,
+    access_token_secret: process.env.ACCESS_SECRET
+});
 
 // Mongo
 var mongoose = require('mongoose');
@@ -186,6 +194,34 @@ app.get('/logout',
     });
 
 /**
+ * Twitter
+ */
+
+app.post('/tweet',
+    function (req, res) {
+        let val = req.body.img.split(",");
+        client.post("media/upload", {media_data: val[1]}, function(error, media, response) {
+            if (error) {
+                console.log(error)
+            } else {
+                const status = {
+                    status: "A new pattern by " + req.body.name + " at http://barbara-vm.herokuapp.com/editor?id=" + req.body.id,
+                    media_ids: media.media_id_string
+                };
+
+                client.post("statuses/update", status, function(error, tweet, response) {
+                    if (error) {
+                        console.log(error)
+                    } else {
+                        console.log("Successfully tweeted an image!")
+                    }
+                })
+            }
+        })
+    });
+
+
+/**
  * Save Session
  */
 // TODO: Save session if user assigned
@@ -210,12 +246,12 @@ app.post('/savesession',
                 User.findOne({_id: req.body.user}, function (err, data) {
                     data.sessions.push(session._id);
                     data.save(function (err) {
-                            res.status(200).json({status: "ok w/ user"});
+                            res.status(200).json({status: session._id});
                         }
                     )
                 });
             } else {
-                res.status(200).json({status: "just ok"});
+                res.status(200).json({status: session._id});
             }
         });
     });
@@ -257,6 +293,7 @@ app.get('/sessions',
             });
             res.send(data);
             // 15 most recent
+            // TODO: Add pagination (mongoose-paginate?)
         }).sort({_id: -1}).limit(15);
     });
 

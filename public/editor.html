@@ -243,6 +243,7 @@ all repeat
                 <br>
                 <button onclick="saveGrammar()">Save Grammar</button>
                 <button onclick="exportSVG()">Export Pattern</button>
+                <button onclick="tweet()">Share</button>
                 <!--                <button onclick="updateSVG()">Update Pattern</button>-->
             </div>
 
@@ -296,6 +297,9 @@ all repeat
 
 </div>
 
+<canvas id="converter"></canvas>
+
+
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="peg-0.10.0.js"></script>
 
@@ -311,6 +315,7 @@ all repeat
 <!-- CodeMirror Modes and Addons -->
 <script src="lib/codemirror.js"></script>
 <script src="lib/colorpicker/codemirror-colorpicker.js"></script>
+<script src="lib/mode/simple.js"></script>
 <script src="lib/mode/overlay.js"></script>
 <script src="lib/mode/markdown.js"></script>
 <script src="lib/mode/javascript.js"></script>
@@ -323,6 +328,7 @@ all repeat
 
 <script>
     // Get the modal
+    var exportID;
     var modal = document.getElementById("myModal");
     var btn = document.getElementById("myBtn");
     var span = document.getElementsByClassName("close")[0];
@@ -398,8 +404,58 @@ all repeat
 
     });
 
+    /* Example definition of a simple mode that understands a subset of
+    * JavaScript:
+    */
+
+    CodeMirror.defineSimpleMode("simplemode", {
+        // The start state contains the rules that are intially used
+        start: [
+            // The regex matches the token, the token property contains the type
+            {regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: "string"},
+            // You can match multiple tokens at once. Note that the captured
+            // groups must span the whole string in this case
+            {regex: /(function)(\s+)([a-z$][\w$]*)/,
+                token: ["keyword", null, "variable-2"]},
+            // Rules are matched in the order in which they appear, so there is
+            // no ambiguity between this one and the one above
+            {regex: /(?:function|var|return|if|for|while|else|do|this)\b/,
+                token: "keyword"},
+            {regex: /true|false|null|undefined/, token: "atom"},
+            {regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i,
+                token: "number"},
+            {regex: /\/\/.*/, token: "comment"},
+            {regex: /\/(?:[^\\]|\\.)*?\//, token: "variable-3"},
+            // A next property will cause the mode to move to a different state
+            {regex: /\/\*/, token: "comment", next: "comment"},
+            {regex: /[-+\/*=<>!]+/, token: "operator"},
+            // indent and dedent properties guide autoindentation
+            {regex: /[\{\[\(]/, indent: true},
+            {regex: /[\}\]\)]/, dedent: true},
+            {regex: /[a-z$][\w$]*/, token: "variable"},
+            // You can embed other modes with the mode property. This rule
+            // causes all code between << and >> to be highlighted with the XML
+            // mode.
+            {regex: /<</, token: "meta", mode: {spec: "xml", end: />>/}}
+        ],
+        // The multi-line comment state.
+        comment: [
+            {regex: /.*?\*\//, token: "comment", next: "start"},
+            {regex: /.*/, token: "comment"}
+        ],
+        // The meta property contains global information about the mode. It
+        // can contain properties like lineComment, which are supported by
+        // all modes, and also directives like dontIndentStates, which are
+        // specific to simple modes.
+        meta: {
+            dontIndentStates: ["comment"],
+            lineComment: "//"
+        }
+    });
+
+
     var input_cm = CodeMirror.fromTextArea(document.getElementById("input"), {
-        mode: "pegjs",
+        mode: "simplemode",
         lineNumbers: true,
         lineWrapping: true,
         styleActiveLine: true,
@@ -664,6 +720,9 @@ all repeat
                     name: response,
                     markdown: markdown_cm.getValue(),
                     parent: parentId
+                }).done(function(data) {
+                    console.log(data);
+                    exportID = data.status;
                 });
             }
         });
@@ -673,9 +732,65 @@ all repeat
         // TODO: Check if user is owner?
     }
 
+    function triggerDownload (imgURI) {
+        var evt = new MouseEvent('click', {
+            view: window,
+            bubbles: false,
+            cancelable: true
+        });
+
+        var a = document.createElement('a');
+        a.setAttribute('download', 'MY_COOL_IMAGE.png');
+        a.setAttribute('href', imgURI);
+        a.setAttribute('target', '_blank');
+
+        a.dispatchEvent(evt);
+    }
+
+    function tweet(){
+        if (!exportID) {
+            alert("Make sure you export first!");
+            return;
+        }
+
+        // Convert to PNG
+        var canvas = document.getElementById('converter');
+        canvas.height = 800;
+        canvas.width = 800;
+        var ctx = canvas.getContext('2d');
+        console.log(window.svg);
+        // var data = (new XMLSerializer()).serializeToString(window.svg);
+        var data = window.svg;
+        var DOMURL = window.URL || window.webkitURL || window;
+
+        var img = new Image();
+        var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+        var url = DOMURL.createObjectURL(svgBlob);
+
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0);
+            DOMURL.revokeObjectURL(url);
+
+            var imgURI = canvas
+                .toDataURL('image/png')
+                .replace('image/png', 'image/octet-stream');
+
+            console.log(exportID);
+            let name = prompt("What is your name?");
+            $.post("tweet", {
+                name: name,
+                id: exportID,
+                img: imgURI
+            });
+        };
+
+        img.src = url;
+    }
+
     if (window.location.search) {
         let res = parseQuery(window.location.search);
         console.log(res.id);
+        exportID = res.id;
 
         $.getJSON("sessions/" + res.id, function (data) {
             console.log(data);
@@ -683,6 +798,7 @@ all repeat
             grammar_cm.setValue(data.grammar);
             input_cm.setValue(data.input);
             markdown_cm.setValue(data.markdown);
+            makeParser();
             start();
         });
     } else if (window.localStorage.getItem('barbara-vm-grammar')) {
