@@ -846,7 +846,14 @@ all repeat
             markdown_cm.setValue(data.markdown);
             window.svg = data.svg;
 
-            document.getElementById('drawing').innerHTML = data.svg;
+            // backwards compatibility with older SVGs saved
+            if (!data.svg.startsWith("<svg")){
+                document.getElementById('drawing').innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:svgjs=\"http://svgjs.com/svgjs\" width=\"800\" height=\"800\" viewBox=\"0 0 800 800\">" + data.svg + "</svg>";
+            } else {
+                document.getElementById('drawing').innerHTML = data.svg;
+            }
+
+            // alternative to loading SVG directly
             // makeParser();
             // start();
         });
