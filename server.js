@@ -154,17 +154,40 @@ passport.deserializeUser(function (id, done) {
  */
 
 app.get('/',
-    // loggedIn,
     function (req, res) {
         console.log("/ called");
         res.sendFile(path.join(__dirname + '/public/intro.html'));
     });
 
 app.get('/editor',
-    // loggedIn,
     function (req, res) {
         res.sendFile(path.join(__dirname + '/public/editor.html'));
     });
+
+app.get('/target_lang',
+    function (req, res) {
+        res.sendFile(path.join(__dirname + '/public/target_lang.html'));
+    });
+
+app.get('/tutorial',
+    function (req, res) {
+        res.sendFile(path.join(__dirname + '/public/tutorial.html'));
+    });
+
+app.get('/quilting',
+    function (req, res) {
+        res.sendFile(path.join(__dirname + '/public/quilting.html'));
+    });
+
+app.get('/variants',
+    function (req, res) {
+        res.sendFile(path.join(__dirname + '/public/variants.html'));
+    });
+
+// app.get('/threejs',
+//     function (req, res) {
+//         res.sendFile(path.join(__dirname + '/public/3d/threejs.html'));
+//     });
 
 /**
  * Login & Sign-up
