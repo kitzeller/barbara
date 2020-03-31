@@ -200,7 +200,7 @@ app.get('/logout',
 app.post('/tweet',
     function (req, res) {
         let val = req.body.img.split(",");
-        client.post("media/upload", {media_data: val[1]}, function(error, media, response) {
+        client.post("media/upload", {media_data: val[1]}, function (error, media, response) {
             if (error) {
                 console.log(error)
             } else {
@@ -209,11 +209,14 @@ app.post('/tweet',
                     media_ids: media.media_id_string
                 };
 
-                client.post("statuses/update", status, function(error, tweet, response) {
+                client.post("statuses/update", status, function (error, tweet, response) {
                     if (error) {
                         console.log(error)
                     } else {
-                        console.log("Successfully tweeted an image!")
+                        console.log("Successfully tweeted an image!");
+
+                        // Return tweet id to give user tweet url
+                        res.status(200).json({id: tweet.id_str})
                     }
                 })
             }
@@ -240,12 +243,26 @@ app.post('/savesession',
         }
 
         session.save(function (err) {
-            if (err) return handleError(err);
+            if (err){
+                res.status(400);
+                throw err;
+            }
             console.log("saved session");
             if (req.body.user) {
                 User.findOne({_id: req.body.user}, function (err, data) {
+                    if (err) {
+                        console.log('Error: ' + err);
+                        res.status(400);
+                        throw err;
+                    }
+                    console.log(data);
                     data.sessions.push(session._id);
                     data.save(function (err) {
+                            if (err) {
+                                console.log('Error: ' + err);
+                                res.status(400);
+                                throw err;
+                            }
                             res.status(200).json(session);
                         }
                     )

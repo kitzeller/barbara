@@ -825,6 +825,9 @@ all repeat
                 name: name,
                 id: exportID,
                 img: imgURI
+            }).done(function (data) {
+                // TODO: Update this so it's not an alert
+               alert("Successfully created tweet at https://twitter.com/barbara_quilts/status/" + data.id)
             });
         };
 
