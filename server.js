@@ -246,12 +246,12 @@ app.post('/savesession',
                 User.findOne({_id: req.body.user}, function (err, data) {
                     data.sessions.push(session._id);
                     data.save(function (err) {
-                            res.status(200).json({status: session._id});
+                            res.status(200).json(session);
                         }
                     )
                 });
             } else {
-                res.status(200).json({status: session._id});
+                res.status(200).json(session);
             }
         });
     });

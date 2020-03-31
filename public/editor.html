@@ -719,6 +719,11 @@ all repeat
                     user: data.username._id,
                     markdown: markdown_cm.getValue(),
                     parentId: parentId
+                }).done(function (data) {
+                    // Some errors with this in the past, check later
+                    originalData = JSON.parse(JSON.stringify(data));
+                    console.log(data);
+                    exportID = data._id;
                 });
             } else {
                 $.post("savesession", {
@@ -730,8 +735,10 @@ all repeat
                     markdown: markdown_cm.getValue(),
                     parent: parentId
                 }).done(function (data) {
+                    // Some errors with this in the past, check later
+                    originalData = JSON.parse(JSON.stringify(data));
                     console.log(data);
-                    exportID = data.status;
+                    exportID = data._id;
                 });
             }
         });
@@ -764,7 +771,11 @@ all repeat
             // there is an id, check that there has been a change
             // TODO: Better fix
             if (window.svg) {
+                console.log(window.svg);
+                console.log(originalData.svg);
+                console.log(originalData);
                 if (window.svg !== originalData.svg){
+                    console.log("1")
                     alert("Change detected! Make sure you export first!");
                     return;
                 }
@@ -772,6 +783,7 @@ all repeat
 
             if (!(grammar_cm.getValue() === originalData.grammar && input_cm.getValue() === originalData.input && markdown_cm.getValue() === originalData.markdown
                 && $("#output").val() === originalData.output)) {
+                console.log("2")
                 alert("Change detected! Make sure you export first!");
                 return;
             }
