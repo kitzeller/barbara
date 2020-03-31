@@ -329,6 +329,8 @@ all repeat
 <script>
     // Get the modal
     var exportID;
+    var originalData;
+
     var modal = document.getElementById("myModal");
     var btn = document.getElementById("myBtn");
     var span = document.getElementsByClassName("close")[0];
@@ -415,15 +417,21 @@ all repeat
             {regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: "string"},
             // You can match multiple tokens at once. Note that the captured
             // groups must span the whole string in this case
-            {regex: /(function)(\s+)([a-z$][\w$]*)/,
-                token: ["keyword", null, "variable-2"]},
+            {
+                regex: /(function)(\s+)([a-z$][\w$]*)/,
+                token: ["keyword", null, "variable-2"]
+            },
             // Rules are matched in the order in which they appear, so there is
             // no ambiguity between this one and the one above
-            {regex: /(?:function|var|return|if|for|while|else|do|this)\b/,
-                token: "keyword"},
+            {
+                regex: /(?:function|var|return|if|for|while|else|do|this)\b/,
+                token: "keyword"
+            },
             {regex: /true|false|null|undefined/, token: "atom"},
-            {regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i,
-                token: "number"},
+            {
+                regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i,
+                token: "number"
+            },
             {regex: /\/\/.*/, token: "comment"},
             {regex: /\/(?:[^\\]|\\.)*?\//, token: "variable-3"},
             // A next property will cause the mode to move to a different state
@@ -562,6 +570,7 @@ all repeat
      * Slider setup
      */
     var htmlNode;
+
     function getCursor() {
         console.log(input_cm.getCursor());
 
@@ -636,7 +645,7 @@ all repeat
         if (clear === undefined) clear = true;
         let val = $("#output").val();
 
-        if (val === "Expected start but end of input found."){
+        if (val === "Expected start but end of input found.") {
             return;
         }
 
@@ -720,7 +729,7 @@ all repeat
                     name: response,
                     markdown: markdown_cm.getValue(),
                     parent: parentId
-                }).done(function(data) {
+                }).done(function (data) {
                     console.log(data);
                     exportID = data.status;
                 });
@@ -732,7 +741,7 @@ all repeat
         // TODO: Check if user is owner?
     }
 
-    function triggerDownload (imgURI) {
+    function triggerDownload(imgURI) {
         var evt = new MouseEvent('click', {
             view: window,
             bubbles: false,
@@ -747,14 +756,31 @@ all repeat
         a.dispatchEvent(evt);
     }
 
-    function tweet(){
+    function tweet() {
         if (!exportID) {
             alert("Make sure you export first!");
             return;
+        } else {
+            // there is an id, check that there has been a change
+            // TODO: Better fix
+            if (window.svg) {
+                if (window.svg !== originalData.svg){
+                    alert("Change detected! Make sure you export first!");
+                    return;
+                }
+            }
+
+            if (!(grammar_cm.getValue() === originalData.grammar && input_cm.getValue() === originalData.input && markdown_cm.getValue() === originalData.markdown
+                && $("#output").val() === originalData.output)) {
+                alert("Change detected! Make sure you export first!");
+                return;
+            }
         }
 
         // Convert to PNG
         var canvas = document.getElementById('converter');
+        canvas.style.display="none";
+
         canvas.height = 800;
         canvas.width = 800;
         var ctx = canvas.getContext('2d');
@@ -800,12 +826,17 @@ all repeat
 
         $.getJSON("sessions/" + res.id, function (data) {
             console.log(data);
+            originalData = JSON.parse(JSON.stringify(data));
+
             $("#output").val(data.output);
             grammar_cm.setValue(data.grammar);
             input_cm.setValue(data.input);
             markdown_cm.setValue(data.markdown);
-            makeParser();
-            start();
+            window.svg = data.svg;
+
+            document.getElementById('drawing').innerHTML = data.svg;
+            // makeParser();
+            // start();
         });
     } else if (window.localStorage.getItem('barbara-vm-grammar')) {
         // grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
