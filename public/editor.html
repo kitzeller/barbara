@@ -290,7 +290,7 @@ all repeat
             button to toggle Live-Code mode.
         </p>
         <p>You can click on the
-            <button>Start Loop</button>thr
+            <button>Start Loop</button>
             button to re-draw every second.
         </p>
     </div>
@@ -469,6 +469,8 @@ all repeat
         styleActiveLine: true,
         matchBrackets: true,
         styleActiveSelected: true,
+        continueLineComment: true,
+        continueComments: "Enter",
         // Darkmode
         theme: "darcula",
         colorpicker: {
@@ -480,6 +482,8 @@ all repeat
             ]
         },
         extraKeys: {
+            'Cmd-/': 'toggleComment',
+            'Ctrl-/': 'toggleComment',
             "Ctrl-Enter": makeParser,
             "Cmd-Enter": makeParser,
             "Shift-Enter": start,
@@ -625,14 +629,17 @@ all repeat
             }
         }
 
-        let grammer = grammar_cm.getValue();
-        var parser = peg.generate(grammer);
-        let input = input_cm.getValue().trim();
-        // console.log(input);
+        let grammar = grammar_cm.getValue();
+        var parser = peg.generate(grammar);
+
+        // TODO: Commenting defined through grammar?
+        // trim whitespaces and remove commented out lines
+        let input = input_cm.getValue().trim().replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:[\s;]+\/\/(?:.*)$)/gm, '');
 
         // TODO: Check error checking?
         try {
             let res = parser.parse(input);
+            console.log(res);
             // console.log(res);
             $("#output").val(JSON.stringify(res));
         } catch (ex) {
@@ -774,7 +781,7 @@ all repeat
                 console.log(window.svg);
                 console.log(originalData.svg);
                 console.log(originalData);
-                if (window.svg !== originalData.svg){
+                if (window.svg !== originalData.svg) {
                     console.log("1")
                     alert("Change detected! Make sure you export first!");
                     return;
@@ -791,7 +798,7 @@ all repeat
 
         // Convert to PNG
         var canvas = document.getElementById('converter');
-        canvas.style.display="none";
+        canvas.style.display = "none";
 
         canvas.height = 800;
         canvas.width = 800;
@@ -827,7 +834,7 @@ all repeat
                 img: imgURI
             }).done(function (data) {
                 // TODO: Update this so it's not an alert
-               alert("Successfully created tweet at https://twitter.com/barbara_quilts/status/" + data.id)
+                alert("Successfully created tweet at https://twitter.com/barbara_quilts/status/" + data.id)
             });
         };
 
@@ -850,7 +857,7 @@ all repeat
             window.svg = data.svg;
 
             // backwards compatibility with older SVGs saved
-            if (!data.svg.startsWith("<svg")){
+            if (!data.svg.startsWith("<svg")) {
                 document.getElementById('drawing').innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:svgjs=\"http://svgjs.com/svgjs\" width=\"800\" height=\"800\" viewBox=\"0 0 800 800\">" + data.svg + "</svg>";
             } else {
                 document.getElementById('drawing').innerHTML = data.svg;
