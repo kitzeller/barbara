@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Barbara Editor</title>
+
     <link rel="shortcut icon" href="icon.png">
     <link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="lib/colorpicker/codemirror-colorpicker.css">
-    <link href="css/normalize.css" rel="stylesheet">
+    <!--    <link href="css/normalize.css" rel="stylesheet">-->
     <link href="css/skeleton.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="lib/codemirror.css">
     <link rel="stylesheet" href="css/darcula.css">
     <link rel="stylesheet" href="lib/mode/show-hint.css">
+    <link href="css/tabs.microlib.css" rel="stylesheet">
 
     <style>
-        html {
-            font-size: 50%;
+        h1, h2 {
+            font-family: 'Nothing You Could Do', cursive;
         }
 
         hr {
@@ -95,49 +97,17 @@
             right: 0;
             margin: 5px;
         }
+
+        #converter{
+            display: none;
+        }
     </style>
 </head>
 <body>
-<!--Navbar-->
-<div class="row" style="margin: 10px">
-    <div class="column">
-        <h1>
-            Live Code a Graphics Language
-        </h1>
-    </div>
-    <div class="column" style="margin-top: 10px">
-        <button onclick="window.location.href='/'">Introduction</button>
-        <button onclick="window.location.href='target_lang'">Target Lang</button>
-        <button onclick="window.location.href='tutorial'">Parsing</button>
-        <button onclick="window.location.href='quilting'">Quilting</button>
-        <button class="button-primary" onclick="window.location.href='editor'">Editor</button>
-        <button onclick="openNav()">Library</button>
-        <!-- Trigger/Open The Modal -->
-        <button id="myBtn">?</button>
-    </div>
-</div>
-
-<!--Sidebar-->
-<div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <div id="side-content" style="padding: 10px">
-        <h2>Saved Sessions</h2>
-    </div>
-
-    <div style="padding: 10px">
-        <h2>Sliders</h2>
-    </div>
-
-    <div id="sliders" style="padding: 10px">
-
-    </div>
-</div>
-
-<!--CodeMirror-->
-<div class="container-m10">
-    <div class="row">
-        <div class="column">
-            <h2>Grammar</h2>
+<div class="tabs">
+    <div class="microlib_tabs_tab" data-title="Grammar">
+        <h1>Grammar</h1>
+        <div style="height:80vh">
             <textarea id="grammar">
 start "start" = term +
 term "term" = body:(word / sentence) _ { return body; }
@@ -219,10 +189,16 @@ sin = "sin" { return "@sin"; }
 
 _ "whitespace" = [ \t\n\r]*
         </textarea>
+        </div>
+        <button id="myBtn">?</button>
+    </div>
 
-            <h2>Input</h2>
-            <code>Cmd+Enter</code> to parse, <code>Shift+Enter</code> to run and <code>Alt+Enter</code> to export!
-            <textarea id="input">
+    <div class="microlib_tabs_tab" data-title="Input">
+        <div class="row">
+            <div class="column">
+                <h2>Input</h2>
+                <code>Cmd+Enter</code> to parse, <code>Shift+Enter</code> to run and <code>Alt+Enter</code> to export!
+                <textarea id="input">
 triangle rand-c color 180 rotate
 triangle rand-c color 180 rotate 25 0 translate
 triangle rand-c color 25 0 translate
@@ -233,39 +209,41 @@ duplicate 25 25 translate rand-c color
 duplicate 180 rotate rand-c color
 all repeat
 </textarea>
-            <div style="text-align: center">
-                <button onclick="makeParser()">Parse!</button>
-                <button onclick="start()">Start</button>
-                <button id="loop" onclick="loopSVG()">Start Loop</button>
-                <button onclick="liveCodeMode()">Live Code</button>
-                <br>
-                <button onclick="saveGrammar()">Save Grammar</button>
-                <button onclick="exportSVG()">Export Pattern</button>
-                <button onclick="tweet()">Share</button>
-                <!--                <button onclick="updateSVG()">Update Pattern</button>-->
+                <div style="text-align: center">
+                    <button onclick="makeParser()">Parse!</button>
+                    <button onclick="start()">Start</button>
+                    <button id="loop" onclick="loopSVG()">Start Loop</button>
+                    <button onclick="liveCodeMode()">Live Code</button>
+                    <br>
+                    <button onclick="saveGrammar()">Save Grammar</button>
+                    <button onclick="exportSVG()">Export Pattern</button>
+                    <button onclick="tweet()">Share</button>
+                    <!--                <button onclick="updateSVG()">Update Pattern</button>-->
+                </div>
+
+                <h2>Output</h2>
+                <textarea id="output" style="width: 700px; height: 100px"></textarea>
+
             </div>
-
-            <h2>Output</h2>
-            <textarea id="output" style="width: 700px; height: 100px"></textarea>
-
+            <div id="drawing-container" class="column">
+                <h2>SVG Result</h2>
+                <div id="drawing"></div>
+            </div>
         </div>
-        <div id="drawing-container" class="column">
-            <h2>SVG Result</h2>
-            <div id="drawing"></div>
-        </div>
+
     </div>
 
-    <hr>
-
-    <h2>Information</h2>
-    <div class="row">
-        <div class="column">
-            <form>
-                <textarea id="markdown"></textarea>
-            </form>
-        </div>
-        <div class="column">
-            <div id="markdown_render">
+    <div class="microlib_tabs_tab" data-title="Information">
+        <h1>Information</h1>
+        <div class="row">
+            <div class="column">
+                <form style="height: 80vh">
+                    <textarea id="markdown"></textarea>
+                </form>
+            </div>
+            <div class="column">
+                <div id="markdown_render" style="height: 80vh; overflow: auto">
+                </div>
             </div>
         </div>
     </div>
@@ -297,6 +275,7 @@ all repeat
 
 <canvas id="converter"></canvas>
 
+<script src="lib/microtabs/tabs-standalone.microlib-latest.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="peg-0.10.0.js"></script>
@@ -323,6 +302,7 @@ all repeat
 <script src="lib/mode/active-line.js"></script>
 <script src="lib/mode/comment.js"></script>
 <script src="lib/mode/continuecomment.js"></script>
+<script src="lib/mode/autorefresh.js"></script>
 
 <script>
     // Get the modal
@@ -342,6 +322,11 @@ all repeat
         if (event.target == modal) {
             modal.style.display = "none";
         }
+    };
+
+    var myTabs = new ML.Tabs('.tabs');
+    myTabs.onChange = function (newContent, newTab, e) {
+        console.log('changed')
     };
 
     // Marked
@@ -389,6 +374,7 @@ all repeat
     var grammar_cm = CodeMirror.fromTextArea(document.getElementById("grammar"), {
         mode: "pegjs",
         // Darkmode
+        autoRefresh: true,
         theme: "darcula",
         lineWrapping: true,
         lineNumbers: true,
@@ -464,6 +450,7 @@ all repeat
         mode: "simplemode",
         lineNumbers: true,
         lineWrapping: true,
+        autoRefresh: true,
         styleActiveLine: true,
         matchBrackets: true,
         styleActiveSelected: true,
@@ -558,6 +545,7 @@ all repeat
      */
     var markdown_cm = CodeMirror.fromTextArea(document.getElementById("markdown"), {
         mode: "gfm",
+        autoRefresh: true,
         lineNumbers: true,
         theme: "darcula",
         lineWrapping: true,
@@ -869,7 +857,5 @@ all repeat
         // grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
     }
 </script>
-
-
 </body>
 </html>
