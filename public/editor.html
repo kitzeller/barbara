@@ -46,6 +46,9 @@
                         <li><a onclick="window.location.href='editor'">Drawing</a></li>
                     </ul>
                 </li>
+                <li><a onclick="makeParser()">Parse</a></li>
+                <li><a onclick="start()">Run</a></li>
+                <li><a id="loop" onclick="loopSVG()">Start Loop</a></li>
                 <li><a onclick="saveGrammar()">Save Grammar</a></li>
                 <li><a onclick="exportSVG()">Export Pattern</a></li>
                 <li><a onclick="tweet()">Share to Twitter</a></li>
@@ -59,6 +62,9 @@
                 <li><a data-icon="cake" onclick="openView('information')">Information</a></li>
                 <li><a data-icon="cake" onclick="liveCodeMode()">Live Code Mode</a></li>
             </ul>
+        </li>
+        <li class="-noChevron">
+            <a id="helpButton">Help</a>
         </li>
     </ul>
     <ul class="Menu -horizontal -alignRight">
@@ -189,19 +195,8 @@ duplicate 25 25 translate rand-c color
 duplicate 180 rotate rand-c color
 all repeat</textarea>
             </div>
-            <div style="text-align: center; display: none">
-                <button onclick="makeParser()">Parse!</button>
-                <button onclick="start()">Start</button>
-                <button id="loop" onclick="loopSVG()">Start Loop</button>
-                <button onclick="liveCodeMode()">Live Code</button>
-                <br>
-                <button onclick="saveGrammar()">Save Grammar</button>
-                <button onclick="exportSVG()">Export Pattern</button>
-                <button onclick="tweet()">Share</button>
-            </div>
-
             <h2>Output</h2>
-            <textarea id="output" style="width: 700px; height: 100px"></textarea>
+            <textarea id="output" style="width: 100%; height: 150px"></textarea>
 
         </div>
         <div id="drawing-container" class="column">
@@ -226,8 +221,6 @@ all repeat</textarea>
     </div>
 </div>
 
-<button id="helpButton">?</button>
-
 <!-- The Modal -->
 <div id="myModal" class="modal">
 
@@ -248,6 +241,18 @@ all repeat</textarea>
             <button>Start Loop</button>
             button to re-draw every second.
         </p>
+    </div>
+
+</div>
+
+<!-- The Modal -->
+<div id="tweet_modal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1>Tweet Successful!</h1>
+        <p id="tweet_content"></p>
     </div>
 
 </div>

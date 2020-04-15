@@ -1,10 +1,12 @@
 var exportID;
 var originalData;
+var currentView = 'grammar';
 
 /**
  * Modal Events
  */
 var modal = document.getElementById("myModal");
+var converter = document.getElementById("converter");
 var btn = document.getElementById("helpButton");
 var span = document.getElementsByClassName("close")[0];
 btn.onclick = function () {
@@ -17,6 +19,13 @@ window.onclick = function (event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }
+};
+
+
+var tweet_modal = document.getElementById("tweet_modal");
+var tweet_close = document.getElementsByClassName("close")[1];
+tweet_close.onclick = function () {
+    tweet_modal.style.display = "none";
 };
 
 /**
@@ -231,25 +240,29 @@ function openView(id) {
             $("#grammar_div").hide();
             break;
     }
+    currentView = id;
 }
 
 /**
  * Live Code Mode
- * TODO: Fix this due to v2 updates...
  */
 function liveCodeMode() {
     $("#drawing").toggleClass("live-code-I");
     $('body > :not(#drawing)').hide(); //hide all nodes directly under the body
     $('#drawing').appendTo('body');
     $(input_cm.getWrapperElement()).toggleClass("live-code-II").show().appendTo('body');
-    // input_cm.setOption("lineNumbers", false);
-    $('body').append("<button id='exitLiveCode' style='margin: 5px;'>X</button>");
+    $('body').append("<button id='exitLiveCode' style='margin: 5px; position: absolute; top: 0;'>X</button>");
+
     $("#exitLiveCode").click(function () {
         $("#drawing").toggleClass("live-code-I").appendTo("#drawing-container");
         $(input_cm.getWrapperElement()).toggleClass("live-code-II").insertAfter("#input");
-        // input_cm.setOption("lineNumbers", true);
+        input_cm.setOption("lineNumbers", false);
         $('body > :not(script)').show(); //hide all nodes directly under the body
         $("#exitLiveCode").remove();
+        modal.style.display = "none";
+        converter.style.display = "none";
+        // Take back to last view
+        openView(currentView);
     })
 }
 
@@ -535,8 +548,8 @@ function tweet() {
             id: exportID,
             img: imgURI
         }).done(function (data) {
-            // TODO: Update this so it's not an alert
-            alert("Successfully created tweet at https://twitter.com/barbara_quilts/status/" + data.id)
+            document.getElementById("tweet_modal").style.display = "block";
+            document.getElementById("tweet_content").innerText = "Successfully created tweet at https://twitter.com/barbara_quilts/status/" + data.id;
         });
     };
 
@@ -567,6 +580,8 @@ if (window.location.search) {
         } else {
             document.getElementById('drawing').innerHTML = data.svg;
         }
+
+        openView('input');
 
         // alternative to loading SVG directly
         // makeParser();

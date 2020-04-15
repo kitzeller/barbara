@@ -45,7 +45,7 @@ input {
     z-index: 150;
     background: rgba(0, 0, 0, 0) !important;
     height: 80%;
-    max-width: 40%;
+    width: 35%;
 }
 
 /* The Modal (background) */
@@ -85,13 +85,6 @@ input {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-}
-
-#helpButton {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    margin: 5px;
 }
 
 #converter {
