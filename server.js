@@ -78,6 +78,7 @@ passport.use('login', new LocalStrategy(
 
                 user.comparePassword(password, (error, isMatch) => {
                     if (!isMatch) {
+                        console.log("Wrong password")
                         return done(null, false, {message: 'Invalid username & password.'});
                     }
                     return done(null, user);
@@ -184,11 +185,6 @@ app.get('/variants',
         res.sendFile(path.join(__dirname + '/public/variants.html'));
     });
 
-// app.get('/threejs',
-//     function (req, res) {
-//         res.sendFile(path.join(__dirname + '/public/3d/threejs.html'));
-//     });
-
 /**
  * Login & Sign-up
  */
@@ -201,7 +197,7 @@ app.get('/login',
 app.post('/login',
     passport.authenticate('login', {failureRedirect: '/'}),
     function (req, res) {
-        res.redirect('/');
+        res.redirect('back');
     });
 
 app.post('/signup',
@@ -213,7 +209,7 @@ app.post('/signup',
 app.get('/logout',
     function (req, res) {
         req.logout();
-        res.redirect('/');
+        res.redirect('back');
     });
 
 /**
@@ -266,7 +262,7 @@ app.post('/savesession',
         }
 
         session.save(function (err) {
-            if (err){
+            if (err) {
                 res.status(400);
                 throw err;
             }

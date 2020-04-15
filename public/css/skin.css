@@ -1,0 +1,123 @@
+.Menu {
+    color: black;
+    cursor: pointer;
+}
+
+/* Foreground */
+.Menu,
+.Menu li.-hasSubmenu > a:after {
+    color: black;
+    border-color: black; /* chevron colour */
+}
+
+/* Background */
+.Menu,
+.Menu li ul {
+    background: white;
+}
+
+/* Border */
+.Menu,
+.Menu li ul {
+    box-shadow: none;
+}
+
+.Menu li ul,
+.Menu.-floating {
+    border-radius: 3px;
+}
+
+.Menu.-horizontal > li > ul {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.Menu:not(.-alignRight) li > ul,
+.Menu.-floating:not(.-alignRight) {
+    border-top-left-radius: 0px;
+}
+
+.Menu.-alignRight li > ul,
+.Menu.-floating.-alignRight {
+    border-top-right-radius: 0px;
+}
+
+/* Drop shadow on Menus and header */
+.Header,
+.Menu li ul,
+.Menu.-floating {
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.2),
+    0px 3px 1px 0px rgba(0, 0, 0, 0.2),
+    0px 6px 12px 0px rgba(0, 0, 0, 0.15);
+}
+
+.Header {
+    position: fixed;
+    display: block;
+    z-index: 100;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+/* Header and Menu sizing */
+.Header .Menu {
+    line-height: 40px;
+}
+
+.Header,
+.Header .Menu.-horizontal,
+.Header .Menu li,
+.Header .Menu li > :first-child {
+    height: 40px;
+}
+
+.Header .Menu *[data-icon]:before,
+.Header .Menu .Icon {
+    width: 40px;
+    height: 40px;
+}
+
+.Header .Menu *[data-icon] {
+    min-width: 40px;
+    min-height: 40px;
+    padding-left: 40px;
+}
+
+/* Menu positioning in Header */
+.Header .Menu.-horizontal {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.Header .Menu.-horizontal.-alignRight {
+    left: auto;
+    right: 0px;
+}
+
+/* Colouring/styling of Header and its Menus */
+.Header {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.Header .Menu {
+    background: none;
+}
+
+.Header .Menu,
+.Header .Menu > li.-hasSubmenu > a:after {
+    color: white;
+    border-color: white;
+}
+
+.Header .Menu li ul {
+    color: black;
+}
+
+.Header .Menu > li:hover > a:first-child,
+.Header .Menu > li.-active > a:first-child {
+    background-color: white;
+    color: black;
+    /*background-color: rgba(255,255,255,0.2);*/
+}
