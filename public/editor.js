@@ -454,7 +454,7 @@ function exportSVG() {
                 // exportID = data._id;
 
                 // TODO: Make sure it is okay to refresh the page...
-                window.location.href = "editor?id=" + data._id;
+                window.location.href = "editor?id=" + data;
             });
         } else {
             $.post("savesession", {
@@ -472,7 +472,7 @@ function exportSVG() {
                 // exportID = data._id;
 
                 // TODO: Make sure it is okay to refresh the page...
-                window.location.href = "editor?id=" + data._id;
+                window.location.href = "editor?id=" + data;
             });
         }
     });
@@ -580,7 +580,12 @@ if (window.location.search) {
     exportID = res.id;
 
     $.getJSON("sessions/" + res.id, function (data) {
-        console.log(data);
+
+        if (data.status === "no"){
+            // No results found
+            window.location.href = "editor";
+        }
+
         originalData = JSON.parse(JSON.stringify(data));
 
         $("#output").val(data.output);
@@ -601,11 +606,14 @@ if (window.location.search) {
         // alternative to loading SVG directly
         // makeParser();
         // start();
-    });
+    }).fail(err=>console.log(err));
+
 } else if (window.localStorage.getItem('barbara-vm-grammar')) {
     // TODO: Remove or reconsider local storage
     // grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
 }
+
+var user;
 
 /**
  * User Functions
@@ -613,6 +621,7 @@ if (window.location.search) {
 $.getJSON("loggeduser", function (data) {
     // Set title to username
     if (data.username) {
+        user = data.username;
         $("#username_placeholder").text(data.username.username);
         $("#account").empty();
         $("#account").append("<h3> Welcome, " + data.username.username + "</h3>");
@@ -620,17 +629,8 @@ $.getJSON("loggeduser", function (data) {
             '        <button type="submit">logout</button>\n' +
             '    </form>');
 
-        // Add sessions to Load option
-        $.getJSON("sessions/user/" + data.username._id, function (data) {
-            // data.sessions -> sessions array
-            console.log(data);
-            for (let s of data.sessions) {
-                $("#user_session_list").append("<li><a onclick=\"window.location.href='editor?id=" + s._id + "'\">" + s.name + "</a></li>");
-                $("#user_session_list_delete").append("<li><a onclick=\"deleteSession('" + s._id + "')\">" + s.name + "</a></li>");
-
-            }
-
-        });
+        console.log(data.username._id);
+        loadMenus(data.username._id);
     }
 });
 
@@ -651,11 +651,27 @@ function deleteSession(id) {
             type: 'delete',
             success: function (data) {
                 if (data.status === "ok") {
-                    alert("Deleted!")
+
                     // TODO: Refresh page? or reload load menu?
+                    $("#user_session_list").empty();
+                    $("#user_session_list_delete").empty();
+
+                    console.log(user._id);
+                    loadMenus(user._id);
+
                 }
             }
         });
     }
 }
 
+function loadMenus(userId) {
+    // Add sessions to Load option
+    $.getJSON("sessions/user/" + userId, function (data) {
+        for (let s of data.sessions) {
+            $("#user_session_list").append("<li><a onclick=\"window.location.href='editor?id=" + s._id + "'\">" + s.name + "</a></li>");
+            $("#user_session_list_delete").append("<li><a onclick=\"deleteSession('" + s._id + "')\">" + s.name + "</a></li>");
+
+        }
+    });
+}

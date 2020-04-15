@@ -279,12 +279,12 @@ app.post('/savesession',
                                             throw err;
                                         }
                                         // Seems like sending the session back exceeds the stack size
-                                        res.status(200).json("ok");
+                                        res.status(200).json(session._id);
                                     }
                                 )
                             });
                         } else {
-                            res.status(200).json("ok");
+                            res.status(200).json(session._id);
                         }
                     }).catch(error => console.log(error));
                 }).catch(error => console.log(error));
@@ -312,12 +312,12 @@ app.post('/savesession',
                                     res.status(400);
                                     throw err;
                                 }
-                                res.status(200).json("ok");
+                                res.status(200).json(session._id);
                             }
                         )
                     });
                 } else {
-                    res.status(200).json("ok");
+                    res.status(200).json(session._id);
                 }
             });
         }
@@ -380,7 +380,16 @@ app.get('/sessions',
 app.get('/sessions/:id',
     function (req, res) {
         Session.findOne({_id: req.params.id}, function (err, data) {
-            res.send(data);
+            if (err){
+                console.log('Error: ' + err);
+                res.status(400);
+                throw err;
+            }
+            if (!data){
+                res.status(200).json({"status": "no"});
+            } else {
+                res.send(data);
+            }
         });
     });
 
