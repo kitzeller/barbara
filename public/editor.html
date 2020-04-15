@@ -46,9 +46,16 @@
                         <li><a onclick="window.location.href='editor'">Drawing</a></li>
                     </ul>
                 </li>
-                <li><a onclick="makeParser()">Parse</a></li>
-                <li><a onclick="start()">Run</a></li>
-                <li><a id="loop" onclick="loopSVG()">Start Loop</a></li>
+                <li class="-hasSubmenu">
+                    <a href="#">Load</a>
+                    <ul id="user_session_list">
+                    </ul>
+                </li>
+                <li class="-hasSubmenu">
+                    <a href="#">Delete</a>
+                    <ul id="user_session_list_delete">
+                    </ul>
+                </li>
                 <li><a onclick="saveGrammar()">Save Grammar</a></li>
                 <li><a onclick="exportSVG()">Export Pattern</a></li>
                 <li><a onclick="tweet()">Share to Twitter</a></li>
@@ -63,14 +70,27 @@
                 <li><a data-icon="cake" onclick="liveCodeMode()">Live Code Mode</a></li>
             </ul>
         </li>
+        <li class="-hasSubmenu">
+            <a href="#">Run</a>
+            <ul>
+                <li><a onclick="makeParser()">Parse</a></li>
+                <li><a onclick="start()">Start</a></li>
+                <li><a id="loop" onclick="loopSVG()">Start Loop</a></li>
+            </ul>
+        </li>
         <li class="-noChevron">
             <a id="helpButton">Help</a>
         </li>
     </ul>
     <ul class="Menu -horizontal -alignRight">
-        <li><a onclick="window.location.href='quilting'">Quilting</a></li>
-        <li><a onclick="window.location.href='tutorial'">Parsing</a></li>
-        <li><a onclick="window.location.href='target_lang'">Target Lang</a></li>
+        <li class="-hasSubmenu">
+            <a href="#">Tutorial</a>
+            <ul>
+                <li><a onclick="window.location.href='quilting'">Quilting</a></li>
+                <li><a onclick="window.location.href='tutorial'">Parsing</a></li>
+                <li><a onclick="window.location.href='target_lang'">Target Lang</a></li>
+            </ul>
+        </li>
         <li><a class="Icon" onclick="window.location.href='/'">home</a></li>
         <li class="-hasSubmenu -noChevron">
             <a href="#" data-icon="person" id="username_placeholder" onclick="openNav()">User</a>
@@ -78,15 +98,15 @@
             <!--                <li><a onclick="openNav()">Login</a></li>-->
             <!--                <li><a href="#">Profile</a></li>-->
             <!--                <li onclick="logout()"><a>Logout</a></li>-->
-            <!--                <li class="-hasSubmenu">-->
-            <!--                    <a href="#">Sub-menu</a>-->
-            <!--                    <ul>-->
-            <!--                        <li><a href="#">Bacon</a></li>-->
-            <!--                        <li><a href="#">Ipsum</a></li>-->
-            <!--                        <li><a href="#">Dolor</a></li>-->
-            <!--                        <li><a href="#">Amet</a></li>-->
-            <!--                    </ul>-->
-            <!--                </li>-->
+<!--                            <li class="-hasSubmenu">-->
+<!--                                <a href="#">Sub-menu</a>-->
+<!--                                <ul>-->
+<!--                                    <li><a href="#">Bacon</a></li>-->
+<!--                                    <li><a href="#">Ipsum</a></li>-->
+<!--                                    <li><a href="#">Dolor</a></li>-->
+<!--                                    <li><a href="#">Amet</a></li>-->
+<!--                                </ul>-->
+<!--                            </li>-->
             <!--            </ul>-->
         </li>
     </ul>

@@ -444,9 +444,10 @@ function exportSVG() {
                 parentId: parentId
             }).done(function (data) {
                 // Some errors with this in the past, check later
-                originalData = JSON.parse(JSON.stringify(data));
-                console.log(data);
-                exportID = data._id;
+                // originalData = JSON.parse(JSON.stringify(data));
+                // console.log(data);
+                // exportID = data._id;
+                window.location.href = "editor?id=" + data._id;
             });
         } else {
             $.post("savesession", {
@@ -459,9 +460,10 @@ function exportSVG() {
                 parent: parentId
             }).done(function (data) {
                 // Some errors with this in the past, check later
-                originalData = JSON.parse(JSON.stringify(data));
-                console.log(data);
-                exportID = data._id;
+                // originalData = JSON.parse(JSON.stringify(data));
+                // console.log(data);
+                // exportID = data._id;
+                window.location.href = "editor?id=" + data._id;
             });
         }
     });
@@ -609,6 +611,18 @@ $.getJSON("loggeduser", function (data) {
         $("#account").append(' <form action="/logout" method="get">\n' +
             '        <button type="submit">logout</button>\n' +
             '    </form>');
+
+        // Add sessions to Load option
+        $.getJSON("sessions/user/" + data.username._id, function (data) {
+            // data.sessions -> sessions array
+            console.log(data);
+            for (let s of data.sessions) {
+                $("#user_session_list").append("<li><a onclick=\"window.location.href='editor?id=" + s._id + "'\">" + s.name + "</a></li>");
+                $("#user_session_list_delete").append("<li><a onclick=\"deleteSession('" + s._id + "')\">" + s.name + "</a></li>");
+
+            }
+
+        });
     }
 });
 
@@ -629,3 +643,19 @@ function openNav() {
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
 }
+
+function deleteSession(id) {
+    if (confirm("Are you sure you want to delete?")) {
+        $.ajax({
+            url: '/session/' + id,
+            type: 'delete',
+            success: function (data) {
+                if (data.status === "ok") {
+                    alert("Deleted!")
+                    // TODO: Refresh page? or reload load menu?
+                }
+            }
+        });
+    }
+}
+

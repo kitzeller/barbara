@@ -246,7 +246,6 @@ app.post('/tweet',
 /**
  * Save Session
  */
-// TODO: Save session if user assigned
 app.post('/savesession',
     function (req, res) {
         var session = new Session(req.body);
@@ -274,6 +273,7 @@ app.post('/savesession',
                         res.status(400);
                         throw err;
                     }
+                    // Save to user
                     console.log(data);
                     data.sessions.push(session._id);
                     data.save(function (err) {
@@ -293,30 +293,42 @@ app.post('/savesession',
     });
 
 
-//
-// /**
-//  * Deletes
-//  */
-// app.delete('/', function (req, res) {
-//     console.log("DELETE");
-//     console.log(req.query.id);
-//
-//     Session.deleteOne({"_id": req.query.id}, function (err, res) {
-//     });
-//     res.send('DELETE request to homepage');
-// });
-//
-// /**
-//  * Updates
-//  */
-// app.put('/', function (req, res) {
-//     console.log("PUT");
-//     console.log(req.body);
-//     Session.updateOne({_id: req.body.id}, {hydra: req.body.hydra}, function (err, res) {
-//     });
-//     res.send('PUT request to homepage');
-// });
-//
+/**
+ * Delete
+ */
+app.delete('/session/:id', function (req, res) {
+    console.log("DELETE");
+    console.log(req.params.id);
+
+    Session.findOneAndDelete({"_id": req.params.id}, function (err, session) {
+        if (err) {
+            console.log('Error: ' + err);
+            res.status(400);
+            throw err;
+        }
+
+        // TODO: Delete from children/parent?
+        // Delete from user
+        User.findOne({_id: session.user}, function (err, user) {
+            if (err) {
+                console.log('Error: ' + err);
+                res.status(400);
+                throw err;
+            }
+            user.sessions.pull(session._id);
+            user.save(function (err) {
+                    if (err) {
+                        console.log('Error: ' + err);
+                        res.status(400);
+                        throw err;
+                    }
+                    res.status(200).json({status: "ok"});
+                }
+            )
+        });
+    });
+});
+
 /**
  * Get Sessions
  */
@@ -341,20 +353,32 @@ app.get('/sessions/:id',
         });
     });
 
+// Session by user id
+app.get('/sessions/user/:id',
+    function (req, res) {
+        User.findOne({_id: req.params.id})
+            .populate('sessions') // <==
+            .exec(function (err, sessions) {
+                if (err) {
+                    console.log('Error: ' + err);
+                    res.status(400);
+                    throw err;
+                }
+                res.status(200).json(sessions);
+            });
+    });
 
-// User sessions by user id
+
+// Session children
 app.get('/sessions/children/:id',
     function (req, res) {
         Session.findOne({_id: req.params.id}, function (err, data) {
             res.send(data);
-            // data.deepPopulate('children', function (err, _data) {
-            //     // console.log(_data);
-            //     res.send(_data)
-            // });
         });
     });
 
-// User sessions by user id
+
+// TODO: Sessions by parent id
 // app.get('/sessions/parents/:id',
 //     function (req, res) {
 //         Session.findOne({_id: req.params.id}, function (err, data) {
