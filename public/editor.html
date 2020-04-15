@@ -41,9 +41,9 @@
             <a href="#">File</a>
             <ul>
                 <li class="-hasSubmenu">
-                    <a href="#">New</a>
+                    <a>New</a>
                     <ul>
-                        <li><a href="#">Drawing</a></li>
+                        <li><a onclick="window.location.href='editor'">Drawing</a></li>
                     </ul>
                 </li>
                 <li><a onclick="saveGrammar()">Save Grammar</a></li>
@@ -169,7 +169,6 @@ sin = "sin" { return "@sin"; }
 
 _ "whitespace" = [ \t\n\r]*
         </textarea>
-    <button id="myBtn">?</button>
 </div>
 
 <!-- Input Div -->
@@ -188,8 +187,7 @@ triangle rand-c color 0 25 translate
 triangle rand-c color
 duplicate 25 25 translate rand-c color
 duplicate 180 rotate rand-c color
-all repeat
-    </textarea>
+all repeat</textarea>
             </div>
             <div style="text-align: center; display: none">
                 <button onclick="makeParser()">Parse!</button>
@@ -227,6 +225,8 @@ all repeat
         </div>
     </div>
 </div>
+
+<button id="helpButton">?</button>
 
 <!-- The Modal -->
 <div id="myModal" class="modal">

@@ -1,9 +1,11 @@
-// Get the modal
 var exportID;
 var originalData;
 
+/**
+ * Modal Events
+ */
 var modal = document.getElementById("myModal");
-var btn = document.getElementById("myBtn");
+var btn = document.getElementById("helpButton");
 var span = document.getElementsByClassName("close")[0];
 btn.onclick = function () {
     modal.style.display = "block";
@@ -17,6 +19,9 @@ window.onclick = function (event) {
     }
 };
 
+/**
+ * Get saved SVGS
+ */
 var looping = false;
 var interval;
 var savedSVGs = window.localStorage.getItem('barbara-vm-svgs');
@@ -32,10 +37,16 @@ if (savedSVGs) {
     }
 }
 
+/**
+ * Saves Grammar to LocalStorage
+ */
 function saveGrammar() {
     window.localStorage.setItem('barbara-vm-grammar', grammar_cm.getValue());
 }
 
+/**
+ * SideNav Controls
+ */
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";
 }
@@ -67,10 +78,10 @@ var grammar_cm = CodeMirror.fromTextArea(document.getElementById("grammar"), {
 
 });
 
-/* Example definition of a simple mode that understands a subset of
-* JavaScript:
-*/
-
+/**
+ * Example definition of a simple mode that understands a subset of
+ * JavaScript:
+ */
 CodeMirror.defineSimpleMode("simplemode", {
     // The start state contains the rules that are intially used
     start: [
@@ -198,6 +209,10 @@ var input_cm = CodeMirror.fromTextArea(document.getElementById("input"), {
     }
 });
 
+/**
+ * Open a view
+ * @param id
+ */
 function openView(id) {
     switch (id) {
         case "grammar":
@@ -220,6 +235,7 @@ function openView(id) {
 
 /**
  * Live Code Mode
+ * TODO: Fix this due to v2 updates...
  */
 function liveCodeMode() {
     $("#drawing").toggleClass("live-code-I");
@@ -453,6 +469,9 @@ function triggerDownload(imgURI) {
     a.dispatchEvent(evt);
 }
 
+/**
+ * Tweet
+ */
 function tweet() {
     if (!exportID) {
         alert("Make sure you export first!");
@@ -524,6 +543,9 @@ function tweet() {
     img.src = url;
 }
 
+/**
+ * Check for link from a pattern
+ */
 if (window.location.search) {
     let res = parseQuery(window.location.search);
     console.log(res.id);
@@ -551,5 +573,6 @@ if (window.location.search) {
         // start();
     });
 } else if (window.localStorage.getItem('barbara-vm-grammar')) {
+    // TODO: Remove or reconsider local storage
     // grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
 }

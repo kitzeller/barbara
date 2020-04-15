@@ -87,7 +87,7 @@ input {
     cursor: pointer;
 }
 
-#myBtn {
+#helpButton {
     position: fixed;
     bottom: 0;
     right: 0;
