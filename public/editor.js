@@ -259,8 +259,12 @@ function liveCodeMode() {
         input_cm.setOption("lineNumbers", false);
         $('body > :not(script)').show(); //hide all nodes directly under the body
         $("#exitLiveCode").remove();
+
+        // Stop other elements from showing
+        tweet_modal.style.display = "none";
         modal.style.display = "none";
         converter.style.display = "none";
+
         // Take back to last view
         openView(currentView);
     })
@@ -590,4 +594,38 @@ if (window.location.search) {
 } else if (window.localStorage.getItem('barbara-vm-grammar')) {
     // TODO: Remove or reconsider local storage
     // grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
+}
+
+
+/**
+ * User Functions
+ */
+$.getJSON("loggeduser", function (data) {
+    // Set title to username
+    if (data.username) {
+        $("#username_placeholder").text(data.username.username);
+        $("#account").empty();
+        $("#account").append("<h3> Welcome, " + data.username.username + "</h3>");
+        $("#account").append(' <form action="/logout" method="get">\n' +
+            '        <button type="submit">logout</button>\n' +
+            '    </form>');
+    }
+});
+
+function logout() {
+    $.ajax({
+        url: '/logout',
+        type: 'get',
+        success: function (data) {
+            window.location = "editor";
+        }
+    });
+}
+
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
 }

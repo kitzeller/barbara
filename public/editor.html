@@ -73,20 +73,21 @@
         <li><a onclick="window.location.href='target_lang'">Target Lang</a></li>
         <li><a class="Icon" onclick="window.location.href='/'">home</a></li>
         <li class="-hasSubmenu -noChevron">
-            <a href="#" data-icon="person">Your Name</a>
-            <ul>
-                <li><a href="#">Profile</a></li>
-                <li><span>Logout</span></li>
-                <li class="-hasSubmenu">
-                    <a href="#">Sub-menu</a>
-                    <ul>
-                        <li><a href="#">Bacon</a></li>
-                        <li><a href="#">Ipsum</a></li>
-                        <li><a href="#">Dolor</a></li>
-                        <li><a href="#">Amet</a></li>
-                    </ul>
-                </li>
-            </ul>
+            <a href="#" data-icon="person" id="username_placeholder" onclick="openNav()">User</a>
+            <!--            <ul>-->
+            <!--                <li><a onclick="openNav()">Login</a></li>-->
+            <!--                <li><a href="#">Profile</a></li>-->
+            <!--                <li onclick="logout()"><a>Logout</a></li>-->
+            <!--                <li class="-hasSubmenu">-->
+            <!--                    <a href="#">Sub-menu</a>-->
+            <!--                    <ul>-->
+            <!--                        <li><a href="#">Bacon</a></li>-->
+            <!--                        <li><a href="#">Ipsum</a></li>-->
+            <!--                        <li><a href="#">Dolor</a></li>-->
+            <!--                        <li><a href="#">Amet</a></li>-->
+            <!--                    </ul>-->
+            <!--                </li>-->
+            <!--            </ul>-->
         </li>
     </ul>
 </div>
@@ -255,6 +256,30 @@ all repeat</textarea>
         <p id="tweet_content"></p>
     </div>
 
+</div>
+
+<!--Sidebar-->
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="side-content" style="padding: 10px; text-align: center">
+        <h1>Your Account</h1>
+        <hr>
+        <div id="account" style="text-align: center">
+            <form id="theform" method="post" action="/login" style="color:black">
+                <h2>Login</h2>
+                <label>
+                    Username:
+                    <input id="username" class="u-full-width" type="text" name="username" placeholder="Username">
+                </label>
+                <label>
+                    Password:
+                    <input id="password" class="u-full-width" type="password" name="password" placeholder="Password">
+                </label>
+                <button type="submit">Login</button>
+            </form>
+            <button id="register">Register</button>
+        </div>
+    </div>
 </div>
 
 <!-- Twitter Share Canvas -->
