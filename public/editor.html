@@ -41,41 +41,41 @@
             <a href="#">File</a>
             <ul>
                 <li class="-hasSubmenu">
-                    <a>New</a>
+                    <a data-icon="create_new_folder">New</a>
                     <ul>
                         <li><a onclick="window.location.href='editor'">Drawing</a></li>
                     </ul>
                 </li>
                 <li class="-hasSubmenu">
-                    <a href="#">Load</a>
+                    <a data-icon="folder_open" href="#">Load</a>
                     <ul id="user_session_list">
                     </ul>
                 </li>
                 <li class="-hasSubmenu">
-                    <a href="#">Delete</a>
+                    <a data-icon="delete" href="#">Delete</a>
                     <ul id="user_session_list_delete">
                     </ul>
                 </li>
-                <li><a onclick="saveGrammar()">Save Grammar</a></li>
-                <li><a onclick="exportSVG()">Export Pattern</a></li>
-                <li><a onclick="tweet()">Share to Twitter</a></li>
+<!--                <li><a onclick="saveGrammar()">Save Grammar</a></li>-->
+                <li><a data-icon="save" onclick="exportSVG()">Export Pattern</a></li>
+                <li><a data-icon="share" onclick="tweet()">Share to Twitter</a></li>
             </ul>
         </li>
         <li class="-hasSubmenu">
             <a href="#">View</a>
             <ul>
-                <li><a data-icon="cake" onclick="openView('grammar')">Grammar</a></li>
-                <li><a data-icon="cake" onclick="openView('input')">Input</a></li>
-                <li><a data-icon="cake" onclick="openView('information')">Information</a></li>
-                <li><a data-icon="cake" onclick="liveCodeMode()">Live Code Mode</a></li>
+                <li><a data-icon="subject" onclick="openView('grammar')">Grammar</a></li>
+                <li><a data-icon="input" onclick="openView('input')">Input</a></li>
+                <li><a data-icon="info" onclick="openView('information')">Information</a></li>
+                <li><a data-icon="laptop" onclick="liveCodeMode()">Live Code Mode</a></li>
             </ul>
         </li>
         <li class="-hasSubmenu">
             <a href="#">Run</a>
             <ul>
-                <li><a onclick="makeParser()">Parse</a></li>
-                <li><a onclick="start()">Start</a></li>
-                <li><a id="loop" onclick="loopSVG()">Start Loop</a></li>
+                <li><a data-icon="spellcheck" onclick="makeParser()">Parse</a></li>
+                <li><a data-icon="play_arrow" onclick="start()">Start</a></li>
+                <li><a data-icon="loop" id="loop" onclick="loopSVG()">Start Loop</a></li>
             </ul>
         </li>
         <li class="-noChevron">

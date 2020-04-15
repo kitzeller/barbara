@@ -1,3 +1,8 @@
+/**
+ * Code for Barbara VM Editor
+ * @author Kit Zellerbach
+ */
+
 var exportID;
 var originalData;
 var currentView = 'grammar';
@@ -447,6 +452,8 @@ function exportSVG() {
                 // originalData = JSON.parse(JSON.stringify(data));
                 // console.log(data);
                 // exportID = data._id;
+
+                // TODO: Make sure it is okay to refresh the page...
                 window.location.href = "editor?id=" + data._id;
             });
         } else {
@@ -463,6 +470,8 @@ function exportSVG() {
                 // originalData = JSON.parse(JSON.stringify(data));
                 // console.log(data);
                 // exportID = data._id;
+
+                // TODO: Make sure it is okay to refresh the page...
                 window.location.href = "editor?id=" + data._id;
             });
         }
@@ -598,7 +607,6 @@ if (window.location.search) {
     // grammar_cm.setValue(window.localStorage.getItem('barbara-vm-grammar'));
 }
 
-
 /**
  * User Functions
  */
@@ -634,14 +642,6 @@ function logout() {
             window.location = "editor";
         }
     });
-}
-
-function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-}
-
-function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
 }
 
 function deleteSession(id) {
