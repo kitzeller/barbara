@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>three.js webgl - cloth simulation</title>
+    <title>barbara 3D</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link type="text/css" rel="stylesheet" href="main.css">
@@ -18,8 +18,7 @@
 </head>
 
 <body>
-<div id="info">Simple Cloth Simulation<br/>
-    Verlet integration with relaxed constraints<br/>
+<div id="info">3D Barbara Pattern
 </div>
 
 <div id="svgContainer" style="width: 0px; height: 0px;">
@@ -28,7 +27,6 @@
 
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="three.js"></script>
-<script src="stats.min.js"></script>
 <script src="dat.gui.min.js"></script>
 <script src="OrbitControls.js"></script>
 
@@ -95,22 +93,17 @@
         var ballSize = 60; //40
 
         var tmpForce = new THREE.Vector3();
-
         var lastTime;
 
 
         function plane(width, height) {
-
             return function (u, v, target) {
-
                 var x = (u - 0.5) * width;
                 var y = (v + 0.5) * height;
                 var z = 0;
 
                 target.set(x, y, z);
-
             };
-
         }
 
         function Particle(x, y, z, mass) {
@@ -243,42 +236,12 @@
 
             }
 
-
-            // While many systems use shear and bend springs,
-            // the relaxed constraints model seems to be just fine
-            // using structural springs.
-            // Shear
-            // var diagonalDist = Math.sqrt(restDistance * restDistance * 2);
-
-
-            // for (v=0;v<h;v++) {
-            // 	for (u=0;u<w;u++) {
-
-            // 		constraints.push([
-            // 			particles[index(u, v)],
-            // 			particles[index(u+1, v+1)],
-            // 			diagonalDist
-            // 		]);
-
-            // 		constraints.push([
-            // 			particles[index(u+1, v)],
-            // 			particles[index(u, v+1)],
-            // 			diagonalDist
-            // 		]);
-
-            // 	}
-            // }
-
-
             this.particles = particles;
             this.constraints = constraints;
 
             function index(u, v) {
-
                 return u + v * (w + 1);
-
             }
-
             this.index = index;
 
         }
@@ -286,10 +249,8 @@
         function simulate(time) {
 
             if (!lastTime) {
-
                 lastTime = time;
                 return;
-
             }
 
             var i, j, il, particles, particle, constraints, constraint;
@@ -297,18 +258,13 @@
             // Aerodynamics forces
 
             if (params.enableWind) {
-
                 var indx;
                 var normal = new THREE.Vector3();
                 var indices = clothGeometry.index;
                 var normals = clothGeometry.attributes.normal;
-
                 particles = cloth.particles;
-
                 for (i = 0, il = indices.count; i < il; i += 3) {
-
                     for (j = 0; j < 3; j++) {
-
                         indx = indices.getX(i + j);
                         normal.fromBufferAttribute(normals, indx);
                         tmpForce.copy(normal).normalize().multiplyScalar(normal.dot(windForce));
@@ -321,10 +277,8 @@
             }
 
             for (particles = cloth.particles, i = 0, il = particles.length; i < il; i++) {
-
                 particle = particles[i];
                 particle.addForce(gravity);
-
                 particle.integrate(TIMESTEP_SQ);
 
             }
@@ -335,10 +289,8 @@
             il = constraints.length;
 
             for (i = 0; i < il; i++) {
-
                 constraint = constraints[i];
                 satisfyConstraints(constraint[0], constraint[1], constraint[2]);
-
             }
 
             // Ball Constraints
@@ -349,33 +301,23 @@
             if (params.showBall) {
 
                 sphere.visible = true;
-
                 for (particles = cloth.particles, i = 0, il = particles.length; i < il; i++) {
-
                     particle = particles[i];
                     var pos = particle.position;
                     diff.subVectors(pos, ballPosition);
                     if (diff.length() < ballSize) {
-
                         // collided
                         diff.normalize().multiplyScalar(ballSize);
                         pos.copy(ballPosition).add(diff);
 
                     }
-
                 }
-
             } else {
-
                 sphere.visible = false;
-
             }
 
-
             // Floor Constraints
-
             for (particles = cloth.particles, i = 0, il = particles.length; i < il; i++) {
-
                 particle = particles[i];
                 pos = particle.position;
                 if (pos.y < -250) {
@@ -383,7 +325,6 @@
                     pos.y = -250;
 
                 }
-
             }
 
             // Pin Constraints
@@ -611,13 +552,6 @@
                 controls.minDistance = 1000;
                 controls.maxDistance = 5000;
 
-                // performance monitor
-
-                stats = new Stats();
-                container.appendChild(stats.dom);
-
-                //
-
                 window.addEventListener('resize', onWindowResize, false);
 
                 //
@@ -657,28 +591,18 @@
 
             simulate(time);
             render();
-            stats.update();
 
         }
 
         function render() {
-
             var p = cloth.particles;
-
             for (var i = 0, il = p.length; i < il; i++) {
-
                 var v = p[i].position;
-
                 clothGeometry.attributes.position.setXYZ(i, v.x, v.y, v.z);
-
             }
-
             clothGeometry.attributes.position.needsUpdate = true;
-
             clothGeometry.computeVertexNormals();
-
             sphere.position.copy(ballPosition);
-
             renderer.render(scene, camera);
 
         }

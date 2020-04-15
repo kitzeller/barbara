@@ -651,14 +651,10 @@ function deleteSession(id) {
             type: 'delete',
             success: function (data) {
                 if (data.status === "ok") {
-
-                    // TODO: Refresh page? or reload load menu?
-                    $("#user_session_list").empty();
-                    $("#user_session_list_delete").empty();
-
                     console.log(user._id);
-                    loadMenus(user._id);
 
+                    // reload menu
+                    loadMenus(user._id);
                 }
             }
         });
@@ -668,10 +664,21 @@ function deleteSession(id) {
 function loadMenus(userId) {
     // Add sessions to Load option
     $.getJSON("sessions/user/" + userId, function (data) {
+        $("#user_session_list").empty();
+        $("#user_session_list_delete").empty();
+
         for (let s of data.sessions) {
             $("#user_session_list").append("<li><a onclick=\"window.location.href='editor?id=" + s._id + "'\">" + s.name + "</a></li>");
             $("#user_session_list_delete").append("<li><a onclick=\"deleteSession('" + s._id + "')\">" + s.name + "</a></li>");
 
         }
     });
+}
+
+
+function open3D(){
+    console.log(exportID);
+    if (exportID){
+        window.location = "3d/threejs.html?id=" + exportID;
+    }
 }

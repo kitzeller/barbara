@@ -35,10 +35,10 @@
 <div class="Header">
     <ul class="Menu -horizontal">
         <li class="-noChevron">
-            <a href="#">Barbara Editor</a>
+            <a onclick="window.location.href='/'">Barbara Editor</a>
         </li>
         <li class="-hasSubmenu">
-            <a href="#">File</a>
+            <a>File</a>
             <ul>
                 <li class="-hasSubmenu">
                     <a data-icon="create_new_folder">New</a>
@@ -49,29 +49,32 @@
                 <li class="-hasSubmenu">
                     <a data-icon="folder_open" href="#">Load</a>
                     <ul id="user_session_list">
+                        <li><span>Login to view.</span></li>
                     </ul>
                 </li>
                 <li class="-hasSubmenu">
                     <a data-icon="delete" href="#">Delete</a>
                     <ul id="user_session_list_delete">
+                        <li><span>Login to view.</span></li>
                     </ul>
                 </li>
-<!--                <li><a onclick="saveGrammar()">Save Grammar</a></li>-->
+                <!--                <li><a onclick="saveGrammar()">Save Grammar</a></li>-->
                 <li><a data-icon="save" onclick="exportSVG()">Export Pattern</a></li>
                 <li><a data-icon="share" onclick="tweet()">Share to Twitter</a></li>
             </ul>
         </li>
         <li class="-hasSubmenu">
-            <a href="#">View</a>
+            <a>View</a>
             <ul>
                 <li><a data-icon="subject" onclick="openView('grammar')">Grammar</a></li>
                 <li><a data-icon="input" onclick="openView('input')">Input</a></li>
                 <li><a data-icon="info" onclick="openView('information')">Information</a></li>
                 <li><a data-icon="laptop" onclick="liveCodeMode()">Live Code Mode</a></li>
+                <li><a data-icon="3d_rotation" onclick="open3D()">3D</a></li>
             </ul>
         </li>
         <li class="-hasSubmenu">
-            <a href="#">Run</a>
+            <a>Run</a>
             <ul>
                 <li><a data-icon="spellcheck" onclick="makeParser()">Parse</a></li>
                 <li><a data-icon="play_arrow" onclick="start()">Start</a></li>
@@ -84,7 +87,7 @@
     </ul>
     <ul class="Menu -horizontal -alignRight">
         <li class="-hasSubmenu">
-            <a href="#">Tutorial</a>
+            <a>Tutorial</a>
             <ul>
                 <li><a onclick="window.location.href='quilting'">Quilting</a></li>
                 <li><a onclick="window.location.href='tutorial'">Parsing</a></li>
@@ -93,20 +96,20 @@
         </li>
         <li><a class="Icon" onclick="window.location.href='/'">home</a></li>
         <li class="-hasSubmenu -noChevron">
-            <a href="#" data-icon="person" id="username_placeholder" onclick="openNav()">User</a>
+            <a data-icon="person" id="username_placeholder" onclick="openNav()">User</a>
             <!--            <ul>-->
             <!--                <li><a onclick="openNav()">Login</a></li>-->
             <!--                <li><a href="#">Profile</a></li>-->
             <!--                <li onclick="logout()"><a>Logout</a></li>-->
-<!--                            <li class="-hasSubmenu">-->
-<!--                                <a href="#">Sub-menu</a>-->
-<!--                                <ul>-->
-<!--                                    <li><a href="#">Bacon</a></li>-->
-<!--                                    <li><a href="#">Ipsum</a></li>-->
-<!--                                    <li><a href="#">Dolor</a></li>-->
-<!--                                    <li><a href="#">Amet</a></li>-->
-<!--                                </ul>-->
-<!--                            </li>-->
+            <!--                            <li class="-hasSubmenu">-->
+            <!--                                <a href="#">Sub-menu</a>-->
+            <!--                                <ul>-->
+            <!--                                    <li><a href="#">Bacon</a></li>-->
+            <!--                                    <li><a href="#">Ipsum</a></li>-->
+            <!--                                    <li><a href="#">Dolor</a></li>-->
+            <!--                                    <li><a href="#">Amet</a></li>-->
+            <!--                                </ul>-->
+            <!--                            </li>-->
             <!--            </ul>-->
         </li>
     </ul>
@@ -254,14 +257,9 @@ all repeat</textarea>
         <p>You can use <code>Alt + Enter</code> to export your drawing</p>
         <p>You can use <code>Cmd + E</code> to look at pattern suggestions</p>
         <p>You can use <code>Cmd + I</code> to look at filter suggestions</p>
-        <p>You can click on the
-            <button>Live Code</button>
-            button to toggle Live-Code mode.
-        </p>
-        <p>You can click on the
-            <button>Start Loop</button>
-            button to re-draw every second.
-        </p>
+        <p>You can click View -> Live Code Mode to toggle Live Coding Mode</p>
+        <p>You can click Run -> Start Loop to re-draw the canvas every second.</p>
+        <p>In order to load and delete your patterns, make sure you are always logged in by clicking User on the top right.</p>
     </div>
 
 </div>
@@ -286,7 +284,6 @@ all repeat</textarea>
         <hr>
         <div id="account" style="text-align: center">
             <form id="theform" method="post" action="/login" style="color:black">
-                <h2>Login</h2>
                 <label>
                     Username:
                     <input id="username" class="u-full-width" type="text" name="username" placeholder="Username">
