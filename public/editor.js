@@ -446,11 +446,11 @@ function exportSVG() {
                 name: response,
                 user: data.username._id,
                 markdown: markdown_cm.getValue(),
-                parentId: parentId
+                parent: parentId
             }).done(function (data) {
                 // Some errors with this in the past, check later
                 // originalData = JSON.parse(JSON.stringify(data));
-                // console.log(data);
+                console.log(data);
                 // exportID = data._id;
 
                 // TODO: Make sure it is okay to refresh the page...
@@ -468,7 +468,7 @@ function exportSVG() {
             }).done(function (data) {
                 // Some errors with this in the past, check later
                 // originalData = JSON.parse(JSON.stringify(data));
-                // console.log(data);
+                console.log(data);
                 // exportID = data._id;
 
                 // TODO: Make sure it is okay to refresh the page...

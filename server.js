@@ -249,51 +249,78 @@ app.post('/tweet',
 
 /**
  * Save Session
+ * TOOD: Refactor this mess
  */
 app.post('/savesession',
     function (req, res) {
         var session = new Session(req.body);
+        console.log(req.body);
         if (req.body.parent) {
-            Session.findOne({_id: req.body.parent}, function (err, data) {
-                session.parent = data;
-                data.children.push(session);
-                data.save(function (err) {
-                        //....
-                    }
-                )
+            Session.findOne({_id: req.body.parent}, function (err, parentSession) {
+                session.parent = parentSession;
+                parentSession.children.push(session);
+                parentSession.save().then(()=> {
+                    session.save().then(()=>{
+                        console.log("saved session w/ parent & children");
+                        if (req.body.user) {
+                            User.findOne({_id: req.body.user}, function (err, user) {
+                                if (err) {
+                                    console.log('Error: ' + err);
+                                    res.status(400);
+                                    throw err;
+                                }
+                                // Save to user
+                                console.log(user);
+                                user.sessions.push(session._id);
+                                user.save(function (err) {
+                                        if (err) {
+                                            console.log('Error: ' + err);
+                                            res.status(400);
+                                            throw err;
+                                        }
+                                        // Seems like sending the session back exceeds the stack size
+                                        res.status(200).json("ok");
+                                    }
+                                )
+                            });
+                        } else {
+                            res.status(200).json("ok");
+                        }
+                    }).catch(error => console.log(error));
+                }).catch(error => console.log(error));
+            });
+        } else {
+            session.save(function (err) {
+                if (err) {
+                    res.status(400);
+                    throw err;
+                }
+                console.log("saved session w/out parent & children");
+                if (req.body.user) {
+                    User.findOne({_id: req.body.user}, function (err, user) {
+                        if (err) {
+                            console.log('Error: ' + err);
+                            res.status(400);
+                            throw err;
+                        }
+                        // Save to user
+                        console.log(user);
+                        user.sessions.push(session._id);
+                        user.save(function (err) {
+                                if (err) {
+                                    console.log('Error: ' + err);
+                                    res.status(400);
+                                    throw err;
+                                }
+                                res.status(200).json("ok");
+                            }
+                        )
+                    });
+                } else {
+                    res.status(200).json("ok");
+                }
             });
         }
-
-        session.save(function (err) {
-            if (err) {
-                res.status(400);
-                throw err;
-            }
-            console.log("saved session");
-            if (req.body.user) {
-                User.findOne({_id: req.body.user}, function (err, data) {
-                    if (err) {
-                        console.log('Error: ' + err);
-                        res.status(400);
-                        throw err;
-                    }
-                    // Save to user
-                    console.log(data);
-                    data.sessions.push(session._id);
-                    data.save(function (err) {
-                            if (err) {
-                                console.log('Error: ' + err);
-                                res.status(400);
-                                throw err;
-                            }
-                            res.status(200).json(session);
-                        }
-                    )
-                });
-            } else {
-                res.status(200).json(session);
-            }
-        });
     });
 
 
