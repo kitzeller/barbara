@@ -11,7 +11,12 @@ var currentView = 'grammar';
  * Modal Events
  */
 var modal = document.getElementById("myModal");
+
 var converter = document.getElementById("converter");
+converter.style.display = "none";
+converter.height = 800;
+converter.width = 800;
+
 var btn = document.getElementById("helpButton");
 var span = document.getElementsByClassName("close")[0];
 btn.onclick = function () {
@@ -490,7 +495,7 @@ function triggerDownload(imgURI) {
     });
 
     var a = document.createElement('a');
-    a.setAttribute('download', 'MY_COOL_IMAGE.png');
+    a.setAttribute('download', 'barbara_pattern.png');
     a.setAttribute('href', imgURI);
     a.setAttribute('target', '_blank');
 
@@ -581,7 +586,7 @@ if (window.location.search) {
 
     $.getJSON("sessions/" + res.id, function (data) {
 
-        if (data.status === "no"){
+        if (data.status === "no") {
             // No results found
             window.location.href = "editor";
         }
@@ -606,7 +611,7 @@ if (window.location.search) {
         // alternative to loading SVG directly
         // makeParser();
         // start();
-    }).fail(err=>console.log(err));
+    }).fail(err => console.log(err));
 
 } else if (window.localStorage.getItem('barbara-vm-grammar')) {
     // TODO: Remove or reconsider local storage
@@ -676,9 +681,34 @@ function loadMenus(userId) {
 }
 
 
-function open3D(){
+function open3D() {
     console.log(exportID);
-    if (exportID){
+    if (exportID) {
         window.location = "3d/threejs.html?id=" + exportID;
+    } else {
+        alert("Make sure you export the pattern first.")
     }
+}
+
+function downloadImage() {
+    var ctx = converter.getContext('2d');
+    var data = window.svg;
+    var DOMURL = window.URL || window.webkitURL || window;
+
+    var img = new Image();
+    var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+    var url = DOMURL.createObjectURL(svgBlob);
+
+    img.onload = function () {
+        ctx.drawImage(img, 0, 0);
+        DOMURL.revokeObjectURL(url);
+
+        var imgURI = converter
+            .toDataURL('image/png')
+            .replace('image/png', 'image/octet-stream');
+
+        triggerDownload(imgURI);
+    };
+
+    img.src = url;
 }
