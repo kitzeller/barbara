@@ -682,9 +682,16 @@ function loadMenus(userId) {
 
 
 function open3D() {
-    console.log(exportID);
     if (exportID) {
         window.location = "3d/threejs.html?id=" + exportID;
+    } else {
+        alert("Make sure you export the pattern first.")
+    }
+}
+
+function openVariants() {
+    if (exportID) {
+        window.location = "variants?id=" + exportID;
     } else {
         alert("Make sure you export the pattern first.")
     }
