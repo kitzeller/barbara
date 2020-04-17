@@ -65,7 +65,7 @@
         var params = {
             enableWind: true,
             showBall: false,
-            tooglePins: togglePins
+            changePins: togglePins
         };
 
         var DAMPING = 0.03;
@@ -365,9 +365,14 @@
 
         pins = pinsFormation[1];
 
+        var pinNumber = 1;
+
         function togglePins() {
 
-            pins = pinsFormation[~~(Math.random() * pinsFormation.length)];
+            pinNumber = (pinNumber + 1) % 5;
+            pins = pinsFormation[pinNumber];
+            // pins = pinsFormation[~~(Math.random() * pinsFormation.length)];
+            console.log(pins);
 
         }
 
@@ -557,7 +562,7 @@
                 var gui = new dat.GUI();
                 gui.add(params, 'enableWind');
                 gui.add(params, 'showBall');
-                gui.add(params, 'tooglePins');
+                gui.add(params, 'changePins');
             };
 
         }
