@@ -178,7 +178,7 @@ var input_cm = CodeMirror.fromTextArea(document.getElementById("input"), {
         'Ctrl-/': 'toggleComment',
         "Ctrl-Enter": makeParser,
         "Cmd-Enter": makeParser,
-        "Shift-Enter": start,
+        "Shift-Enter": parseStart,
         "Alt-Enter": exportSVG,
         "Alt-LeftClick": getCursor,
         'Ctrl-K': function (cm, event) {
@@ -243,6 +243,10 @@ function openView(id) {
             $("#info_div").hide();
             $("#input_div").show();
             $("#grammar_div").hide();
+
+            // Auto parse
+            makeParser();
+
             break;
         case "information":
             $("#info_div").show();
@@ -257,6 +261,9 @@ function openView(id) {
  * Live Code Mode
  */
 function liveCodeMode() {
+    // Auto parse
+    makeParser();
+
     $("#drawing").toggleClass("live-code-I");
     $('body > :not(#drawing)').hide(); //hide all nodes directly under the body
     $('#drawing').appendTo('body');
@@ -356,21 +363,24 @@ function makeParser(del) {
     }
 
     let grammar = grammar_cm.getValue();
-    var parser = peg.generate(grammar);
+    var parser;
+    try {
+        parser = peg.generate(grammar);
+    } catch (ex) {
+        console.log(ex.message);
+        $("#output").val(ex.message)
+        alert("There was an error with the grammar. Please check again.")
+    }
 
     // TODO: Commenting defined through grammar?
     // trim whitespaces and remove commented out lines
     let input = input_cm.getValue().trim().replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:[\s;]+\/\/(?:.*)$)/gm, '');
 
-    // TODO: Check error checking?
     try {
         let res = parser.parse(input);
-        console.log(res);
-        // console.log(res);
         $("#output").val(JSON.stringify(res));
     } catch (ex) {
         console.log(ex.message);
-        $("#output").val(ex.message);
     }
 }
 
@@ -388,6 +398,11 @@ function start(clear) {
     }
     val = eval(val);
     window.seq.define("default", val, "#drawing", clear);
+}
+
+function parseStart(){
+    makeParser();
+    start();
 }
 
 /**
@@ -539,7 +554,6 @@ function tweet() {
     canvas.width = 800;
     var ctx = canvas.getContext('2d');
     console.log(window.svg);
-    // var data = (new XMLSerializer()).serializeToString(window.svg);
     var data = window.svg;
     var DOMURL = window.URL || window.webkitURL || window;
 
@@ -682,11 +696,10 @@ function loadMenus(userId) {
 
 
 function open3D() {
-    if (exportID) {
-        window.location = "3d/threejs.html?id=" + exportID;
-    } else {
-        alert("Make sure you export the pattern first.")
-    }
+    // Get svg data
+    let svg = window.svg;
+    let svgData = window.btoa(unescape(encodeURIComponent(svg)));
+    window.location = "3d/threejs.html?svg=" + svgData;
 }
 
 function openVariants() {

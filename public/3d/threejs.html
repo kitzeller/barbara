@@ -21,28 +21,29 @@
 <div id="info">3D Barbara Pattern
 </div>
 
-<div id="svgContainer" style="width: 0px; height: 0px;">
-</div>
-
-
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="three.js"></script>
 <script src="dat.gui.min.js"></script>
 <script src="OrbitControls.js"></script>
 
 <script>
+    let svgEncodedData;
+    let svgData;
+
     if (window.location.search) {
         let res = parseQuery(window.location.search);
-        console.log(res.id);
+        console.log(res);
 
-        $.getJSON("/sessions/" + res.id, function (data) {
-            console.log(data);
-            // let svg = data.svg;
-
-            $('#svgContainer').append('<svg width="800" height="800" viewBox="0 0 800 800">' + data.svg + '</svg>')
+        if (res.id) {
+            $.getJSON("/sessions/" + res.id, function (data) {
+                svgData = data.svg;
+                runThree();
+            });
+        } else {
+            svgEncodedData = res.svg;
             runThree();
+        }
 
-        });
     }
 
     /**
@@ -242,6 +243,7 @@
             function index(u, v) {
                 return u + v * (w + 1);
             }
+
             this.index = index;
 
         }
@@ -413,25 +415,22 @@
             light.shadow.camera.right = d;
             light.shadow.camera.top = d;
             light.shadow.camera.bottom = -d;
-
             light.shadow.camera.far = 1000;
-
             scene.add(light);
 
             // cloth material
-
-
-            var svg = document.getElementById("svgContainer").querySelector("svg");
-            var svgData = (new XMLSerializer()).serializeToString(svg);
+            var img = document.createElement("img");
+            if (svgEncodedData) {
+                img.setAttribute("src", "data:image/svg+xml;base64," + svgEncodedData);
+            } else {
+                img.setAttribute("src", "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(svgData))));
+            }
 
             var canvas = document.createElement("canvas");
-            var svgSize = svg.getBoundingClientRect();
-            canvas.width = svgSize.width;
-            canvas.height = svgSize.height;
+            canvas.height = 800;
+            canvas.width = 800;
             var ctx = canvas.getContext("2d");
 
-            var img = document.createElement("img");
-            img.setAttribute("src", "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(svgData))));
             var loader = new THREE.TextureLoader();
 
             img.onload = function () {
@@ -449,11 +448,9 @@
                 });
 
                 // cloth geometry
-
                 clothGeometry = new THREE.ParametricBufferGeometry(clothFunction, cloth.w, cloth.h);
 
                 // cloth mesh
-
                 object = new THREE.Mesh(clothGeometry, clothMaterial);
                 object.position.set(0, 0, 0);
                 object.castShadow = true;
