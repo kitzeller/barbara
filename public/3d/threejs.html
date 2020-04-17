@@ -40,7 +40,8 @@
                 runThree();
             });
         } else {
-            svgEncodedData = res.svg;
+            console.log(window.localStorage.getItem("svg").length);
+            svgEncodedData = window.localStorage.getItem("svg");
             runThree();
         }
 

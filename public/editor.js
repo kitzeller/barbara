@@ -699,7 +699,10 @@ function open3D() {
     // Get svg data
     let svg = window.svg;
     let svgData = window.btoa(unescape(encodeURIComponent(svg)));
-    window.location = "3d/threejs.html?svg=" + svgData;
+
+    // Send image through local storage
+    window.localStorage.setItem("svg", svgData);
+    window.open( window.location.origin + "/3d/threejs.html?svg", '_blank');
 }
 
 function openVariants() {
