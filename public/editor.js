@@ -92,7 +92,8 @@ var grammar_cm = CodeMirror.fromTextArea(document.getElementById("grammar"), {
     continueComments: "Enter",
     extraKeys: {
         "Ctrl-/": "toggleComment",
-        "Cmd-/": "toggleComment"
+        "Cmd-/": "toggleComment",
+        "Shift-Enter": checkParser
     }
 
 });
@@ -239,7 +240,7 @@ function openView(id) {
             $("#input_div").hide();
             $("#grammar_div").show();
             break;
-        case "input":
+        case "code":
             $("#info_div").hide();
             $("#input_div").show();
             $("#grammar_div").hide();
@@ -403,6 +404,17 @@ function start(clear) {
 function parseStart(){
     makeParser();
     start();
+}
+
+function checkParser(){
+    let grammar = grammar_cm.getValue();
+    try {
+        peg.generate(grammar);
+    } catch (ex) {
+        $("#grammar_output").val(ex.message);
+        return;
+    }
+    $("#grammar_output").val("Successfully generated parser.");
 }
 
 /**
@@ -620,7 +632,7 @@ if (window.location.search) {
             document.getElementById('drawing').innerHTML = data.svg;
         }
 
-        openView('input');
+        openView('code');
 
         // alternative to loading SVG directly
         // makeParser();

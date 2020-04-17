@@ -69,7 +69,7 @@
             <a>View</a>
             <ul>
                 <li><a data-icon="subject" onclick="openView('grammar')">Grammar</a></li>
-                <li><a data-icon="input" onclick="openView('input')">Input</a></li>
+                <li><a data-icon="input" onclick="openView('code')">Code</a></li>
                 <li><a data-icon="info" onclick="openView('information')">Information</a></li>
                 <li><a data-icon="laptop" onclick="liveCodeMode()">Live Code Mode</a></li>
                 <li><a data-icon="3d_rotation" onclick="open3D()">3D</a></li>
@@ -78,7 +78,7 @@
         <li class="-hasSubmenu">
             <a>Run</a>
             <ul>
-                <li><a data-icon="spellcheck" onclick="makeParser()">Parse</a></li>
+                <li><a data-icon="spellcheck" onclick="checkParser()">Parse</a></li>
                 <li><a data-icon="play_arrow" onclick="start()">Start</a></li>
                 <li><a data-icon="loop" id="loop" onclick="loopSVG()">Start Loop</a></li>
             </ul>
@@ -120,6 +120,8 @@
 <!-- Grammar Div -->
 <div id="grammar_div" style="height:80vh" class="content">
     <h1>Grammar</h1>
+    <code>Shift+Enter</code> to check the parser
+    <div style="height: 80%">
     <textarea id="grammar">
 start "start" = term +
 term "term" = body:(word / sentence) _ { return body; }
@@ -201,6 +203,9 @@ sin = "sin" { return "@sin"; }
 
 _ "whitespace" = [ \t\n\r]*
         </textarea>
+    </div>
+    <h2>Output</h2>
+    <textarea id="grammar_output" style="width: 100%; height: 10%; color: red"></textarea>
 </div>
 
 <!-- Input Div -->
@@ -261,7 +266,8 @@ all repeat</textarea>
         <p>You can use <code>Cmd + I</code> to look at filter suggestions</p>
         <p>You can click View -> Live Code Mode to toggle Live Coding Mode</p>
         <p>You can click Run -> Start Loop to re-draw the canvas every second.</p>
-        <p>In order to load and delete your patterns, make sure you are always logged in by clicking User on the top right.</p>
+        <p>In order to load and delete your patterns, make sure you are always logged in by clicking User on the top
+            right.</p>
     </div>
 
 </div>
