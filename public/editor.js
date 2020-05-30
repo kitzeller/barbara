@@ -1,5 +1,5 @@
 /**
- * Code for Barbara VM Editor
+ * Code for Barbara VM Playground
  * @author Kit Zellerbach
  */
 
@@ -486,7 +486,7 @@ function exportSVG() {
                 // exportID = data._id;
 
                 // TODO: Make sure it is okay to refresh the page...
-                window.location.href = "editor?id=" + data;
+                window.location.href = "playground?id=" + data;
             });
         } else {
             $.post("savesession", {
@@ -504,7 +504,7 @@ function exportSVG() {
                 // exportID = data._id;
 
                 // TODO: Make sure it is okay to refresh the page...
-                window.location.href = "editor?id=" + data;
+                window.location.href = "playground?id=" + data;
             });
         }
     });
@@ -614,7 +614,7 @@ if (window.location.search) {
 
         if (data.status === "no") {
             // No results found
-            window.location.href = "editor";
+            window.location.href = "playground";
         }
 
         originalData = JSON.parse(JSON.stringify(data));
@@ -670,7 +670,7 @@ function logout() {
         url: '/logout',
         type: 'get',
         success: function (data) {
-            window.location = "editor";
+            window.location = "playground";
         }
     });
 }
@@ -699,7 +699,7 @@ function loadMenus(userId) {
         $("#user_session_list_delete").empty();
 
         for (let s of data.sessions) {
-            $("#user_session_list").append("<li><a onclick=\"window.location.href='editor?id=" + s._id + "'\">" + s.name + "</a></li>");
+            $("#user_session_list").append("<li><a onclick=\"window.location.href='playground?id=" + s._id + "'\">" + s.name + "</a></li>");
             $("#user_session_list_delete").append("<li><a onclick=\"deleteSession('" + s._id + "')\">" + s.name + "</a></li>");
 
         }
@@ -747,3 +747,5 @@ function downloadImage() {
 
     img.src = url;
 }
+
+openView('code');

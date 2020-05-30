@@ -76,11 +76,13 @@
 </head>
 <body>
 <div class="top-bar">
-    <button onclick="window.location.href='target_lang'">Target Lang</button>
-    <button onclick="window.location.href='tutorial'">Parsing</button>
-    <button onclick="window.location.href='quilting'">Quilting</button>
-    <button onclick="window.location.href='editor'">Editor</button>
+    <button onclick="window.location.href='playground'">Playground</button>
+    <button onclick="window.location.href='target_lang'">Tutorial</button>
+<!--    <button onclick="window.location.href='tutorial'">Parsing</button>-->
+<!--    <button onclick="window.location.href='quilting'">Quilting</button>-->
     <button onclick="openNav()">Account</button>
+    <button onclick="window.location.href='about'">About</button>
+    <button onclick="window.location.href='https://twitter.com/barbara_quilts'">Twitter</button>
 </div>
 
 <div class="fixed-header">
@@ -216,7 +218,7 @@
     }
 
     function openPatch(id) {
-        window.location = "editor?id=" + id;
+        window.location = "playground?id=" + id;
     }
 
     function open3D(id) {

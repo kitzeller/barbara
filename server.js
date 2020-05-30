@@ -164,7 +164,13 @@ app.get('/',
         res.sendFile(path.join(__dirname + '/public/intro.html'));
     });
 
-app.get('/editor',
+app.get('/about',
+    function (req, res) {
+        res.sendFile(path.join(__dirname + '/public/about.html'));
+    });
+
+
+app.get('/playground',
     function (req, res) {
         res.sendFile(path.join(__dirname + '/public/editor.html'));
     });
@@ -228,7 +234,7 @@ app.post('/tweet',
                 console.log(error)
             } else {
                 const status = {
-                    status: "A new pattern by " + req.body.name + " at http://barbara-vm.herokuapp.com/editor?id=" + req.body.id,
+                    status: "A new pattern by " + req.body.name + " at http://barbara-vm.herokuapp.com/playground?id=" + req.body.id,
                     media_ids: media.media_id_string
                 };
 
