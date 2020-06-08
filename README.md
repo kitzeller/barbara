@@ -12,6 +12,12 @@ and quilters alike. Barbara is free and open-source software.
 
 ![Playground](img/playground.png)
 
+## Local Development Server
+
+In order to create a local development server, clone this repo. You will need to have a local instance of [MongoDB](https://docs.mongodb.com/manual/administration/install-community/) running. 
+
+Then create a `.env` file in the root folder and add the connection string. If you have named the database barbara, this may look like `MONGODB_URI=mongodb://localhost:27017/barbara`.
+
 ## Resources
 
 - https://pegjs.org/online
