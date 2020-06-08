@@ -18,6 +18,8 @@ In order to create a local development server, clone this repo. You will need to
 
 Then create a `.env` file in the root folder and add the connection string. If you have named the database barbara, this may look like `MONGODB_URI=mongodb://localhost:27017/barbara`.
 
+You can then run the server using `npm start`.
+
 ## Resources
 
 - https://pegjs.org/online
