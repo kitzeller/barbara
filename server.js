@@ -175,6 +175,11 @@ app.get('/playground',
         res.sendFile(path.join(__dirname + '/public/editor.html'));
     });
 
+app.get('/editor',
+    function (req, res) {
+        res.sendFile(path.join(__dirname + '/public/editor.html'));
+    });
+
 app.get('/target_lang',
     function (req, res) {
         res.sendFile(path.join(__dirname + '/public/target_lang.html'));
