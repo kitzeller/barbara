@@ -244,6 +244,7 @@ function openView(id) {
             $("#info_div").hide();
             $("#input_div").show();
             $("#grammar_div").hide();
+            input_cm.refresh();
 
             // Auto parse
             makeParser();
@@ -271,10 +272,12 @@ function liveCodeMode() {
     $(input_cm.getWrapperElement()).toggleClass("live-code-II").show().appendTo('body');
     $('body').append("<button id='exitLiveCode' style='margin: 5px; position: absolute; top: 0;'>X</button>");
 
+    input_cm.refresh();
+
     $("#exitLiveCode").click(function () {
         $("#drawing").toggleClass("live-code-I").appendTo("#drawing-container");
         $(input_cm.getWrapperElement()).toggleClass("live-code-II").insertAfter("#input");
-        input_cm.setOption("lineNumbers", false);
+        input_cm.setOption("lineNumbers", true);
         $('body > :not(script)').show(); //hide all nodes directly under the body
         $("#exitLiveCode").remove();
 
@@ -749,3 +752,4 @@ function downloadImage() {
 }
 
 openView('code');
+
