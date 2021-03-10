@@ -239,7 +239,7 @@ app.post('/tweet',
                 console.log(error)
             } else {
                 const status = {
-                    status: "A new pattern by " + req.body.name + " at http://barbara-vm.herokuapp.com/playground?id=" + req.body.id,
+                    status: "A new pattern by " + req.body.name + " at https://www.barbara.graphics/playground?id=" + req.body.id,
                     media_ids: media.media_id_string
                 };
 

@@ -1,7 +1,7 @@
 {
-  "name": "graphics-virtual-machine",
+  "name": "barbara",
   "version": "1.0.0",
-  "description": "graphics vm",
+  "description": "livecoding languages for quilters",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kitzeller/graphics-virtual-machine.git"
+    "url": "git+https://github.com/kitzeller/barbara.git"
   },
   "author": "kit zellerbach",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kitzeller/graphics-virtual-machine/issues"
+    "url": "https://github.com/kitzeller/barbara/issues"
   },
-  "homepage": "https://github.com/kitzeller/graphics-virtual-machine#readme",
+  "homepage": "https://github.com/kitzeller/barbara#readme",
   "dependencies": {
     "@svgdotjs/svg.filter.js": "^3.0.7",
     "@svgdotjs/svg.js": "^3.0.14",
