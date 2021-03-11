@@ -185,49 +185,62 @@ var input_cm = CodeMirror.fromTextArea(document.getElementById("input"), {
         'Ctrl-K': function (cm, event) {
             cm.state.colorpicker.popup_color_picker();
         },
-        'Cmd-E': function () {
-            // Hinting for patterns
-            var options = {
-                hint: function () {
-                    return {
-                        from: input_cm.getDoc().getCursor(),
-                        to: input_cm.getDoc().getCursor(),
-                        list: Object.keys(window.patterns)
-                    }
-                }
-            };
-            input_cm.showHint(options);
+        'Cmd-K': function (cm, event) {
+            cm.state.colorpicker.popup_color_picker();
         },
-        'Cmd-I': function () {
-            // Hinting for mix-blend-mode options
-            var options = {
-                hint: function () {
-                    return {
-                        from: input_cm.getDoc().getCursor(),
-                        to: input_cm.getDoc().getCursor(),
-                        list: ["normal",
-                            "multiply",
-                            "screen",
-                            "overlay",
-                            "darken",
-                            "lighten",
-                            "color-dodge",
-                            "color-burn",
-                            "hard-light",
-                            "soft-light",
-                            "difference",
-                            "exclusion",
-                            "hue",
-                            "saturation",
-                            "color",
-                            "luminosity"]
-                    }
-                }
-            };
-            input_cm.showHint(options);
-        }
+        'Cmd-E': patternHint,
+        'Ctrl-E': patternHint,
+        'Cmd-I': blendHint,
+        'Ctrl-I': blendHint
     }
 });
+
+/**
+ * Hinting for mix-blend-mode options
+ */
+function blendHint() {
+    var options = {
+        hint: function () {
+            return {
+                from: input_cm.getDoc().getCursor(),
+                to: input_cm.getDoc().getCursor(),
+                list: ["normal",
+                    "multiply",
+                    "screen",
+                    "overlay",
+                    "darken",
+                    "lighten",
+                    "color-dodge",
+                    "color-burn",
+                    "hard-light",
+                    "soft-light",
+                    "difference",
+                    "exclusion",
+                    "hue",
+                    "saturation",
+                    "color",
+                    "luminosity"]
+            }
+        }
+    };
+    input_cm.showHint(options);
+}
+
+/**
+ * Hinting for patterns
+ */
+function patternHint() {
+    var options = {
+        hint: function () {
+            return {
+                from: input_cm.getDoc().getCursor(),
+                to: input_cm.getDoc().getCursor(),
+                list: Object.keys(window.patterns)
+            }
+        }
+    };
+    input_cm.showHint(options);
+}
 
 /**
  * Open a view

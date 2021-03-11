@@ -8,8 +8,8 @@
     font-size: 14px;
 }
 
-h1, h2 {
-    font-family: spacecowboy;
+h1, h2, h3 {
+    font-family: spacecowboy !important;
 }
 
 body {
@@ -81,7 +81,7 @@ code {
     pointer-events: none;
     z-index: 200;
     position: fixed;
-    transform: translateY(50%);
+    transform: translateY(35%);
     text-align: center;
 }
 

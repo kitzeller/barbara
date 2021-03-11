@@ -10,8 +10,8 @@ body {
     padding-top: 40px;
 }
 
-h1, h2 {
-    font-family: spacecowboy;
+h1, h2, h3 {
+    font-family: spacecowboy !important;
 }
 
 code {
