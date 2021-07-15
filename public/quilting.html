@@ -772,7 +772,7 @@ Kit Zellerbach & Prof. Charlie Roberts
         var grammar;
         // find previous grammar:
         try{
-            grammar = $(element).parent().prevAll(":has(.language-peg):first").find(".language-peg")[0].innerText;
+            grammar = $(element).prev().find(".language-peg")[0].innerText;
         } catch(ex) {
             return;
         }
