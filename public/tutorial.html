@@ -802,7 +802,7 @@ Credits go to Graham Wakefield. The original tutorial can be found [here](https:
         var grammar;
         // find previous grammar:
         try{
-            grammar = $(element).parent().prevAll(":has(.language-peg):first").find(".language-peg")[0].innerText;
+            grammar = $(element).prevAll(":has(.language-peg):first").find(".language-peg")[0].innerText;
         } catch(ex) {
             return;
         }
