@@ -390,6 +390,7 @@ function makeParser(del) {
     }
 
     // TODO: Commenting defined through grammar?
+    // TODO: Below doesn't work on first line, need to fix
     // trim whitespaces and remove commented out lines
     let input = input_cm.getValue().trim().replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:[\s;]+\/\/(?:.*)$)/gm, '');
 
@@ -611,7 +612,8 @@ function tweet() {
             img: imgURI
         }).done(function (data) {
             document.getElementById("tweet_modal").style.display = "block";
-            document.getElementById("tweet_content").innerText = "Successfully created tweet at https://twitter.com/barbara_quilts/status/" + data.id;
+            let url = "https://twitter.com/barbara_quilts/status/" +  data.id;
+            document.getElementById("tweet_content").innerHTML = `Successfully created tweet at <a href="${ url }">${ url }</a>`;
         });
     };
 

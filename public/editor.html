@@ -129,7 +129,7 @@ term "term" = body:(word / sentence) _ { return body; }
 sentence = "{" expr:regular* "}" { return expr.join("") } / regular
 regular = [^{}]+ { return text(); }
 
-word "word" = svg / circle / rect / line / ellipse / triangle / export / style / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / attr / order / define / get / parent / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / stack / translate / animate_color / animate_filter / animate / add / mult / subtract / divide / modulo / floor / clear / pulse / now / sine / ignore / sin / $[^{} \t\n\r]+
+word "word" = svg / circle / rect / line / ellipse / triangle / export / style / loop / end_loop / filter / slider / polygon / path / polar / random_number / random_color / random_theme / text / pattern / gradient / image / color / opacity / rotate / skew / radius / repeat / attr / order / define / get / parent / group / move / center / copy / all / duplicate / link / outline / flip / diag / size / scale / stack / translate / animate_color / animate_filter / animate / add / mult / subtract / divide / modulo / floor / clear / pulse / now / sine / ignore / sin / rand / $[^{} \t\n\r]+
 
 svg = "svg" { return "@svg"; }
 circle = "circle" { return "@circle"; }
@@ -177,6 +177,8 @@ slider = "slider" { return "@slider"; }
 clear = "clear" { return "@clear"; }
 parent = "parent" { return "@parent"; }
 ignore = "ignore" { return "@ignore"; }
+
+rand = "rand" {return Math.floor(Math.random() * (50 - 0) + 0)}
 
 random_number = "rand-n" { return "@random-number"; }
 random_color = "rand-c" { return "@random-color"; }
