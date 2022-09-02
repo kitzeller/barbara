@@ -272,6 +272,19 @@ function openView(id) {
     currentView = id;
 }
 
+// Global listener to change views
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.shiftKey && evt.key == "Backspace") {
+        // Toggle between modes
+        if (currentView == 'code') {
+            openView('grammar');
+        } else {
+            openView('code');
+        }
+    }
+};
+
 /**
  * Live Code Mode
  */
