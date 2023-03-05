@@ -223,8 +223,10 @@ app.post('/signup',
 
 app.get('/logout',
     function (req, res) {
-        req.logout();
-        res.redirect('back');
+        req.logout(function(err) {
+            if (err) { return next(err); }
+            res.redirect('back');
+        });
     });
 
 /**

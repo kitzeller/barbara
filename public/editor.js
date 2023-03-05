@@ -31,6 +31,21 @@ window.onclick = function (event) {
     }
 };
 
+$("#register").click(function () {
+    $.ajax({
+        url: '/signup',
+        type: 'post',
+        dataType: 'json',
+        data: $('form#theform').serialize(),
+        success: function (data) {
+            if (data.status === "ok") {
+                window.location = "/";
+            }
+        }
+    });
+
+});
+
 
 var tweet_modal = document.getElementById("tweet_modal");
 var tweet_close = document.getElementsByClassName("close")[1];
@@ -106,7 +121,7 @@ CodeMirror.defineSimpleMode("simplemode", {
     // The start state contains the rules that are intially used
     start: [
         // The regex matches the token, the token property contains the type
-        {regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: "string"},
+        { regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: "string" },
         // You can match multiple tokens at once. Note that the captured
         // groups must span the whole string in this case
         {
@@ -119,29 +134,29 @@ CodeMirror.defineSimpleMode("simplemode", {
             regex: /(?:function|var|return|if|for|while|else|do|this)\b/,
             token: "keyword"
         },
-        {regex: /true|false|null|undefined/, token: "atom"},
+        { regex: /true|false|null|undefined/, token: "atom" },
         {
             regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i,
             token: "number"
         },
-        {regex: /\/\/.*/, token: "comment"},
-        {regex: /\/(?:[^\\]|\\.)*?\//, token: "variable-3"},
+        { regex: /\/\/.*/, token: "comment" },
+        { regex: /\/(?:[^\\]|\\.)*?\//, token: "variable-3" },
         // A next property will cause the mode to move to a different state
-        {regex: /\/\*/, token: "comment", next: "comment"},
-        {regex: /[-+\/*=<>!]+/, token: "operator"},
+        { regex: /\/\*/, token: "comment", next: "comment" },
+        { regex: /[-+\/*=<>!]+/, token: "operator" },
         // indent and dedent properties guide autoindentation
-        {regex: /[\{\[\(]/, indent: true},
-        {regex: /[\}\]\)]/, dedent: true},
-        {regex: /[a-z$][\w$]*/, token: "variable"},
+        { regex: /[\{\[\(]/, indent: true },
+        { regex: /[\}\]\)]/, dedent: true },
+        { regex: /[a-z$][\w$]*/, token: "variable" },
         // You can embed other modes with the mode property. This rule
         // causes all code between << and >> to be highlighted with the XML
         // mode.
-        {regex: /<</, token: "meta", mode: {spec: "xml", end: />>/}}
+        { regex: /<</, token: "meta", mode: { spec: "xml", end: />>/ } }
     ],
     // The multi-line comment state.
     comment: [
-        {regex: /.*?\*\//, token: "comment", next: "start"},
-        {regex: /.*/, token: "comment"}
+        { regex: /.*?\*\//, token: "comment", next: "start" },
+        { regex: /.*/, token: "comment" }
     ],
     // The meta property contains global information about the mode. It
     // can contain properties like lineComment, which are supported by
@@ -169,9 +184,9 @@ var input_cm = CodeMirror.fromTextArea(document.getElementById("input"), {
     colorpicker: {
         mode: 'edit',
         colorSets: [
-            {name: 'My Colors', colors: ['red', 'blue', 'white']},
-            {name: 'Scale Colors', scale: ['red', 'yellow', 'black'], count: 5},
-            {name: 'Input Colors', edit: true},
+            { name: 'My Colors', colors: ['red', 'blue', 'white'] },
+            { name: 'Scale Colors', scale: ['red', 'yellow', 'black'], count: 5 },
+            { name: 'Input Colors', edit: true },
         ]
     },
     extraKeys: {
@@ -273,7 +288,7 @@ function openView(id) {
 }
 
 // Global listener to change views
-document.onkeydown = function(evt) {
+document.onkeydown = function (evt) {
     evt = evt || window.event;
     if (evt.shiftKey && evt.key == "Backspace") {
         // Toggle between modes
@@ -344,10 +359,10 @@ function getCursor() {
     var A1 = input_cm.getCursor().line;
     var A2 = input_cm.getCursor().ch;
 
-    var B1 = input_cm.findWordAt({line: A1, ch: A2}).anchor.ch;
-    var B2 = input_cm.findWordAt({line: A1, ch: A2}).head.ch;
+    var B1 = input_cm.findWordAt({ line: A1, ch: A2 }).anchor.ch;
+    var B2 = input_cm.findWordAt({ line: A1, ch: A2 }).head.ch;
 
-    let range = input_cm.getRange({line: A1, ch: B1}, {line: A1, ch: B2});
+    let range = input_cm.getRange({ line: A1, ch: B1 }, { line: A1, ch: B2 });
     console.log(range);
 
     // If it's a number
@@ -370,9 +385,9 @@ function getCursor() {
         htmlNode.value = 0;
         htmlNode.step = 1;
 
-        input_cm.addWidget({ch: A2, line: A1}, htmlNode, true);
+        input_cm.addWidget({ ch: A2, line: A1 }, htmlNode, true);
         htmlNode.onchange = function () {
-            input_cm.replaceRange(this.value, {line: A1, ch: B1}, {line: A1, ch: B2});
+            input_cm.replaceRange(this.value, { line: A1, ch: B1 }, { line: A1, ch: B2 });
             B2 = B1 + this.value.length;
             makeParser(true);
             start();
@@ -431,12 +446,12 @@ function start(clear) {
     window.seq.define("default", val, "#drawing", clear);
 }
 
-function parseStart(){
+function parseStart() {
     makeParser();
     start();
 }
 
-function checkParser(){
+function checkParser() {
     let grammar = grammar_cm.getValue();
     try {
         peg.generate(grammar);
@@ -600,7 +615,7 @@ function tweet() {
     var DOMURL = window.URL || window.webkitURL || window;
 
     var img = new Image();
-    var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+    var svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
     var url = DOMURL.createObjectURL(svgBlob);
 
     img.onload = function () {
@@ -625,8 +640,8 @@ function tweet() {
             img: imgURI
         }).done(function (data) {
             document.getElementById("tweet_modal").style.display = "block";
-            let url = "https://twitter.com/barbara_quilts/status/" +  data.id;
-            document.getElementById("tweet_content").innerHTML = `Successfully created tweet at <a href="${ url }">${ url }</a>`;
+            let url = "https://twitter.com/barbara_quilts/status/" + data.id;
+            document.getElementById("tweet_content").innerHTML = `Successfully created tweet at <a href="${url}">${url}</a>`;
         });
     };
 
@@ -745,7 +760,7 @@ function open3D() {
 
     // Send image through local storage
     window.localStorage.setItem("svg", svgData);
-    window.open( window.location.origin + "/3d/threejs.html?svg", '_blank');
+    window.open(window.location.origin + "/3d/threejs.html?svg", '_blank');
 }
 
 function openVariants() {
@@ -762,7 +777,7 @@ function downloadImage() {
     var DOMURL = window.URL || window.webkitURL || window;
 
     var img = new Image();
-    var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+    var svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
     var url = DOMURL.createObjectURL(svgBlob);
 
     img.onload = function () {
