@@ -37,9 +37,9 @@
     "passport-local": "^1.0.0",
     "response-time": "^2.3.2",
     "serve-favicon": "^2.5.0",
-    "socket.io": "^2.5.0",
+    "socket.io": "^4.7.2",
     "timesync": "^1.0.11",
-    "twitter": "^1.7.1",
+    "twitter-api-v2": "^1.15.2",
     "uuid": "^3.4.0"
   }
 }

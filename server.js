@@ -14,16 +14,17 @@ const cookieParser = require('cookie-parser');
 const responseTime = require('response-time');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
-var bcrypt = require('bcrypt');
-var Twitter = require('twitter');
+const { TwitterApi } = require('twitter-api-v2');
 dotenv.config();
 
-var client = new Twitter({
-    consumer_key: process.env.CONSUMER_KEY,
-    consumer_secret: process.env.CONSUMER_SECRET,
-    access_token_key: process.env.ACCESS_KEY,
-    access_token_secret: process.env.ACCESS_SECRET
+const client = new TwitterApi({
+    appKey: process.env.CONSUMER_KEY,
+    appSecret: process.env.CONSUMER_SECRET,
+    accessToken: process.env.ACCESS_KEY,
+    accessSecret: process.env.ACCESS_SECRET
 });
+// Enable read and write permissions
+const rwClient = client.readWrite;
 
 // Mongo
 var mongoose = require('mongoose');
@@ -53,7 +54,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 // app.use(bodyParser({limit: '50mb'}));
 app.use(cookieParser());
-app.use(require('express-session')({secret: 'keyboard cat', resave: false, saveUninitialized: false}));
+app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 app.use(responseTime());
 app.use(helmet());
 app.use(compression());
@@ -69,7 +70,7 @@ app.set('view engine', 'html');
 passport.use('login', new LocalStrategy(
     function (username, password, done) {
         // check in mongo if a user with username exists or not
-        User.findOne({'username': username},
+        User.findOne({ 'username': username },
             function (err, user) {
                 // In case of any error, return using the done method
                 if (err)
@@ -77,13 +78,13 @@ passport.use('login', new LocalStrategy(
                 // Username does not exist, log the error and redirect back
                 if (!user) {
                     console.log('User Not Found with username ' + username);
-                    return done(null, false, {message: 'No user found'});
+                    return done(null, false, { message: 'No user found' });
                 }
 
                 user.comparePassword(password, (error, isMatch) => {
                     if (!isMatch) {
                         console.log("Wrong password")
-                        return done(null, false, {message: 'Invalid username & password.'});
+                        return done(null, false, { message: 'Invalid username & password.' });
                     }
                     return done(null, user);
                 });
@@ -102,7 +103,7 @@ passport.use('signup', new LocalStrategy(
     function (req, username, password, done) {
         findOrCreateUser = function () {
             // find a user in Mongo with provided username
-            User.findOne({'username': username}, function (err, user) {
+            User.findOne({ 'username': username }, function (err, user) {
                 // In case of any error, return using the done method
                 if (err) {
                     console.log('Error in SignUp: ' + err);
@@ -111,7 +112,7 @@ passport.use('signup', new LocalStrategy(
                 // already exists
                 if (user) {
                     console.log('User already exists with username: ' + username);
-                    return done(null, false, {message: 'user exists.'});
+                    return done(null, false, { message: 'user exists.' });
                 } else {
                     // if there is no user with that email create the user
                     var newUser = new User();
@@ -210,20 +211,20 @@ app.get('/login',
     });
 
 app.post('/login',
-    passport.authenticate('login', {failureRedirect: '/'}),
+    passport.authenticate('login', { failureRedirect: '/' }),
     function (req, res) {
         res.redirect('back');
     });
 
 app.post('/signup',
-    passport.authenticate('signup', {failureRedirect: '/'}),
+    passport.authenticate('signup', { failureRedirect: '/' }),
     function (req, res) {
-        res.status(200).json({status: "ok"});
+        res.status(200).json({ status: "ok" });
     });
 
 app.get('/logout',
     function (req, res) {
-        req.logout(function(err) {
+        req.logout(function (err) {
             if (err) { return next(err); }
             res.redirect('back');
         });
@@ -233,32 +234,25 @@ app.get('/logout',
  * Twitter
  */
 
-app.post('/tweet',
-    function (req, res) {
-        let val = req.body.img.split(",");
-        client.post("media/upload", {media_data: val[1]}, function (error, media, response) {
-            if (error) {
-                console.log(error)
-            } else {
-                const status = {
-                    status: "A new pattern by " + req.body.name + " at https://www.barbara.graphics/playground?id=" + req.body.id,
-                    media_ids: media.media_id_string
-                };
+app.post('/tweet', async function (req, res) {
+    try {
+        // Split the base64 image string from the 'img' field in the request body
+        const base64Data = req.body.img.split(",")[1]; // Get the data part after the comma
 
-                client.post("statuses/update", status, function (error, tweet, response) {
-                    if (error) {
-                        console.log(error)
-                    } else {
-                        console.log("Successfully tweeted an image!");
+        // Upload the media to Twitter
+        const mediaId = await rwClient.v1.uploadMedia(Buffer.from(base64Data, 'base64'), { type: 'png' });
 
-                        // Return tweet id to give user tweet url
-                        res.status(200).json({id: tweet.id_str})
-                    }
-                })
-            }
-        })
-    });
+        // If media upload is successful, post a tweet with the media
+        const tweetText = "A new pattern by " + req.body.name + " at https://www.barbara.graphics/playground?id=" + req.body.id;
+        const tweet = await rwClient.v2.tweet(tweetText, { media: { media_ids: [mediaId] } });
 
+        console.log("Successfully tweeted an image!");
+        // Return tweet id to give user tweet url
+        res.status(200).json({ id: tweet.data.id });
+    } catch (error) {
+        console.error("Failed to post tweet: ", error);
+    }
+});
 
 /**
  * Save Session
@@ -269,14 +263,14 @@ app.post('/savesession',
         var session = new Session(req.body);
         console.log(req.body);
         if (req.body.parent) {
-            Session.findOne({_id: req.body.parent}, function (err, parentSession) {
+            Session.findOne({ _id: req.body.parent }, function (err, parentSession) {
                 session.parent = parentSession;
                 parentSession.children.push(session);
-                parentSession.save().then(()=> {
-                    session.save().then(()=>{
+                parentSession.save().then(() => {
+                    session.save().then(() => {
                         console.log("saved session w/ parent & children");
                         if (req.body.user) {
-                            User.findOne({_id: req.body.user}, function (err, user) {
+                            User.findOne({ _id: req.body.user }, function (err, user) {
                                 if (err) {
                                     console.log('Error: ' + err);
                                     res.status(400);
@@ -286,14 +280,14 @@ app.post('/savesession',
                                 console.log(user);
                                 user.sessions.push(session._id);
                                 user.save(function (err) {
-                                        if (err) {
-                                            console.log('Error: ' + err);
-                                            res.status(400);
-                                            throw err;
-                                        }
-                                        // Seems like sending the session back exceeds the stack size
-                                        res.status(200).json(session._id);
+                                    if (err) {
+                                        console.log('Error: ' + err);
+                                        res.status(400);
+                                        throw err;
                                     }
+                                    // Seems like sending the session back exceeds the stack size
+                                    res.status(200).json(session._id);
+                                }
                                 )
                             });
                         } else {
@@ -310,7 +304,7 @@ app.post('/savesession',
                 }
                 console.log("saved session w/out parent & children");
                 if (req.body.user) {
-                    User.findOne({_id: req.body.user}, function (err, user) {
+                    User.findOne({ _id: req.body.user }, function (err, user) {
                         if (err) {
                             console.log('Error: ' + err);
                             res.status(400);
@@ -320,13 +314,13 @@ app.post('/savesession',
                         console.log(user);
                         user.sessions.push(session._id);
                         user.save(function (err) {
-                                if (err) {
-                                    console.log('Error: ' + err);
-                                    res.status(400);
-                                    throw err;
-                                }
-                                res.status(200).json(session._id);
+                            if (err) {
+                                console.log('Error: ' + err);
+                                res.status(400);
+                                throw err;
                             }
+                            res.status(200).json(session._id);
+                        }
                         )
                     });
                 } else {
@@ -344,7 +338,7 @@ app.delete('/session/:id', function (req, res) {
     console.log("DELETE");
     console.log(req.params.id);
 
-    Session.findOneAndDelete({"_id": req.params.id}, function (err, session) {
+    Session.findOneAndDelete({ "_id": req.params.id }, function (err, session) {
         if (err) {
             console.log('Error: ' + err);
             res.status(400);
@@ -353,7 +347,7 @@ app.delete('/session/:id', function (req, res) {
 
         // TODO: Delete from children/parent?
         // Delete from user
-        User.findOne({_id: session.user}, function (err, user) {
+        User.findOne({ _id: session.user }, function (err, user) {
             if (err) {
                 console.log('Error: ' + err);
                 res.status(400);
@@ -361,13 +355,13 @@ app.delete('/session/:id', function (req, res) {
             }
             user.sessions.pull(session._id);
             user.save(function (err) {
-                    if (err) {
-                        console.log('Error: ' + err);
-                        res.status(400);
-                        throw err;
-                    }
-                    res.status(200).json({status: "ok"});
+                if (err) {
+                    console.log('Error: ' + err);
+                    res.status(400);
+                    throw err;
                 }
+                res.status(200).json({ status: "ok" });
+            }
             )
         });
     });
@@ -378,7 +372,7 @@ app.delete('/session/:id', function (req, res) {
  */
 app.get('/sessions',
     function (req, res) {
-        Session.find({}, {_id: 1, svg: 1, name: 1}, function (err, data) {
+        Session.find({}, { _id: 1, svg: 1, name: 1 }, function (err, data) {
             data.map(function (item) {
                 item.children = undefined;
                 return item;
@@ -386,20 +380,20 @@ app.get('/sessions',
             res.send(data);
             // 15 most recent
             // TODO: Add pagination (mongoose-paginate?)
-        }).sort({_id: -1}).limit(15);
+        }).sort({ _id: -1 }).limit(15);
     });
 
 // Session by session id
 app.get('/sessions/:id',
     function (req, res) {
-        Session.findOne({_id: req.params.id}, function (err, data) {
-            if (err){
+        Session.findOne({ _id: req.params.id }, function (err, data) {
+            if (err) {
                 console.log('Error: ' + err);
                 res.status(400);
                 throw err;
             }
-            if (!data){
-                res.status(200).json({"status": "no"});
+            if (!data) {
+                res.status(200).json({ "status": "no" });
             } else {
                 res.send(data);
             }
@@ -409,7 +403,7 @@ app.get('/sessions/:id',
 // Session by user id
 app.get('/sessions/user/:id',
     function (req, res) {
-        User.findOne({_id: req.params.id})
+        User.findOne({ _id: req.params.id })
             .populate('sessions') // <==
             .exec(function (err, sessions) {
                 if (err) {
@@ -425,7 +419,7 @@ app.get('/sessions/user/:id',
 // Session children
 app.get('/sessions/children/:id',
     function (req, res) {
-        Session.findOne({_id: req.params.id}, function (err, data) {
+        Session.findOne({ _id: req.params.id }, function (err, data) {
             res.send(data);
         });
     });
