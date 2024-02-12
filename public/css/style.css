@@ -8,7 +8,9 @@
     font-size: 14px;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-family: spacecowboy !important;
 }
 
@@ -91,16 +93,16 @@ code {
     font-size: 18.5vw;
     letter-spacing: 6.5px;
     text-shadow: -0.5px -0.5px 10px #000,
-    0.5px -0.5px 10px #000,
-    -0.5px 0.5px 10px #000,
-    0.5px 0.5px 10px #000;
+        0.5px -0.5px 10px #000,
+        -0.5px 0.5px 10px #000,
+        0.5px 0.5px 10px #000;
 }
 
 .fixed-header h3 {
     text-shadow: -0.5px -0.5px 10px #000,
-    0.5px -0.5px 10px #000,
-    -0.5px 0.5px 10px #000,
-    0.5px 0.5px 10px #000;
+        0.5px -0.5px 10px #000,
+        -0.5px 0.5px 10px #000,
+        0.5px 0.5px 10px #000;
 }
 
 
@@ -129,7 +131,7 @@ code {
     text-decoration: none;
     background-color: transparent;
     transition: background-color 0.2s ease-out,
-    color 0.2s ease-out;
+        color 0.2s ease-out;
 }
 
 .ghost-button:hover,
@@ -137,14 +139,14 @@ code {
     background-color: white;
     color: #000;
     transition: background-color 0.3s ease-in,
-    color 0.3s ease-in;
+        color 0.3s ease-in;
 }
 
 .ghost-active {
     background-color: white;
     color: #000;
     transition: background-color 0.3s ease-in,
-    color 0.3s ease-in;
+        color 0.3s ease-in;
 }
 
 
@@ -166,6 +168,11 @@ code {
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     text-align: center;
+}
+
+.svg-container svg,
+.overlay {
+    will-change: opacity;
 }
 
 .svg-container:hover .overlay {
